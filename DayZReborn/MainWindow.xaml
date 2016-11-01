@@ -1,0 +1,355 @@
+﻿<Window x:Class="DayZReborn.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:shell="http://schemas.microsoft.com/winfx/2006/xaml/presentation/shell"
+        xmlns:local="clr-namespace:DayZReborn"
+        xmlns:ikriv="clr-namespace:IKriv.Wpf"
+        mc:Ignorable="d"
+        Title="DayZReborn" TextOptions.TextFormattingMode="Display" Height="625" MinHeight="620" Width="1150" MinWidth="1100" Background="Black" Foreground="Black" ResizeMode="CanResizeWithGrip" WindowStyle="SingleBorderWindow" StateChanged="Window_StateChanged">
+
+    <Window.Resources>
+        <ResourceDictionary Source="ResourceDictionary.xaml"/>
+    </Window.Resources>
+
+    <shell:WindowChrome.WindowChrome>
+        <shell:WindowChrome CaptionHeight="0"
+                                GlassFrameThickness="0,0,0,1"
+                                ResizeBorderThickness="5" />
+    </shell:WindowChrome.WindowChrome>
+
+    <Grid Background="White" Margin="0">
+
+        <Grid x:Name="TopBar" HorizontalAlignment="Stretch" VerticalAlignment="Top" Height="35" Background="White" MouseLeftButtonDown="TopBar_MouseLeftButtonDown">
+            <TextBlock VerticalAlignment="Center" HorizontalAlignment="Left" FontSize="20" Margin="15, 0, 0, 0" FontFamily="Raleway" FontWeight="SemiBold"><Run Text="DayZReborn"/></TextBlock>
+            <StackPanel x:Name="NotificationStack" HorizontalAlignment="Right" Margin="0, 0, 50, 0" Orientation="Horizontal">
+                <Grid Height="35" Background="#FF1E242E">
+                    <TextBlock Margin="15, 0" HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="Red" TextAlignment="Center" TextWrapping="Wrap" FontSize="13" FontFamily="Berlin Sans" FontWeight="Regular"><Run Text="Alpha 1.0"/></TextBlock>
+                </Grid>
+                <Grid Height="35" Background="#FF1E242E" Margin="20, 0, 0, 0">
+                    <TextBlock Margin="15, 0" HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="Red" TextAlignment="Center" TextWrapping="Wrap" FontSize="13" FontFamily="Berlin Sans" FontWeight="Regular"><Run Text="This is a dev build. Some features may be missing or incomplete"/></TextBlock>
+                </Grid>
+            </StackPanel>
+        </Grid>
+        <Image Height="16" Width="16" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="0, 9, 15, 0" Source="images/X.png" MouseLeftButtonUp="Image_MouseLeftButtonUp_1"/>
+
+
+        <Grid x:Name="MenuPanelContainer" VerticalAlignment="Stretch" HorizontalAlignment="Left" Width="200" Margin="0, 35, 0, 0" Background="#FF252E3D">
+            <Border BorderThickness="0" ClipToBounds="True">
+                <Border Background="Transparent" BorderBrush="Black" BorderThickness="10 10 10 10" Margin="-10">
+                    <Border.Effect>
+                        <DropShadowEffect ShadowDepth="0" BlurRadius="70" Opacity=".5"/>
+                    </Border.Effect>
+                    <Grid x:Name="MenuPanel">
+                        <!--<StackPanel x:Name="MenuItemStack" VerticalAlignment="Top" HorizontalAlignment="Stretch" Margin="0, 20, 0, 0">
+                            <Grid x:Name="MenuItem_Servers" Height="45" VerticalAlignment="Top" HorizontalAlignment="Stretch" Background="Transparent" MouseLeftButtonUp="MenuItem_Servers_MouseLeftButtonUp">
+                                <Rectangle x:Name="MenuItem_Servers_Selected" VerticalAlignment="Stretch" HorizontalAlignment="Left" Width="3" Fill="#4F74B3" />
+                                <Grid Margin="45, 0, 0, 0" HorizontalAlignment="Left" VerticalAlignment="Center">
+                                    <TextBlock x:Name="MenuItem_Servers_Text" Margin="0, 0, 0, 0" HorizontalAlignment="Left" VerticalAlignment="Center" Foreground="White" FontSize="20" FontFamily="Berlin Sans" FontWeight="SemiBold"><Run Text="Servers"/></TextBlock>
+                                </Grid>
+                            </Grid>
+
+                            <Grid x:Name="MenuItem_Favourites" Height="45" VerticalAlignment="Top" HorizontalAlignment="Stretch" Background="Transparent" MouseLeftButtonUp="MenuItem_Favourites_MouseLeftButtonUp" Opacity=".6">
+                                <Rectangle x:Name="MenuItem_Favourites_Selected" VerticalAlignment="Stretch" HorizontalAlignment="Left" Width="3" Fill="#4F74B3" />
+                                <Grid Margin="45, 0, 0, 0" HorizontalAlignment="Left" VerticalAlignment="Center">
+                                    <TextBlock x:Name="MenuItem_Favourites_Text" Margin="0, 0, 0, 0" HorizontalAlignment="Left" VerticalAlignment="Center" Foreground="White" FontSize="20" FontFamily="Berlin Sans" FontWeight="SemiBold"><Run Text="Favourites"/></TextBlock>
+                                </Grid>
+                            </Grid>
+
+                            <Grid x:Name="MenuItem_Friends" Height="45" VerticalAlignment="Top" HorizontalAlignment="Stretch" Background="Transparent" MouseLeftButtonUp="MenuItem_Friends_MouseLeftButtonUp" Opacity=".6">
+                                <Rectangle x:Name="MenuItem_Friends_Selected" VerticalAlignment="Stretch" HorizontalAlignment="Left" Width="3" Fill="#4F74B3" />
+                                <Grid Margin="45, 0, 0, 0" HorizontalAlignment="Left" VerticalAlignment="Center">
+                                    <TextBlock x:Name="MenuItem_Friends_Text" Margin="0, 0, 0, 0" HorizontalAlignment="Left" VerticalAlignment="Center" Foreground="White" FontSize="20" FontFamily="Berlin Sans" FontWeight="SemiBold"><Run Text="Friends"/></TextBlock>
+                                </Grid>
+                            </Grid>
+
+                            <Grid x:Name="MenuItem_History" Height="45" VerticalAlignment="Top" HorizontalAlignment="Stretch" Background="Transparent" MouseLeftButtonUp="MenuItem_History_MouseLeftButtonUp" Opacity=".6">
+                                <Rectangle x:Name="MenuItem_History_Selected" VerticalAlignment="Stretch" HorizontalAlignment="Left" Width="3" Fill="#4F74B3" />
+                                <Grid Margin="45, 0, 0, 0" HorizontalAlignment="Left" VerticalAlignment="Center">
+                                    <TextBlock x:Name="MenuItem_History_Text" Margin="0, 0, 0, 0" HorizontalAlignment="Left" VerticalAlignment="Center" Foreground="White" FontSize="20" FontFamily="Berlin Sans" FontWeight="SemiBold"><Run Text="History"/></TextBlock>
+                                </Grid>
+                            </Grid>
+
+                            <Grid x:Name="MenuItem_Settings" Height="45" VerticalAlignment="Top" HorizontalAlignment="Stretch" Background="Transparent" MouseLeftButtonUp="MenuItem_Settings_MouseLeftButtonUp">
+                                <Rectangle x:Name="MenuItem_Settings_Selected" VerticalAlignment="Stretch" HorizontalAlignment="Left" Width="3" Fill="#4F74B3" />
+                                <Grid Margin="45, 0, 0, 0" HorizontalAlignment="Left" VerticalAlignment="Center">
+                                    <TextBlock x:Name="MenuItem_Settings_Text" Margin="0, 0, 0, 0" HorizontalAlignment="Left" VerticalAlignment="Center" Foreground="White" FontSize="20" FontFamily="Berlin Sans" FontWeight="SemiBold"><Run Text="Settings"/></TextBlock>
+                                </Grid>
+                            </Grid>
+                        </StackPanel>-->
+
+                        <!--<Grid x:Name="sidePanelSeperator">
+                            <Rectangle Height="1" VerticalAlignment="Top" Margin="0, 240, 0, 0" Fill="#3a4351"></Rectangle>
+                            <Rectangle Height="1" VerticalAlignment="Top" Margin="0, 241, 0, 0" Fill="#16191e"></Rectangle>
+                        </Grid>-->
+
+                        <Grid x:Name="FilterGrid" VerticalAlignment="top" Margin="0, 0, 0, 0" Background="Transparent">
+                            <TextBlock x:Name="FiltersTB" Margin="25, 20, 0, 0" HorizontalAlignment="Left" VerticalAlignment="Top" Foreground="White" FontSize="20" FontFamily="Berlin Sans" FontWeight="SemiBold"><Run Text="Filters"/></TextBlock>
+
+                            <StackPanel Margin="25, 50, 25, 25">
+                                <Grid>
+                                    <TextBlock HorizontalAlignment="Left" VerticalAlignment="Top" Foreground="White" FontSize="15" FontFamily="Berlin Sans" FontWeight="SemiBold"><Run Text="Name"/></TextBlock>
+                                    <TextBox x:Name="Filter_Name" Margin="0, 20, 0, 0" Height="22" TextChanged="FilterTextChanged"></TextBox>
+                                </Grid>
+                                <Grid Margin="0, 8, 0, 0">
+                                    <TextBlock HorizontalAlignment="Left" VerticalAlignment="Top" Foreground="White" FontSize="15" Margin="0, 2, 0, 0" FontFamily="Berlin Sans" FontWeight="SemiBold"><Run Text="Ping"/></TextBlock>
+                                    <TextBox HorizontalAlignment="Left" VerticalAlignment="Top" x:Name="Filter_PingMin" Margin="0, 25, 0, 0" Height="22" Width="55" TextAlignment="Center" TextChanged="FilterTextChanged" PreviewTextInput="PreviewCharFilter"></TextBox>
+                                    <TextBlock HorizontalAlignment="Center" VerticalAlignment="Top" Foreground="White" FontSize="15" Margin="0, 27, 0, 0" FontFamily="Berlin Sans" FontWeight="SemiBold"><Run Text="To"/></TextBlock>
+                                    <TextBox HorizontalAlignment="Right" VerticalAlignment="Top" x:Name="Filter_PingMax" Margin="0, 25, 0, 0" Height="22" Width="55" TextAlignment="Center" TextChanged="FilterTextChanged" PreviewTextInput="PreviewCharFilter"></TextBox>
+                                    <CheckBox x:Name="Filter_HideUnresponsive" Margin="0, 55, 0, 0" Content="Hide Unresponsive" FontFamily="Berlin Sans" FontWeight="SemiBold" Foreground="White" Unchecked="FilterCheckBoxChanged" Checked="FilterCheckBoxChanged"></CheckBox>
+                                </Grid>
+                                <Grid Margin="0, 8, 0, 0">
+                                    <TextBlock HorizontalAlignment="Left" VerticalAlignment="Top" Foreground="White" FontSize="15" Margin="0, 2, 0, 0" FontFamily="Berlin Sans" FontWeight="SemiBold"><Run Text="Players"/></TextBlock>
+                                    <TextBox HorizontalAlignment="Left" VerticalAlignment="Top" x:Name="Filter_PlayersMin" Margin="0, 25, 0, 0" Height="22" Width="55" TextAlignment="Center" TextChanged="FilterTextChanged" PreviewTextInput="PreviewCharFilter"></TextBox>
+                                    <TextBlock HorizontalAlignment="Center" VerticalAlignment="Top" Foreground="White" FontSize="15" Margin="0, 27, 0, 0" FontFamily="Berlin Sans" FontWeight="SemiBold"><Run Text="To"/></TextBlock>
+                                    <TextBox HorizontalAlignment="Right" VerticalAlignment="Top" x:Name="Filter_PlayersMax" Margin="0, 25, 0, 0" Height="22" Width="55" TextAlignment="Center" TextChanged="FilterTextChanged" PreviewTextInput="PreviewCharFilter"></TextBox>
+                                    <CheckBox x:Name="Filter_HidePlayersFull" Margin="0, 55, 0, 0" Content="Hide Full" FontFamily="Berlin Sans" FontWeight="SemiBold" Foreground="White" Unchecked="FilterCheckBoxChanged" Checked="FilterCheckBoxChanged"></CheckBox>
+                                    <CheckBox x:Name="Filter_HidePlayersEmpty" Margin="0, 75, 0, 0" Content="Hide Empty" FontFamily="Berlin Sans" FontWeight="SemiBold" Foreground="White" Unchecked="FilterCheckBoxChanged" Checked="FilterCheckBoxChanged"></CheckBox>
+                                </Grid>
+                                <Grid Margin="0, 8, 0, 0">
+                                    <TextBlock HorizontalAlignment="Left" VerticalAlignment="Top" Foreground="White" FontSize="15" Margin="0, 2, 0, 0" FontFamily="Berlin Sans" FontWeight="SemiBold"><Run Text="Mod"/></TextBlock>
+                                    <ComboBox HorizontalAlignment="Stretch" VerticalAlignment="Top" x:Name="Filter_Mod" Margin="0, 25, 0, 0" Height="22"></ComboBox>
+                                </Grid>
+                                <Grid Margin="0, 8, 0, 0">
+                                    <TextBlock HorizontalAlignment="Left" VerticalAlignment="Top" Foreground="White" FontSize="15" Margin="0, 2, 0, 0" FontFamily="Berlin Sans" FontWeight="SemiBold"><Run Text="Map"/></TextBlock>
+                                    <ComboBox HorizontalAlignment="Stretch" VerticalAlignment="Top" x:Name="Filter_Map" Margin="0, 25, 0, 0" Height="22"></ComboBox>
+                                </Grid>
+                                <Grid Margin="0, 8, 0, 0">
+                                    <TextBlock HorizontalAlignment="Left" VerticalAlignment="Top" Foreground="White" FontSize="15" Margin="0, 2, 0, 0" FontFamily="Berlin Sans" FontWeight="SemiBold"><Run Text="Hide"/></TextBlock>
+                                    <CheckBox x:Name="Filter_HidePassword" Margin="0, 25, 0, 0" Content="Password" FontFamily="Berlin Sans" FontWeight="SemiBold" Foreground="White" Unchecked="FilterCheckBoxChanged" Checked="FilterCheckBoxChanged"></CheckBox>
+                                    <CheckBox IsEnabled="False" x:Name="Filter_HideLocked" Margin="0, 45, 0, 0" Content="Locked" FontFamily="Berlin Sans" FontWeight="SemiBold" Foreground="White"></CheckBox>
+                                </Grid>
+                            </StackPanel>
+                        </Grid>
+
+                        <Grid x:Name="sideinfo" Height="80" VerticalAlignment="Bottom" MouseEnter="sideinfo_MouseEnter" MouseLeave="sideinfo_MouseLeave" Background="Transparent">
+                            <Image x:Name="info_icon" Height="30" Width="30" Margin="0, 25, 0, 0" HorizontalAlignment="Center" VerticalAlignment="Top" Source="images/icon_white.png" Opacity=".1"></Image>
+                            <TextBlock x:Name="info_text" Margin="0, 30, 0, 0" Opacity="0" HorizontalAlignment="Center" VerticalAlignment="Top" Foreground="White" FontSize="15" FontFamily="Berlin Sans" FontWeight="SemiBold"><Run Text="Created by Aventuum"/></TextBlock>
+                        </Grid>
+                    </Grid>
+                </Border>
+            </Border>
+        </Grid>
+
+        <Grid x:Name="MenuItemGrid" Background="#FF252E3D" Margin="200, 35, 0, 0" Height="45" HorizontalAlignment="Stretch" VerticalAlignment="Top">
+            <StackPanel x:Name="MenuItemStack" VerticalAlignment="Top" Margin="0, 0, 0, 0" Orientation="Horizontal">
+                <Grid x:Name="MenuItem_Servers" MinWidth="180" Width="{Binding ElementName=MenuItemGrid, Path=ActualWidth, Converter={ikriv:MathConverter}, ConverterParameter=x/5}" Height="45" VerticalAlignment="Top" HorizontalAlignment="Stretch" Background="Transparent" MouseLeftButtonUp="MenuItem_Servers_MouseLeftButtonUp">
+                    <Rectangle x:Name="MenuItem_Servers_Selected" VerticalAlignment="Top" HorizontalAlignment="Stretch" Height="3" Fill="#4F74B3" />
+                    <TextBlock x:Name="MenuItem_Servers_Text" Margin="0, 0, 0, 0" HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="White" FontSize="20" FontFamily="Berlin Sans" FontWeight="SemiBold"><Run Text="Servers"/></TextBlock>
+                </Grid>
+
+                <Grid x:Name="MenuItem_Favourites" MinWidth="180" Width="{Binding ElementName=MenuItemGrid, Path=ActualWidth, Converter={ikriv:MathConverter}, ConverterParameter=x/5}" Height="45" VerticalAlignment="Top" HorizontalAlignment="Stretch" Background="Transparent" MouseLeftButtonUp="MenuItem_Favourites_MouseLeftButtonUp" Opacity=".6">
+                    <Rectangle x:Name="MenuItem_Favourites_Selected" VerticalAlignment="Top" HorizontalAlignment="Stretch" Height="3" Fill="#4F74B3" />
+                    <TextBlock x:Name="MenuItem_Favourites_Text" HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="White" FontSize="20" FontFamily="Berlin Sans" FontWeight="SemiBold"><Run Text="Favourites"/></TextBlock>
+                </Grid>
+
+                <Grid x:Name="MenuItem_Friends" MinWidth="180" Width="{Binding ElementName=MenuItemGrid, Path=ActualWidth, Converter={ikriv:MathConverter}, ConverterParameter=x/5}" Height="45" VerticalAlignment="Top" HorizontalAlignment="Stretch" Background="Transparent" MouseLeftButtonUp="MenuItem_Friends_MouseLeftButtonUp" Opacity=".6">
+                    <Rectangle x:Name="MenuItem_Friends_Selected" VerticalAlignment="Top" HorizontalAlignment="Stretch" Height="3" Fill="#4F74B3" />
+                    <TextBlock x:Name="MenuItem_Friends_Text" HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="White" FontSize="20" FontFamily="Berlin Sans" FontWeight="SemiBold"><Run Text="Friends"/></TextBlock>
+                </Grid>
+
+                <Grid x:Name="MenuItem_History" MinWidth="180" Width="{Binding ElementName=MenuItemGrid, Path=ActualWidth, Converter={ikriv:MathConverter}, ConverterParameter=x/5}" Height="45" VerticalAlignment="Top" HorizontalAlignment="Stretch" Background="Transparent" MouseLeftButtonUp="MenuItem_History_MouseLeftButtonUp" Opacity=".6">
+                    <Rectangle x:Name="MenuItem_History_Selected" VerticalAlignment="Top" HorizontalAlignment="Stretch" Height="3" Fill="#4F74B3" />
+                    <TextBlock x:Name="MenuItem_History_Text" HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="White" FontSize="20" FontFamily="Berlin Sans" FontWeight="SemiBold"><Run Text="History"/></TextBlock>
+                </Grid>
+
+                <Grid x:Name="MenuItem_Settings" MinWidth="180" Width="{Binding ElementName=MenuItemGrid, Path=ActualWidth, Converter={ikriv:MathConverter}, ConverterParameter=x/5}" Height="45" VerticalAlignment="Top" HorizontalAlignment="Stretch" Background="Transparent" MouseLeftButtonUp="MenuItem_Settings_MouseLeftButtonUp">
+                    <Rectangle x:Name="MenuItem_Settings_Selected" VerticalAlignment="Top" HorizontalAlignment="Stretch" Height="3" Fill="#4F74B3" />
+                    <TextBlock x:Name="MenuItem_Settings_Text" HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="White" FontSize="20" FontFamily="Berlin Sans" FontWeight="SemiBold"><Run Text="Settings"/></TextBlock>
+                </Grid>
+            </StackPanel>
+        </Grid>
+        
+        <Grid x:Name="ContentGrid" Margin="200, 80, 0, 0" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Background="#364050">
+            <Grid x:Name="Content_Servers" Visibility="Hidden" VirtualizingPanel.IsVirtualizing="True">
+
+                <!--<ListBox x:Name="MainServerList" Margin="0, 30, 0, 25" Background="Transparent" ItemsSource="{Binding DataSource}" Grid.IsSharedSizeScope="True" BorderBrush="{x:Null}">
+                    <ListBox.ItemTemplate>
+                        <DataTemplate>
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto" SharedSizeGroup="Column1"/>
+                                    <ColumnDefinition Width="Auto" SharedSizeGroup="Column2"/>
+                                    <ColumnDefinition Width="Auto" SharedSizeGroup="Column3"/>
+                                </Grid.ColumnDefinitions>
+                                -->
+                <!-- Assumes MVVM and you wish to bind to properties and commands -->
+                <!--
+                                <TextBlock Grid.Column="0" Text="{Binding ColumnOneText}"/>
+                                <TextBlock Grid.Column="1" Text="{Binding ColumnTwoText}"/>
+                                <TextBlock Grid.Column="2" Text="{Binding ColumnThreeText}"/>
+                                <Button Content="ClickMe" Command="{Binding ButtonExecutionCommand}"/>
+                            </Grid>
+                        </DataTemplate>
+                    </ListBox.ItemTemplate>
+                </ListBox>-->
+
+                <Grid Height="30" VerticalAlignment="Top" HorizontalAlignment="Stretch" MaxWidth="{Binding ElementName=Content_Servers, Path=ActualWidth}">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="500" MinWidth="400"></ColumnDefinition>
+                        <!-- Server Name -->
+                        <ColumnDefinition Width="2"></ColumnDefinition>
+                        <ColumnDefinition Width="200" MinWidth="150"></ColumnDefinition>
+                        <!-- Map -->
+                        <ColumnDefinition Width="2"></ColumnDefinition>
+                        <ColumnDefinition Width="100" MinWidth="80"></ColumnDefinition>
+                        <!-- Players -->
+                        <ColumnDefinition Width="2"></ColumnDefinition>
+                        <ColumnDefinition Width="70" MinWidth="70"></ColumnDefinition>
+                        <!-- Ping -->
+                    </Grid.ColumnDefinitions>
+                    <Grid Grid.Column="0" x:Name="Column_Name" MouseLeftButtonUp="Column_Name_MouseLeftButtonUp" Background="Transparent">
+                        <TextBlock HorizontalAlignment="Left" VerticalAlignment="Center" Foreground="White" FontSize="17" Margin="15, 0, 0, 0"><Run Text="Name"></Run></TextBlock>
+                        <Polygon x:Name="Column_Name_Arrow" Points="0,0 5,8 10,0" Width="10" Height="8" Fill="#FFFFFFFF" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="70, 0, 0, 0"/>
+                    </Grid>
+                    <GridSplitter Grid.Column="1" ResizeDirection="Columns" ResizeBehavior="PreviousAndNext" VerticalAlignment="Stretch" Width="2" Background="White" Opacity=".4"/>
+                    <Grid Grid.Column="2" x:Name="Column_Map" MouseLeftButtonUp="Column_Map_MouseLeftButtonUp" Background="Transparent">
+                        <TextBlock HorizontalAlignment="Left" VerticalAlignment="Center" Foreground="White" FontSize="17" Margin="15, 0, 0, 0"><Run Text="Map"></Run></TextBlock>
+                        <Polygon x:Name="Column_Map_Arrow" Points="0,0 5,8 10,0" Width="10" Height="8" Fill="#FFFFFFFF" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="60, 0, 0, 0" Visibility="Hidden"/>
+                    </Grid>
+                    <GridSplitter Grid.Column="3" ResizeDirection="Columns" ResizeBehavior="PreviousAndNext" VerticalAlignment="Stretch" Width="2" Background="White" Opacity=".4"/>
+                    <Grid Grid.Column="4" x:Name="Column_Players" MouseLeftButtonUp="Column_Players_MouseLeftButtonUp" Background="Transparent">
+                        <TextBlock HorizontalAlignment="Left" VerticalAlignment="Center" Foreground="White" FontSize="17" Margin="15, 0, 0, 0"><Run Text="Players"></Run></TextBlock>
+                        <Polygon x:Name="Column_Players_Arrow" Points="0,0 5,8 10,0" Width="10" Height="8" Fill="#FFFFFFFF" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="75, 0, 0, 0" Visibility="Hidden"/>
+                    </Grid>
+                    <GridSplitter Grid.Column="5" ResizeDirection="Columns" ResizeBehavior="PreviousAndNext" VerticalAlignment="Stretch" Width="2" Background="White" Opacity=".4"/>
+                    <Grid Grid.Column="6" x:Name="Column_Ping" MouseLeftButtonUp="Column_Ping_MouseLeftButtonUp" Background="Transparent">
+                        <TextBlock HorizontalAlignment="Left" VerticalAlignment="Center" Foreground="White" FontSize="17" Margin="15, 0, 0, 0"><Run Text="Ping"></Run></TextBlock>
+                        <Polygon x:Name="Column_Ping_Arrow" Points="0,0 5,8 10,0" Width="10" Height="8" Fill="#FFFFFFFF" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="55, 0, 0, 0" Visibility="Hidden"/>
+                    </Grid>
+                </Grid>
+                <!--<ScrollViewer HorizontalAlignment="Stretch" Margin="0,30,0,25">
+                    <Grid>
+                        <StackPanel x:Name="ServerStackPanel" Orientation="Vertical"/>
+                        <StackPanel x:Name="FavouriteStackPanel" Orientation="Vertical" Visibility="Hidden"/>
+                        <StackPanel x:Name="HistoryStackPanel" Orientation="Vertical" Visibility="Hidden"/>
+                    </Grid>
+                </ScrollViewer>-->
+
+                <ListBox x:Name="MainServerListBox" Margin="0, 30, 0, 25" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" ItemContainerStyle="{DynamicResource MetroListBoxItemStyle}" Background="#364050" Foreground="White" BorderThickness="0" MouseDoubleClick="MainServerListBox_MouseDoubleClick">
+                    <ListBox.ItemTemplate>
+                        <DataTemplate>
+                            <StackPanel Orientation="Horizontal" Margin="0">
+                                <Grid Width="{Binding ElementName=Column_Name, Path=ActualWidth}" Margin="15, 0, -15, 0" VerticalAlignment="Center">
+                                    <TextBlock Text="{Binding Name}" Width="{Binding ElementName=Column_Name, Path=ActualWidth}" HorizontalAlignment="Left" VerticalAlignment="Top" FontSize="18" Foreground="White" Margin="0, 0, 0, 14" TextTrimming="CharacterEllipsis"/>
+                                    <TextBlock Text="{Binding Host}" Width="{Binding ElementName=Column_Name, Path=ActualWidth}" HorizontalAlignment="Left" VerticalAlignment="Bottom" FontSize="10" Foreground="White" Margin="0, 0, 0, 5" TextTrimming="CharacterEllipsis"/>
+                                </Grid>
+                                <TextBlock Text="{Binding Map}" Width="{Binding ElementName=Column_Map, Path=ActualWidth}" HorizontalAlignment="Left" VerticalAlignment="Center" FontSize="18" Foreground="White" Margin="15, 0, -15, 0" TextTrimming="CharacterEllipsis"/>
+                                <TextBlock Text="{Binding Players}" Width="{Binding ElementName=Column_Players, Path=ActualWidth}" HorizontalAlignment="Left" VerticalAlignment="Center" FontSize="18" Foreground="White" Margin="15, 0, -15, 0" TextTrimming="CharacterEllipsis"/>
+                                <TextBlock Text="{Binding Ping}" Width="{Binding ElementName=Column_Ping, Path=ActualWidth}" HorizontalAlignment="Left" VerticalAlignment="Center" FontSize="18" Foreground="White" Margin="15, 0, -15, 0" TextTrimming="CharacterEllipsis"/>
+                            </StackPanel>
+                        </DataTemplate>
+                    </ListBox.ItemTemplate>
+                </ListBox>
+                <Grid x:Name="StatusGrid" Background="#252E3D" VerticalAlignment="Bottom" HorizontalAlignment="Stretch" Height="25">
+                    <Rectangle x:Name="ProgressRect" Fill="#2db322" Width="1" HorizontalAlignment="Left"></Rectangle>
+                    <Grid x:Name="LoadingGrid">
+                        <TextBlock x:Name="LoadingText" Margin="0, 0, 0, 0" HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="White" FontSize="15" FontFamily="Berlin Sans"><Run Text="Loading Servers 0/1000"/></TextBlock>
+                    </Grid>
+                </Grid>
+            </Grid>
+
+            <Grid x:Name="Content_Settings" Margin="0, 0, 0, 25" Visibility="Visible">
+                <Grid VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Background="#364050">
+                    <StackPanel Orientation="Vertical">
+                        <StackPanel Margin="20, 20, 0, 0" HorizontalAlignment="Stretch" Orientation="Vertical">
+                            <TextBlock Margin="0, 0, 0, 0" HorizontalAlignment="Left" VerticalAlignment="Top" Foreground="White" FontSize="20" FontFamily="Berlin Sans" FontWeight="SemiBold"><Run Text="ARMA Settings"/></TextBlock>
+                            <TextBlock HorizontalAlignment="Left" VerticalAlignment="Top" Foreground="White" FontSize="15" Margin="0, 10, 0, 0" FontFamily="Berlin Sans" FontWeight="SemiBold"><Run Text="ARMA 2 Location"/></TextBlock>
+                            <Grid>
+                                <TextBox x:Name="Arma2Path" Height="22" Width="200" HorizontalAlignment="Left" TextChanged="FilterTextChanged"></TextBox>
+                                <Button HorizontalAlignment="Left" Width="100" Margin="210, 0, 0, 0" Content="Browse"></Button>
+                            </Grid>
+                            <Grid>
+                                <CheckBox x:Name="LaunchParam_NoSplash" Margin="0, 5, 0, 0" HorizontalAlignment="Left" VerticalAlignment="Top" Content="No Splash" FontFamily="Berlin Sans" FontWeight="SemiBold" Foreground="White"></CheckBox>
+                                <CheckBox x:Name="LaunchParam_NoPause" Margin="0, 25, 0, 0" HorizontalAlignment="Left" VerticalAlignment="Top" Content="No Pause" FontFamily="Berlin Sans" FontWeight="SemiBold" Foreground="White"></CheckBox>
+                                <CheckBox x:Name="LaunchParam_WindowMode" Margin="0, 45, 0, 0" HorizontalAlignment="Left" VerticalAlignment="Top" Content="Windowed Mode" FontFamily="Berlin Sans" FontWeight="SemiBold" Foreground="White"></CheckBox>
+                                <CheckBox x:Name="LaunchParam_NoLogs" Margin="120, 5, 0, 0" HorizontalAlignment="Left" VerticalAlignment="Top" Content="No Logs" FontFamily="Berlin Sans" FontWeight="SemiBold" Foreground="White"></CheckBox>
+                                <CheckBox x:Name="LaunchParam_ScriptErrors" Margin="120, 25, 0, 0" HorizontalAlignment="Left" VerticalAlignment="Top" Content="Show Script Errors" FontFamily="Berlin Sans" FontWeight="SemiBold" Foreground="White"></CheckBox>
+                            </Grid>
+                        </StackPanel>
+
+                        <StackPanel Margin="20, 20, 0, 0" HorizontalAlignment="Stretch" IsEnabled="False" Opacity=".5">
+                            <TextBlock Margin="0, 0, 0, 0" HorizontalAlignment="Left" VerticalAlignment="Top" Foreground="White" FontSize="20" FontFamily="Berlin Sans" FontWeight="SemiBold"><Run Text="Colour Scheme"/></TextBlock>
+                            <Grid Margin="20, 10, 0, 0">
+                                <Rectangle Fill="#FF252E3D" Margin="0, 0, 15, 0" Height="30" Width="50" VerticalAlignment="Top" HorizontalAlignment="Left" Stroke="#7F43F500" StrokeThickness="2" />
+                                <Rectangle Fill="#FF8D2615" Margin="60, 0, 15, 0" Height="30" Width="50" VerticalAlignment="Top" HorizontalAlignment="Left" Stroke="#7F000000" StrokeThickness="2" />
+                            </Grid>
+                        </StackPanel>
+                        <!--<StackPanel Margin="20, 20, 0, 0" HorizontalAlignment="Stretch">
+                            <TextBlock Margin="0, 0, 0, 10" HorizontalAlignment="Left" VerticalAlignment="Top" Foreground="White" FontSize="20" FontFamily="Couture"><Run Text="Other"/></TextBlock>
+
+                        </StackPanel>-->
+                    </StackPanel>
+                    <Grid x:Name="Settings_Save" Height="40" Width="150" VerticalAlignment="Bottom" HorizontalAlignment="Right" Margin="30" Background="#252E3D" MouseLeftButtonUp="Settings_Save_MouseLeftButtonUp">
+                        <TextBlock Margin="0, 0, 0, 0" HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="White" FontSize="20" FontFamily="Couture"><Run Text="Save"/></TextBlock>
+                        <Grid.Style>
+                            <Style TargetType="{x:Type Grid}">
+                                <Style.Triggers>
+                                    <Trigger Property="IsMouseOver" Value="False">
+                                        <Setter Property="Background" Value="#252E3D"></Setter>
+                                    </Trigger>
+                                    <Trigger Property="IsMouseOver" Value="True">
+                                        <Setter Property="Background" Value="#FF3A4961"></Setter>
+                                    </Trigger>
+                                </Style.Triggers>
+                            </Style>
+                        </Grid.Style>
+                    </Grid>
+                </Grid>
+            </Grid>
+
+            <Grid x:Name="Grid_ServerInfo" Width="800" Height="400" Background="#FF252E3D" Visibility="Hidden" IsVisibleChanged="Grid_ServerInfo_IsVisibleChanged">
+                <Rectangle>
+                    <Rectangle.Effect>
+                        <DropShadowEffect ShadowDepth="0" BlurRadius="70" Opacity=".2"/>
+                    </Rectangle.Effect>
+                </Rectangle>
+                <Grid Height="40" VerticalAlignment="Top" Background="#33000000">
+                    <Image Height="16" Width="16" HorizontalAlignment="Right" Margin="0, 0, 15, 0" Source="images/X_white.png" MouseLeftButtonUp="Image_MouseLeftButtonUp"></Image>
+                </Grid>
+                <TextBlock Margin="20, 60, 0, 0" HorizontalAlignment="Left" VerticalAlignment="Top" Foreground="White" FontSize="15" FontFamily="Berlin Sans" FontWeight="Regular"><Run Text="Name"/></TextBlock>
+                <TextBlock x:Name="ServerInfo_Name" Margin="80, 60, 0, 0" MaxWidth="650" TextWrapping="Wrap" HorizontalAlignment="Left" VerticalAlignment="Top" Foreground="White" FontSize="15" FontFamily="Berlin Sans" FontWeight="Thin"><Run Text="Server Name Goes Here"/></TextBlock>
+                <StackPanel Width="320" HorizontalAlignment="Left" Margin="20, 90, 0, 20" Orientation="Vertical">
+                    <Grid>
+                        <TextBlock Margin="0, 0, 0, 0" HorizontalAlignment="Left" VerticalAlignment="Top" Foreground="White" FontSize="15" FontFamily="Berlin Sans" FontWeight="Regular"><Run Text="IP"/></TextBlock>
+                        <TextBox x:Name="ServerInfo_IP" Margin="100, 0, 0, 0" HorizontalAlignment="Left" VerticalAlignment="Top" Foreground="White" Background="#33000000" FontSize="15" FontFamily="Berlin Sans" FontWeight="Thin" Text="192.168.1.20" BorderBrush="#FF2B2B2B" IsReadOnly="True"/>
+                    </Grid>
+                    <Grid>
+                        <TextBlock Margin="0, 0, 0, 0" HorizontalAlignment="Left" VerticalAlignment="Top" Foreground="White" FontSize="15" FontFamily="Berlin Sans" FontWeight="Regular"><Run Text="Ping"/></TextBlock>
+                        <TextBlock x:Name="ServerInfo_Ping" Margin="100, 0, 0, 0" HorizontalAlignment="Left" VerticalAlignment="Top" Foreground="White" FontSize="15" FontFamily="Berlin Sans" FontWeight="Thin"><Run Text="0"/></TextBlock>
+                    </Grid>
+                    <Grid>
+                        <TextBlock Margin="0, 0, 0, 0" HorizontalAlignment="Left" VerticalAlignment="Top" Foreground="White" FontSize="15" FontFamily="Berlin Sans" FontWeight="Regular"><Run Text="Map"/></TextBlock>
+                        <TextBlock x:Name="ServerInfo_Map" Margin="100, 0, 0, 0" HorizontalAlignment="Left" VerticalAlignment="Top" Foreground="White" FontSize="15" FontFamily="Berlin Sans" FontWeight="Thin"><Run Text="Chernarus"/></TextBlock>
+                    </Grid>
+                    <Grid>
+                        <TextBlock Margin="0, 0, 0, 0" HorizontalAlignment="Left" VerticalAlignment="Top" Foreground="White" FontSize="15" FontFamily="Berlin Sans" FontWeight="Regular"><Run Text="Game Version"/></TextBlock>
+                        <TextBlock x:Name="ServerInfo_GameVersion" Margin="100, 0, 0, 0" HorizontalAlignment="Left" VerticalAlignment="Top" Foreground="White" FontSize="15" FontFamily="Berlin Sans" FontWeight="Thin"><Run Text="Game Version Goes Here"/></TextBlock>
+                    </Grid>
+                    <Grid>
+                        <TextBlock Margin="0, 0, 0, 0" HorizontalAlignment="Left" VerticalAlignment="Top" Foreground="White" FontSize="15" FontFamily="Berlin Sans" FontWeight="Regular"><Run Text="Passworded"/></TextBlock>
+                        <TextBlock x:Name="ServerInfo_Passworded" Margin="100, 0, 0, 0" HorizontalAlignment="Left" VerticalAlignment="Top" Foreground="White" FontSize="15" FontFamily="Berlin Sans" FontWeight="Thin"><Run Text="No"/></TextBlock>
+                    </Grid>
+                    <Grid>
+                        <TextBlock Margin="0, 0, 0, 0" HorizontalAlignment="Left" VerticalAlignment="Top" Foreground="White" FontSize="15" FontFamily="Berlin Sans" FontWeight="Regular"><Run Text="BattleEye"/></TextBlock>
+                        <TextBlock x:Name="ServerInfo_BattleEye" Margin="100, 0, 0, 0" HorizontalAlignment="Left" VerticalAlignment="Top" Foreground="White" FontSize="15" FontFamily="Berlin Sans" FontWeight="Thin"><Run Text="Yes"/></TextBlock>
+                    </Grid>
+                    <Grid>
+                        <TextBlock Margin="0, 0, 0, 0" HorizontalAlignment="Left" VerticalAlignment="Top" Foreground="White" FontSize="15" FontFamily="Berlin Sans" FontWeight="Regular"><Run Text="Last Joined"/></TextBlock>
+                        <TextBlock x:Name="ServerInfo_LastJoined" Margin="100, 0, 0, 0" HorizontalAlignment="Left" VerticalAlignment="Top" Foreground="White" FontSize="15" FontFamily="Berlin Sans" FontWeight="Thin"><Run Text="Never"/></TextBlock>
+                    </Grid>
+                </StackPanel>
+                <Grid Width="200" HorizontalAlignment="Right" Margin="0, 90, 20, 70">
+                    <TextBlock Margin="0, 0, 0, 0" HorizontalAlignment="Left" VerticalAlignment="Top" Foreground="White" FontSize="15" FontFamily="Berlin Sans" FontWeight="Regular"><Run Text="Mods"/></TextBlock>
+                    <ListBox x:Name="ServerInfo_ModList" Margin="0, 20, 0, 0" Background="Transparent" BorderThickness="0"  ItemContainerStyle="{DynamicResource MetroPlayerListBoxItemStyle}"/>
+                </Grid>
+                <Grid Width="200" HorizontalAlignment="Right" Margin="0, 90, 240, 70">
+                    <TextBlock x:Name="ServerInfo_Players" Margin="0, 0, 0, 0" HorizontalAlignment="Left" VerticalAlignment="Top" Foreground="White" FontSize="15" FontFamily="Berlin Sans" FontWeight="Regular"><Run Text="Player Info - 0/0"/></TextBlock>
+                    <ListBox x:Name="ServerInfo_PlayerList" Margin="0, 20, 0, 0" Background="Transparent" BorderThickness="0"  ItemContainerStyle="{DynamicResource MetroPlayerListBoxItemStyle}"/>
+                </Grid>
+                <Button Height="30" Width="160" HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="20" Content="Join"></Button>
+            </Grid>
+        </Grid>
+    </Grid>
+</Window>
