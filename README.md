@@ -1,10 +1,10 @@
-# DayZReborn  ![Alt tag](DayZReborn/images/icon.png)
+# DayZReborn
 
-A C#/WPF DayZ launcher. Basically Commander v2.
+<p align="center">
+  <img src="DayZReborn/images/icon.png"/>
+</p>
 
-I've been working on this on and off for quite a while, in my spare time. I wanted to create an open source version of DayZ Launcher because, well... I don't like it. It's such a downgrade from the good old DayZCommander.
-
-I plan on having everything customizable, from the theme to where the program looks for mods and installs them to.
+DayZReborn is an open-source C#/WPF server browser and mod manager for the ArmA 2 mod, DayZ. It utilizes the .NET QueryMaster library created by betson. The goal is to have a completely customizable DayZ launcher. Outdated mod download link? Update it in a settings file. Want a different theme? Change the colours or use pre-made ones. It's also trivial to change which game's master server is queried, thanks to QueryMaster, making it easy to modify it for use with any game.
 
 <p align="center">
   <img src="http://i.imgur.com/mYY0NqK.png"/>
