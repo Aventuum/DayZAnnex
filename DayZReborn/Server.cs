@@ -56,8 +56,8 @@ namespace DayZReborn
         //Unused lists
         //static List<ServerInfo> ServerHistoryList = new List<ServerInfo>();
         //static List<ServerInfo> ServerFavouritesList = new List<ServerInfo>();
-
-        MainWindow mainWin = new MainWindow();
+        
+        //MainWindow mainWin = Application.Current.Windows.OfType<MainWindow>().FirstOrDefault();
 
         public List<ServerListInfo> getServerList(bool filtered = true)
         {
@@ -72,9 +72,11 @@ namespace DayZReborn
                 return MainServerList.ToList();
             }
         }
+        MainWindow mainWin;
 
-        private void LoadServers()
+        public void LoadServers(MainWindow mw)
         {
+            mainWin = mw;
             //Load servers on another thread, so that it doesnt freaze the UI.
             Thread thread = new Thread(LoadServersThread);
             thread.SetApartmentState(ApartmentState.STA);
@@ -109,10 +111,10 @@ namespace DayZReborn
             foreach (IPEndPoint endp in ServerEndP)
             {
                 //Limit the number of servers loaded. Used for dev purposes
-                //if (count > 50)
-                //{
-                //    continue;
-                //}
+                if (count > 5)
+                {
+                    continue;
+                }
                 while (runningThreads >= 10)
                 {
                     //Wait if there are more than 10 running threads
@@ -363,7 +365,7 @@ namespace DayZReborn
             return "999";
         }
 
-        private void ApplyFilters()
+        public void ApplyFilters()
         {
             FilteredList = new ObservableCollection<ServerListInfo>(MainServerList);
             try
@@ -398,6 +400,7 @@ namespace DayZReborn
             }
             catch (Exception e)
             {
+                throw;
                 mainWin.Filter_Name.Text = "";
                 mainWin.Filter_PingMin.Text = "";
                 mainWin.Filter_PingMax.Text = "";

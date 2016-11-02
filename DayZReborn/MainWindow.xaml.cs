@@ -82,16 +82,17 @@ namespace DayZReborn
 
     public partial class MainWindow : Window
     {
-        Server server = new Server();
         
         public MainWindow()
         {
             InitializeComponent();
+            server.LoadServers(this);
             MainServerListBox.ItemsSource = server.getServerList();
             ChangeToTab(0);
             Load();
-            LoadServers();
         }
+
+        Server server = new Server();
 
         private void TopBar_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
@@ -337,22 +338,58 @@ namespace DayZReborn
 
         private void Column_Name_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
         {
-            SortList("Name");
+            server.sortBy = "Name";
+            if(Column_Name_Arrow.Points[0].X == 0)
+            {
+                server.sortAsc = false;
+            }
+            else
+            {
+                server.sortAsc = true;
+            }
+            MainServerListBox.ItemsSource = server.getServerList();
         }
 
         private void Column_Map_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
         {
-            SortList("Map");
+            server.sortBy = "Map";
+            if (Column_Map_Arrow.Points[0].X == 0)
+            {
+                server.sortAsc = false;
+            }
+            else
+            {
+                server.sortAsc = true;
+            }
+            MainServerListBox.ItemsSource = server.getServerList();
         }
 
         private void Column_Players_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
         {
-            SortList("Players");
+            server.sortBy = "Players";
+            if (Column_Players_Arrow.Points[0].X == 0)
+            {
+                server.sortAsc = false;
+            }
+            else
+            {
+                server.sortAsc = true;
+            }
+            MainServerListBox.ItemsSource = server.getServerList();
         }
 
         private void Column_Ping_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
         {
-            SortList("Ping");
+            server.sortBy = "Ping";
+            if (Column_Ping_Arrow.Points[0].X == 0)
+            {
+                server.sortAsc = false;
+            }
+            else
+            {
+                server.sortAsc = true;
+            }
+            MainServerListBox.ItemsSource = server.getServerList();
         }
 
         private void Image_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
@@ -411,9 +448,10 @@ namespace DayZReborn
 
         private void MainServerListBox_MouseDoubleClick(object sender, MouseButtonEventArgs e)
         {
-            if(MainServerListBox.SelectedIndex != -1 && FilteredList[MainServerListBox.SelectedIndex].Ping != 9999)
+            List<ServerListInfo> selectedList = server.getServerList();
+            if(MainServerListBox.SelectedIndex != -1 && selectedList[MainServerListBox.SelectedIndex].Ping != 9999)
             {
-                ServerListInfo item = FilteredList[MainServerListBox.SelectedIndex];
+                ServerListInfo item = selectedList[MainServerListBox.SelectedIndex];
                 ServerInfo_Name.Text = item.Name;
                 ServerInfo_IP.Text = item.Host;
                 ServerInfo_Map.Text = item.Map;
@@ -436,9 +474,9 @@ namespace DayZReborn
 
                 Grid_ServerInfo.Visibility = Visibility.Visible;
             }
-            else if(MainServerListBox.SelectedIndex != -1 && FilteredList[MainServerListBox.SelectedIndex].Ping == 9999)
+            else if(MainServerListBox.SelectedIndex != -1 && selectedList[MainServerListBox.SelectedIndex].Ping == 9999)
             {
-                ServerListInfo item = FilteredList[MainServerListBox.SelectedIndex];
+                ServerListInfo item = selectedList[MainServerListBox.SelectedIndex];
                 ServerInfo_Name.Text = item.Host;
                 ServerInfo_IP.Text = item.Host;
                 ServerInfo_Map.Text = "unknown";
@@ -465,12 +503,12 @@ namespace DayZReborn
 
         private void FilterTextChanged(object sender, TextChangedEventArgs e)
         {
-            ApplyFilters();
+            server.ApplyFilters();
         }
 
         private void FilterCheckBoxChanged(object sender, RoutedEventArgs e)
         {
-            ApplyFilters();
+            server.ApplyFilters();
         }
     }
 }
