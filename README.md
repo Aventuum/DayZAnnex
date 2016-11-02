@@ -1,4 +1,4 @@
-# DayZReborn
+# DayZReborn  ![Alt tag](DayZReborn/images/icon.png)
 
 A C#/WPF DayZ launcher. Basically Commander v2.
 
