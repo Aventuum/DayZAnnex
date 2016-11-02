@@ -24,12 +24,9 @@
         <Grid x:Name="TopBar" HorizontalAlignment="Stretch" VerticalAlignment="Top" Height="35" Background="White" MouseLeftButtonDown="TopBar_MouseLeftButtonDown">
             <TextBlock VerticalAlignment="Center" HorizontalAlignment="Left" FontSize="20" Margin="15, 0, 0, 0" FontFamily="Raleway" FontWeight="SemiBold"><Run Text="DayZReborn"/></TextBlock>
             <StackPanel x:Name="NotificationStack" HorizontalAlignment="Right" Margin="0, 0, 50, 0" Orientation="Horizontal">
-                <Grid Height="35" Background="#FF1E242E">
-                    <TextBlock Margin="15, 0" HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="Red" TextAlignment="Center" TextWrapping="Wrap" FontSize="13" FontFamily="Berlin Sans" FontWeight="Regular"><Run Text="Alpha 1.0"/></TextBlock>
-                </Grid>
-                <Grid Height="35" Background="#FF1E242E" Margin="20, 0, 0, 0">
-                    <TextBlock Margin="15, 0" HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="Red" TextAlignment="Center" TextWrapping="Wrap" FontSize="13" FontFamily="Berlin Sans" FontWeight="Regular"><Run Text="This is a dev build. Some features may be missing or incomplete"/></TextBlock>
-                </Grid>
+                <!--<Grid Height="35" Background="#FF1E242E">
+                    <TextBlock Margin="15, 0" HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="Red" TextAlignment="Center" TextWrapping="Wrap" FontSize="13" FontFamily="Berlin Sans" FontWeight="Regular"><Run Text="This is a notification"/></TextBlock>
+                </Grid>-->
             </StackPanel>
         </Grid>
         <Image Height="16" Width="16" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="0, 9, 15, 0" Source="images/X.png" MouseLeftButtonUp="Image_MouseLeftButtonUp_1"/>
