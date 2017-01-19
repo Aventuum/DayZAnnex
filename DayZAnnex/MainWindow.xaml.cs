@@ -26,7 +26,7 @@ using System.Xml;
 using System.IO;
 using System.Collections.ObjectModel;
 
-namespace DayZReborn
+namespace DayZAnnex
 {
     /// <summary>
     /// Interaction logic for MainWindow.xaml
