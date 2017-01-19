@@ -42,10 +42,12 @@ namespace DayZReborn
             server.LoadServers(this);
             MainServerListBox.ItemsSource = server.getServerList();
             ChangeToTab(0);
-            Load();
+
+            settings.LoadSettings();
         }
 
         Server server = new Server();
+        Settings settings = new Settings();
 
         private void TopBar_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
@@ -120,12 +122,25 @@ namespace DayZReborn
                     MenuItem_Settings_Selected.Visibility = Visibility.Visible;
                     MenuItem_Settings_Selected.BeginAnimation(Rectangle.HeightProperty, SlideIn);
                     MenuItem_Settings_Text.Foreground = (SolidColorBrush)(new BrushConverter().ConvertFromString("#FFFFFF"));
+                    ReloadSettingsUI();
                     break;
             }
 
         }
         
-        
+        private void ReloadSettingsUI()
+        {
+            settings_Arma2Path.Text = settings.armaPath;
+            settings_OAPath.Text = settings.oaPath;
+            settings_ModsPath.Text = settings.modPath;
+            settings_LaunchParam_NoLogs.IsChecked = settings.launchOptions.noLogs;
+            settings_LaunchParam_NoPause.IsChecked = settings.launchOptions.noPause;
+            settings_LaunchParam_NoSplash.IsChecked = settings.launchOptions.noSplash;
+            settings_LaunchParam_WindowMode.IsChecked = settings.launchOptions.windowMode;
+            settings_Profile.Text = settings.profile;
+            settings_AutoLoadServers.IsChecked = settings.autoLoadServers;
+            settings_AutoRefreshServers.IsChecked = settings.autoRefreshServers;
+        }
 
         private void MenuItem_Servers_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
         {
@@ -151,98 +166,7 @@ namespace DayZReborn
         {
             ChangeToTab(4);
         }
-
         
-
-        public static bool AutoLoadServers { get; set; }
-        public static bool AutoRefreshServers { get; set; }
-        public static List<string> ColourSchemeFiles { get; set; }
-        public static string ColourScheme { get; set; }
-        public static XDocument XmlSettings { get; set; }
-        public static string SettingsFile = "settings.xml";
-
-        public void Load()
-        {
-
-            if (!File.Exists(SettingsFile))
-            {
-                MessageBox.Show("Cannot find settings file");
-                //GenerateDefaultSettings();
-            }
-            else
-            {
-                XmlSettings = XDocument.Parse(File.ReadAllText(SettingsFile));
-
-                AutoLoadServers = bool.Parse(XmlSettings.Element("settings").Element("startup").Element("autofetchservers").Attribute("value").Value);
-                //Setting_AutoFetch.IsChecked = AutoLoadServers;
-
-                AutoRefreshServers = bool.Parse(XmlSettings.Element("settings").Element("startup").Element("autorefreshservers").Attribute("value").Value);
-                //Setting_AutoRefresh.IsChecked = AutoRefreshServers;
-
-                // Get history list
-                if (File.Exists(XmlSettings.Element("settings").Element("serverlists").Element("historylist").Attribute("value").Value))
-                {
-
-                }
-            }
-            /* //Currently unused
-            if (File.Exists("history.txt"))
-            {
-                foreach(string line in File.ReadAllLines("history.txt"))
-                {
-                    HistoryEndP.Add(line);
-                }
-            }
-            */
-        }
-
-        /* //Currently unused
-        public void SaveFavourites()
-        {
-            string FavList = XmlSettings.Element("settings").Element("serverlists").Element("favouritelist").Attribute("value").Value;
-            if (File.Exists(FavList))
-            {
-                File.Delete(FavList);
-                using(StreamWriter sr = new StreamWriter(FavList))
-                {
-                    foreach(string fEndP in FavouriteEndP)
-                    {
-                        sr.WriteLine(fEndP);
-                    }
-                }
-            }
-        }
-        */
-
-        public void Save()
-        {
-            if (!File.Exists(SettingsFile))
-            {
-                MessageBox.Show("Cannot find settings file");
-            }
-            else
-            {
-                XmlSettings = XDocument.Parse(File.ReadAllText(SettingsFile));
-
-                //XmlSettings.Element("settings").Element("startup").Element("autofetchservers").Attribute("value").Value = Setting_AutoFetch.IsChecked.ToString();
-                //XmlSettings.Element("settings").Element("startup").Element("autorefreshservers").Attribute("value").Value = Setting_AutoRefresh.IsChecked.ToString();
-            }
-        }
-
-        //public string Read(string setting) // Returns value of requested settings, example call Settings.Read("Startup\\autofetchservers"); will return the value
-        //{
-
-        //    return "";
-        //}
-
-        //public void GenerateDefaultSettings()
-        //{
-        //    using (StreamWriter sw = new StreamWriter(SettingsFile))
-        //    {
-
-        //    }
-        //}
-
         private void Settings_Save_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
         {
             MessageBox.Show("");

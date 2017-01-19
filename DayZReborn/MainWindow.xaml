@@ -7,7 +7,7 @@
         xmlns:local="clr-namespace:DayZReborn"
         xmlns:ikriv="clr-namespace:IKriv.Wpf"
         mc:Ignorable="d"
-        Title="DayZReborn" TextOptions.TextFormattingMode="Display" Height="625" MinHeight="620" Width="1150" MinWidth="1100" Background="Black" Foreground="Black" ResizeMode="CanResizeWithGrip" WindowStyle="SingleBorderWindow" StateChanged="Window_StateChanged">
+        Title="DayZAnnex" TextOptions.TextFormattingMode="Display" Height="625" MinHeight="620" Width="1150" MinWidth="1100" Background="Black" Foreground="Black" ResizeMode="CanResizeWithGrip" WindowStyle="SingleBorderWindow" StateChanged="Window_StateChanged">
 
     <Window.Resources>
         <ResourceDictionary Source="ResourceDictionary.xaml"/>
@@ -22,7 +22,7 @@
     <Grid Background="White" Margin="0">
 
         <Grid x:Name="TopBar" HorizontalAlignment="Stretch" VerticalAlignment="Top" Height="35" Background="White" MouseLeftButtonDown="TopBar_MouseLeftButtonDown">
-            <TextBlock VerticalAlignment="Center" HorizontalAlignment="Left" FontSize="20" Margin="15, 0, 0, 0" FontFamily="Raleway" FontWeight="SemiBold"><Run Text="DayZReborn"/></TextBlock>
+            <TextBlock VerticalAlignment="Center" HorizontalAlignment="Left" FontSize="20" Margin="15, 0, 0, 0" FontFamily="Raleway" FontWeight="SemiBold"><Run Text="DayZAnnex"/></TextBlock>
             <StackPanel x:Name="NotificationStack" HorizontalAlignment="Right" Margin="0, 0, 50, 0" Orientation="Horizontal">
                 <!--<Grid Height="35" Background="#FF1E242E">
                     <TextBlock Margin="15, 0" HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="Red" TextAlignment="Center" TextWrapping="Wrap" FontSize="13" FontFamily="Berlin Sans" FontWeight="Regular"><Run Text="This is a notification"/></TextBlock>
@@ -249,50 +249,51 @@
 
             <Grid x:Name="Content_Settings" Margin="0, 0, 0, 25" Visibility="Visible">
                 <Grid VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Background="#364050">
-                    <StackPanel Orientation="Vertical">
-                        <StackPanel Margin="20, 20, 0, 0" HorizontalAlignment="Stretch" Orientation="Vertical">
-                            <TextBlock Margin="0, 0, 0, 0" HorizontalAlignment="Left" VerticalAlignment="Top" Foreground="White" FontSize="20" FontFamily="Berlin Sans" FontWeight="SemiBold"><Run Text="ARMA Settings"/></TextBlock>
-                            <TextBlock HorizontalAlignment="Left" VerticalAlignment="Top" Foreground="White" FontSize="15" Margin="0, 10, 0, 0" FontFamily="Berlin Sans" FontWeight="SemiBold"><Run Text="ARMA 2 Location"/></TextBlock>
-                            <Grid>
-                                <TextBox x:Name="Arma2Path" Height="22" Width="200" HorizontalAlignment="Left" TextChanged="FilterTextChanged"></TextBox>
-                                <Button HorizontalAlignment="Left" Width="100" Margin="210, 0, 0, 0" Content="Browse"></Button>
-                            </Grid>
-                            <Grid>
-                                <CheckBox x:Name="LaunchParam_NoSplash" Margin="0, 5, 0, 0" HorizontalAlignment="Left" VerticalAlignment="Top" Content="No Splash" FontFamily="Berlin Sans" FontWeight="SemiBold" Foreground="White"></CheckBox>
-                                <CheckBox x:Name="LaunchParam_NoPause" Margin="0, 25, 0, 0" HorizontalAlignment="Left" VerticalAlignment="Top" Content="No Pause" FontFamily="Berlin Sans" FontWeight="SemiBold" Foreground="White"></CheckBox>
-                                <CheckBox x:Name="LaunchParam_WindowMode" Margin="0, 45, 0, 0" HorizontalAlignment="Left" VerticalAlignment="Top" Content="Windowed Mode" FontFamily="Berlin Sans" FontWeight="SemiBold" Foreground="White"></CheckBox>
-                                <CheckBox x:Name="LaunchParam_NoLogs" Margin="120, 5, 0, 0" HorizontalAlignment="Left" VerticalAlignment="Top" Content="No Logs" FontFamily="Berlin Sans" FontWeight="SemiBold" Foreground="White"></CheckBox>
-                                <CheckBox x:Name="LaunchParam_ScriptErrors" Margin="120, 25, 0, 0" HorizontalAlignment="Left" VerticalAlignment="Top" Content="Show Script Errors" FontFamily="Berlin Sans" FontWeight="SemiBold" Foreground="White"></CheckBox>
-                            </Grid>
-                        </StackPanel>
 
-                        <StackPanel Margin="20, 20, 0, 0" HorizontalAlignment="Stretch" IsEnabled="False" Opacity=".5">
-                            <TextBlock Margin="0, 0, 0, 0" HorizontalAlignment="Left" VerticalAlignment="Top" Foreground="White" FontSize="20" FontFamily="Berlin Sans" FontWeight="SemiBold"><Run Text="Colour Scheme"/></TextBlock>
-                            <Grid Margin="20, 10, 0, 0">
-                                <Rectangle Fill="#FF252E3D" Margin="0, 0, 15, 0" Height="30" Width="50" VerticalAlignment="Top" HorizontalAlignment="Left" Stroke="#7F43F500" StrokeThickness="2" />
-                                <Rectangle Fill="#FF8D2615" Margin="60, 0, 15, 0" Height="30" Width="50" VerticalAlignment="Top" HorizontalAlignment="Left" Stroke="#7F000000" StrokeThickness="2" />
-                            </Grid>
-                        </StackPanel>
-                        <!--<StackPanel Margin="20, 20, 0, 0" HorizontalAlignment="Stretch">
-                            <TextBlock Margin="0, 0, 0, 10" HorizontalAlignment="Left" VerticalAlignment="Top" Foreground="White" FontSize="20" FontFamily="Couture"><Run Text="Other"/></TextBlock>
+                    <StackPanel Orientation="Horizontal">
+                        <StackPanel Orientation="Vertical" Width="350">
+                            <StackPanel Margin="20, 20, 0, 0" HorizontalAlignment="Stretch" Orientation="Vertical">
+                                <TextBlock Margin="0, 0, 0, 0" HorizontalAlignment="Left" VerticalAlignment="Top" Foreground="White" FontSize="20" FontFamily="Berlin Sans" FontWeight="SemiBold"><Run Text="ARMA Settings"/></TextBlock>
+                                <TextBlock HorizontalAlignment="Left" VerticalAlignment="Top" Foreground="White" FontSize="15" Margin="0, 10, 0, 0" FontFamily="Berlin Sans" FontWeight="SemiBold"><Run Text="ARMA 2 Location"/></TextBlock>
+                                <Grid>
+                                    <TextBox x:Name="settings_Arma2Path" Height="22" Width="200" HorizontalAlignment="Left"></TextBox>
+                                    <Button HorizontalAlignment="Left" Width="100" Margin="210, 0, 0, 0" Content="Browse"></Button>
+                                </Grid>
 
-                        </StackPanel>-->
+                                <TextBlock HorizontalAlignment="Left" VerticalAlignment="Top" Foreground="White" FontSize="15" Margin="0, 10, 0, 0" FontFamily="Berlin Sans" FontWeight="SemiBold"><Run Text="ARMA 2 OA Location"/></TextBlock>
+                                <Grid>
+                                    <TextBox x:Name="settings_OAPath" Height="22" Width="200" HorizontalAlignment="Left"></TextBox>
+                                    <Button HorizontalAlignment="Left" Width="100" Margin="210, 0, 0, 0" Content="Browse"></Button>
+                                </Grid>
+
+                                <TextBlock HorizontalAlignment="Left" VerticalAlignment="Top" Foreground="White" FontSize="15" Margin="0, 10, 0, 0" FontFamily="Berlin Sans" FontWeight="SemiBold"><Run Text="Mods Location"/></TextBlock>
+                                <Grid>
+                                    <TextBox x:Name="settings_ModsPath" Height="22" Width="200" HorizontalAlignment="Left"></TextBox>
+                                    <Button HorizontalAlignment="Left" Width="100" Margin="210, 0, 0, 0" Content="Browse"></Button>
+                                </Grid>
+
+                                <Grid Margin="0, 10, 0, 0">
+                                    <CheckBox x:Name="settings_LaunchParam_NoSplash" Margin="0, 5, 0, 0" HorizontalAlignment="Left" VerticalAlignment="Top" Content="No Splash" FontFamily="Berlin Sans" FontWeight="SemiBold" Foreground="White"></CheckBox>
+                                    <CheckBox x:Name="settings_LaunchParam_NoPause" Margin="0, 25, 0, 0" HorizontalAlignment="Left" VerticalAlignment="Top" Content="No Pause" FontFamily="Berlin Sans" FontWeight="SemiBold" Foreground="White"></CheckBox>
+                                    <CheckBox x:Name="settings_LaunchParam_WindowMode" Margin="120, 25, 0, 0" HorizontalAlignment="Left" VerticalAlignment="Top" Content="Windowed Mode" FontFamily="Berlin Sans" FontWeight="SemiBold" Foreground="White"></CheckBox>
+                                    <CheckBox x:Name="settings_LaunchParam_NoLogs" Margin="120, 5, 0, 0" HorizontalAlignment="Left" VerticalAlignment="Top" Content="No Logs" FontFamily="Berlin Sans" FontWeight="SemiBold" Foreground="White"></CheckBox>
+                                </Grid>
+
+                                <TextBlock HorizontalAlignment="Left" VerticalAlignment="Top" Foreground="White" FontSize="15" Margin="0, 10, 0, 0" FontFamily="Berlin Sans" FontWeight="SemiBold"><Run Text="Profile"/></TextBlock>
+                                <ComboBox x:Name="settings_Profile" Height="22" Width="200" HorizontalAlignment="Left"></ComboBox>
+                            </StackPanel>
+                        </StackPanel>
+                        <StackPanel Orientation="Vertical" Width="350">
+                            <StackPanel Margin="20, 20, 0, 0" HorizontalAlignment="Stretch" Orientation="Vertical">
+                                <TextBlock Margin="0, 0, 0, 0" HorizontalAlignment="Left" VerticalAlignment="Top" Foreground="White" FontSize="20" FontFamily="Berlin Sans" FontWeight="SemiBold"><Run Text="DayZAnnex Settings"/></TextBlock>
+
+                                <Grid Margin="0, 10, 0, 0">
+                                    <CheckBox x:Name="settings_AutoLoadServers" Margin="0, 5, 0, 0" HorizontalAlignment="Left" VerticalAlignment="Top" Content="Auto Load Servers" FontFamily="Berlin Sans" FontWeight="SemiBold" Foreground="White"></CheckBox>
+                                    <CheckBox x:Name="settings_AutoRefreshServers" Margin="0, 25, 0, 0" HorizontalAlignment="Left" VerticalAlignment="Top" Content="Auto Refresh Servers" FontFamily="Berlin Sans" FontWeight="SemiBold" Foreground="White"></CheckBox>
+                                </Grid>
+                            </StackPanel>
+                        </StackPanel>
                     </StackPanel>
-                    <Grid x:Name="Settings_Save" Height="40" Width="150" VerticalAlignment="Bottom" HorizontalAlignment="Right" Margin="30" Background="#252E3D" MouseLeftButtonUp="Settings_Save_MouseLeftButtonUp">
-                        <TextBlock Margin="0, 0, 0, 0" HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="White" FontSize="20" FontFamily="Couture"><Run Text="Save"/></TextBlock>
-                        <Grid.Style>
-                            <Style TargetType="{x:Type Grid}">
-                                <Style.Triggers>
-                                    <Trigger Property="IsMouseOver" Value="False">
-                                        <Setter Property="Background" Value="#252E3D"></Setter>
-                                    </Trigger>
-                                    <Trigger Property="IsMouseOver" Value="True">
-                                        <Setter Property="Background" Value="#FF3A4961"></Setter>
-                                    </Trigger>
-                                </Style.Triggers>
-                            </Style>
-                        </Grid.Style>
-                    </Grid>
                 </Grid>
             </Grid>
 
