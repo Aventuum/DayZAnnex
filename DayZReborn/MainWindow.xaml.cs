@@ -32,53 +32,6 @@ namespace DayZReborn
     /// Interaction logic for MainWindow.xaml
     /// </summary>
     /// 
-    
-    /*  Some notes to myself
-     *  
-     *      02/11/16
-     *  
-     *      Added Server.cs and moved some functions there, still needs some cleanup and MainWindow.xaml.cs needs updating
-     *      
-     *  
-     *      01/11/16
-     *      
-     *      Project is at the point where I need to move some functions to their own classes as to avoid spaghettification
-     *      
-     *      Slight overhaul of the GUI is neccessary to add 'theme' functionality/greater customization options
-     *      Perhaps iterate through every object and set visual aspects based on some tag that would be set in XAML
-     *      Add this function in its own class. Maybe 'Theme' called by 'Theme.Load(string ThemeName)'
-     *      Themes should be saved in a seperate xdoc-readable file
-     *      
-     *      Still no functionality to actually launch ArmA2OA
-     *      
-     *      Add mods tab and functionality to add mods
-     *      Add option to download 'internally' (in-app) or 'externally' (open link in browser or torrent program)
-     *      Internally downloaded mods will be automatically added
-     *      mods can be kept in an xdoc-readable file, containing information like Name, creator, website, DL link, magnet link, isInstalled
-     *      
-     *      Filter out mods with 'server' in the name when a servers mods are listed
-     *      
-     *      Classes:
-     *          MainWindow
-     *              Contains functions and handlers for XAML objects
-     *          Themes
-     *              Contains functions for loading, editing and saving themes
-     *              GetThemes() returns names of saved themes
-     *              SaveTheme(string Name) saves the current theme
-     *              LoadTheme(string Name) loads a theme
-     *          Server
-     *              List<ServerInfo> MainList
-     *              GetServerList() gets the main server list
-     *              QueryServers() begins the server query and updates the main server list
-     *          Settings
-     *              get/set functions for settings
-     *              Load() loads settings
-     *              Save() saves settings
-     */
-
-
-
-    //Class containing information on a server. Is used in a list.
 
     public partial class MainWindow : Window
     {
