@@ -159,7 +159,7 @@
         </Grid>
         
         <Grid x:Name="ContentGrid" Margin="200, 80, 0, 0" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Background="#364050">
-            <Grid x:Name="Content_Servers" Visibility="Hidden" VirtualizingPanel.IsVirtualizing="True">
+            <Grid x:Name="Content_Servers" Visibility="Visible" VirtualizingPanel.IsVirtualizing="True">
 
                 <!--<ListBox x:Name="MainServerList" Margin="0, 30, 0, 25" Background="Transparent" ItemsSource="{Binding DataSource}" Grid.IsSharedSizeScope="True" BorderBrush="{x:Null}">
                     <ListBox.ItemTemplate>
@@ -247,7 +247,7 @@
                 </Grid>
             </Grid>
 
-            <Grid x:Name="Content_Settings" Margin="0, 0, 0, 25" Visibility="Visible">
+            <Grid x:Name="Content_Settings" Margin="0, 0, 0, 25" Visibility="Hidden">
                 <Grid VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Background="#364050">
 
                     <StackPanel Orientation="Horizontal">

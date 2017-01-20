@@ -42,10 +42,14 @@ namespace DayZAnnex
             server.LoadServers(this);
             MainServerListBox.ItemsSource = server.getServerList();
             ChangeToTab(0);
-
             settings.LoadSettings();
         }
 
+        //public static void CreateDialog(string text, Size size = default(Size), )
+        //{
+
+        //}
+        
         Server server = new Server();
         Settings settings = new Settings();
 

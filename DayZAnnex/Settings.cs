@@ -58,9 +58,10 @@ namespace DayZAnnex
         {
             autoLoadServers = true;
             autoRefreshServers = true;
-            modPath = "";
-            armaPath = "";
-            oaPath = "";
+            LocatePaths();
+            //modPath = "";
+            //armaPath = "";
+            //oaPath = "";
             LaunchParams lparams = new LaunchParams();
             lparams.noLogs = false;
             lparams.noPause = false;
@@ -95,6 +96,57 @@ namespace DayZAnnex
                     );
 
             xdoc.Save(config);
+        }
+
+        private void LocatePaths()
+        {
+            List<string> locations = new List<string>
+            {
+                "{drive}Games\\{game}\\",
+                "{drive}SteamApps\\common\\{game}\\",
+                "{drive}Steam\\SteamApps\\common\\{game}\\",
+                "{drive}Program Files (x86)\\Steam\\SteamApps\\common\\{game}\\"
+            };
+
+            List<string> games = new List<string>
+            {
+                "Arma 2",
+                "Arma 2 Operation Arrowhead"
+            };
+
+            DriveInfo[] drives = DriveInfo.GetDrives();
+            foreach(DriveInfo drive in drives)
+            {
+                foreach(string location in locations)
+                {
+                    foreach (string game in games)
+                    {
+                        string fullPath = location.Replace("{drive}", drive.Name).Replace("{game}", game);
+                        if(Directory.Exists(fullPath))
+                        {
+                            switch (game)
+                            {
+                                case "Arma 2":
+                                    armaPath = fullPath;
+                                    System.Windows.MessageBox.Show("Arma 2 path found:\n" + fullPath);
+                                    break;
+                                case "Arma 2 Operation Arrowhead":
+                                    oaPath = fullPath;
+                                    System.Windows.MessageBox.Show("Arma 2 Operation Arrowhead path found:\n" + fullPath);
+                                    break;
+                                default:
+                                    break;
+                            }
+                        }
+                    }
+                }
+            }
+
+            if(string.IsNullOrEmpty(armaPath))
+                System.Windows.MessageBox.Show("Arma 2 path not automatically detected, please browse for it under the Settings tab");
+
+            if (string.IsNullOrEmpty(oaPath))
+                System.Windows.MessageBox.Show("Arma 2 Operation Arrowhead path not automatically detected, please browse for it under the Settings tab");
         }
     }
 }
