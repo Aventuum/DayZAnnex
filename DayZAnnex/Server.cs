@@ -111,10 +111,10 @@ namespace DayZAnnex
             foreach (IPEndPoint endp in ServerEndP)
             {
                 //Limit the number of servers loaded. Used for dev purposes
-                if (count > 5)
-                {
-                    continue;
-                }
+                //if (count > 5)
+                //{
+                //    continue;
+                //}
                 while (runningThreads >= 10)
                 {
                     //Wait if there are more than 10 running threads
