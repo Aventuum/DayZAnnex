@@ -159,7 +159,7 @@
         </Grid>
         
         <Grid x:Name="ContentGrid" Margin="200, 80, 0, 0" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Background="#364050">
-            <Grid x:Name="Content_Servers" Visibility="Visible" VirtualizingPanel.IsVirtualizing="True">
+            <Grid x:Name="Content_Servers" Visibility="Hidden" VirtualizingPanel.IsVirtualizing="True">
 
                 <!--<ListBox x:Name="MainServerList" Margin="0, 30, 0, 25" Background="Transparent" ItemsSource="{Binding DataSource}" Grid.IsSharedSizeScope="True" BorderBrush="{x:Null}">
                     <ListBox.ItemTemplate>
@@ -247,7 +247,7 @@
                 </Grid>
             </Grid>
 
-            <Grid x:Name="Content_Settings" Margin="0, 0, 0, 25" Visibility="Hidden">
+            <Grid x:Name="Content_Settings" Margin="0, 0, 0, 25" Visibility="Visible">
                 <Grid VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Background="#364050">
 
                     <StackPanel Orientation="Horizontal">
@@ -286,10 +286,14 @@
                         <StackPanel Orientation="Vertical" Width="350">
                             <StackPanel Margin="20, 20, 0, 0" HorizontalAlignment="Stretch" Orientation="Vertical">
                                 <TextBlock Margin="0, 0, 0, 0" HorizontalAlignment="Left" VerticalAlignment="Top" Foreground="White" FontSize="20" FontFamily="Berlin Sans" FontWeight="SemiBold"><Run Text="DayZAnnex Settings"/></TextBlock>
-
                                 <Grid Margin="0, 10, 0, 0">
                                     <CheckBox x:Name="settings_AutoLoadServers" Margin="0, 5, 0, 0" HorizontalAlignment="Left" VerticalAlignment="Top" Content="Auto Load Servers" FontFamily="Berlin Sans" FontWeight="SemiBold" Foreground="White"></CheckBox>
                                     <CheckBox x:Name="settings_AutoRefreshServers" Margin="0, 25, 0, 0" HorizontalAlignment="Left" VerticalAlignment="Top" Content="Auto Refresh Servers" FontFamily="Berlin Sans" FontWeight="SemiBold" Foreground="White"></CheckBox>
+                                </Grid>
+                                
+                                <Grid Margin="0, 5, 0, 0">
+                                    <TextBlock HorizontalAlignment="Left" VerticalAlignment="Top" Foreground="White" FontSize="12" Margin="0, 4, 0, 0" FontFamily="Berlin Sans" FontWeight="SemiBold"><Run Text="Max Threads (Default 10)"/></TextBlock>
+                                    <TextBox x:Name="settings_MaxThreads" Margin="140, 0, 0, 0" Height="22" Width="50" HorizontalAlignment="Left"></TextBox>
                                 </Grid>
                             </StackPanel>
                         </StackPanel>

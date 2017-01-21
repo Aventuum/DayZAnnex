@@ -115,11 +115,10 @@ namespace DayZAnnex
                 //{
                 //    continue;
                 //}
-                while (runningThreads >= 10)
+                int maxThreads = mainWin.settings.maxThreads;
+                while (runningThreads >= maxThreads && !(maxThreads <= 0))
                 {
-                    //Wait if there are more than 10 running threads
-                    //Im not sure what the disadvantages are of running too many threads, but 10 sounds like a safe number and loads 2000 servers reletively fast
-                    //Might add a setting to change max threads
+                    
                 }
                 runningThreads++;
                 GetInfoThread(endp);
@@ -259,7 +258,7 @@ namespace DayZAnnex
             ushort port = ushort.Parse(host.Port.ToString());
             int retries = 1;
             count++;
-            SetStatus(string.Format("Getting info for servers ({0}/{1}) ({2} Threads running)", count.ToString(), ServerEndP.Count().ToString(), runningThreads.ToString()));
+            SetStatus(string.Format("Getting info for servers ({0}/{1}) ({2} Threads running, {3} max)", count.ToString(), ServerEndP.Count().ToString(), runningThreads.ToString(), mainWin.settings.maxThreads.ToString()));
             using (var server = ServerQuery.GetServerInstance((Game)appId, address, port, throwExceptions: false, retries: retries, sendTimeout: 1000, receiveTimeout: 1000))
             {
                 //Get Server Information

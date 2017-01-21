@@ -46,7 +46,7 @@ namespace DayZAnnex
         }
         
         Server server = new Server();
-        Settings settings = new Settings();
+        public Settings settings = new Settings();
 
         private void TopBar_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
@@ -139,6 +139,7 @@ namespace DayZAnnex
             settings_Profile.Text = settings.profile;
             settings_AutoLoadServers.IsChecked = settings.autoLoadServers;
             settings_AutoRefreshServers.IsChecked = settings.autoRefreshServers;
+            settings_MaxThreads.Text = settings.maxThreads.ToString();
         }
 
         private void MenuItem_Servers_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)

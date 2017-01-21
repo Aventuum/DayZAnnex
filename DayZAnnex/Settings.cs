@@ -8,14 +8,14 @@ using System.Xml.Linq;
 
 namespace DayZAnnex
 {
-    class LaunchParams
+    public class LaunchParams
     {
         public bool noSplash { get; set; }
         public bool noLogs { get; set; }
         public bool noPause { get; set; }
         public bool windowMode { get; set; }
     }
-    class Settings
+    public class Settings
     {
         
         public bool autoLoadServers { get; set; }
@@ -25,6 +25,7 @@ namespace DayZAnnex
         public string oaPath { get; set; }
         public LaunchParams launchOptions { get; set; }
         public string profile { get; set; }
+        public int maxThreads { get; set; }
 
         string annexAppFolder = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData) + "\\DayZAnnex";
 
@@ -40,18 +41,33 @@ namespace DayZAnnex
 
             XDocument xdoc = XDocument.Parse(File.ReadAllText(config));
 
-            autoLoadServers = bool.Parse(xdoc.Element("settings").Element("autoloadservers").Value);
-            autoRefreshServers = bool.Parse(xdoc.Element("settings").Element("autorefreshservers").Value);
-            modPath = xdoc.Element("settings").Element("modpath").Value;
-            armaPath = xdoc.Element("settings").Element("armapath").Value;
-            oaPath = xdoc.Element("settings").Element("oapath").Value;
-            LaunchParams lparams = new LaunchParams();
-            lparams.noSplash = bool.Parse(xdoc.Element("settings").Element("launchoptions").Element("nosplash").Value);
-            lparams.noLogs = bool.Parse(xdoc.Element("settings").Element("launchoptions").Element("nologs").Value);
-            lparams.noPause = bool.Parse(xdoc.Element("settings").Element("launchoptions").Element("nopause").Value);
-            lparams.windowMode = bool.Parse(xdoc.Element("settings").Element("launchoptions").Element("windowmode").Value);
-            launchOptions = lparams;
-            profile = xdoc.Element("settings").Element("profile").Value;
+            try
+            {
+                autoLoadServers = bool.Parse(xdoc.Element("settings").Element("autoloadservers").Value);
+                autoRefreshServers = bool.Parse(xdoc.Element("settings").Element("autorefreshservers").Value);
+                modPath = xdoc.Element("settings").Element("modpath").Value;
+                armaPath = xdoc.Element("settings").Element("armapath").Value;
+                oaPath = xdoc.Element("settings").Element("oapath").Value;
+                LaunchParams lparams = new LaunchParams();
+                lparams.noSplash = bool.Parse(xdoc.Element("settings").Element("launchoptions").Element("nosplash").Value);
+                lparams.noLogs = bool.Parse(xdoc.Element("settings").Element("launchoptions").Element("nologs").Value);
+                lparams.noPause = bool.Parse(xdoc.Element("settings").Element("launchoptions").Element("nopause").Value);
+                lparams.windowMode = bool.Parse(xdoc.Element("settings").Element("launchoptions").Element("windowmode").Value);
+                launchOptions = lparams;
+                profile = xdoc.Element("settings").Element("profile").Value;
+                maxThreads = int.Parse(xdoc.Element("settings").Element("maxthreads").Value);
+            }
+            catch (NullReferenceException e)
+            {
+                if(System.Windows.MessageBox.Show("NullReferenceException loading settings, using defaults. Overwrite broken settings file with defaults?\n\n" + e.StackTrace, "NullReferenceException", System.Windows.MessageBoxButton.YesNo, System.Windows.MessageBoxImage.Error) == System.Windows.MessageBoxResult.Yes)
+                {
+                    LoadDefaults(true);
+                }
+                else
+                {
+                    LoadDefaults();
+                }
+            }
         }
 
         public void LoadDefaults(bool saveDefaults = false)
@@ -59,9 +75,6 @@ namespace DayZAnnex
             autoLoadServers = true;
             autoRefreshServers = true;
             LocatePaths();
-            //modPath = "";
-            //armaPath = "";
-            //oaPath = "";
             LaunchParams lparams = new LaunchParams();
             lparams.noLogs = false;
             lparams.noPause = false;
@@ -69,6 +82,7 @@ namespace DayZAnnex
             lparams.windowMode = false;
             launchOptions = lparams;
             profile = "";
+            maxThreads = 10;
 
             if (saveDefaults)
                 SaveSettings();
@@ -91,7 +105,8 @@ namespace DayZAnnex
                             new XElement("nosplash", launchOptions.noSplash),
                             new XElement("windowmode", launchOptions.windowMode)
                             ),
-                        new XElement("profile", profile)
+                        new XElement("profile", profile),
+                        new XElement("maxthreads", maxThreads)
                         )
                     );
 
@@ -113,6 +128,10 @@ namespace DayZAnnex
                 "Arma 2",
                 "Arma 2 Operation Arrowhead"
             };
+
+            modPath = "";
+            armaPath = "";
+            oaPath = "";
 
             DriveInfo[] drives = DriveInfo.GetDrives();
             foreach(DriveInfo drive in drives)
