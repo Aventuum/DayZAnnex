@@ -399,7 +399,6 @@ namespace DayZAnnex
             }
             catch (Exception e)
             {
-                throw;
                 mainWin.Filter_Name.Text = "";
                 mainWin.Filter_PingMin.Text = "";
                 mainWin.Filter_PingMax.Text = "";
@@ -410,7 +409,7 @@ namespace DayZAnnex
                 mainWin.Filter_HidePassword.IsChecked = false;
                 mainWin.Filter_HidePlayersEmpty.IsChecked = false;
                 mainWin.Filter_HidePlayersFull.IsChecked = false;
-                MessageBox.Show("One of the filters threw an exception! Dont do that again.\n\n" + e.StackTrace);
+                MessageBox.Show("An exception occured trying to filter the server list. Resettings filters.\n\n" + e.StackTrace);
             }
         }
 
