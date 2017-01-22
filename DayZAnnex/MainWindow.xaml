@@ -38,49 +38,8 @@
                     <Border.Effect>
                         <DropShadowEffect ShadowDepth="0" BlurRadius="70" Opacity=".5"/>
                     </Border.Effect>
+                    
                     <Grid x:Name="MenuPanel">
-                        <!--<StackPanel x:Name="MenuItemStack" VerticalAlignment="Top" HorizontalAlignment="Stretch" Margin="0, 20, 0, 0">
-                            <Grid x:Name="MenuItem_Servers" Height="45" VerticalAlignment="Top" HorizontalAlignment="Stretch" Background="Transparent" MouseLeftButtonUp="MenuItem_Servers_MouseLeftButtonUp">
-                                <Rectangle x:Name="MenuItem_Servers_Selected" VerticalAlignment="Stretch" HorizontalAlignment="Left" Width="3" Fill="#4F74B3" />
-                                <Grid Margin="45, 0, 0, 0" HorizontalAlignment="Left" VerticalAlignment="Center">
-                                    <TextBlock x:Name="MenuItem_Servers_Text" Margin="0, 0, 0, 0" HorizontalAlignment="Left" VerticalAlignment="Center" Foreground="White" FontSize="20" FontFamily="Berlin Sans" FontWeight="SemiBold"><Run Text="Servers"/></TextBlock>
-                                </Grid>
-                            </Grid>
-
-                            <Grid x:Name="MenuItem_Favourites" Height="45" VerticalAlignment="Top" HorizontalAlignment="Stretch" Background="Transparent" MouseLeftButtonUp="MenuItem_Favourites_MouseLeftButtonUp" Opacity=".6">
-                                <Rectangle x:Name="MenuItem_Favourites_Selected" VerticalAlignment="Stretch" HorizontalAlignment="Left" Width="3" Fill="#4F74B3" />
-                                <Grid Margin="45, 0, 0, 0" HorizontalAlignment="Left" VerticalAlignment="Center">
-                                    <TextBlock x:Name="MenuItem_Favourites_Text" Margin="0, 0, 0, 0" HorizontalAlignment="Left" VerticalAlignment="Center" Foreground="White" FontSize="20" FontFamily="Berlin Sans" FontWeight="SemiBold"><Run Text="Favourites"/></TextBlock>
-                                </Grid>
-                            </Grid>
-
-                            <Grid x:Name="MenuItem_Friends" Height="45" VerticalAlignment="Top" HorizontalAlignment="Stretch" Background="Transparent" MouseLeftButtonUp="MenuItem_Friends_MouseLeftButtonUp" Opacity=".6">
-                                <Rectangle x:Name="MenuItem_Friends_Selected" VerticalAlignment="Stretch" HorizontalAlignment="Left" Width="3" Fill="#4F74B3" />
-                                <Grid Margin="45, 0, 0, 0" HorizontalAlignment="Left" VerticalAlignment="Center">
-                                    <TextBlock x:Name="MenuItem_Friends_Text" Margin="0, 0, 0, 0" HorizontalAlignment="Left" VerticalAlignment="Center" Foreground="White" FontSize="20" FontFamily="Berlin Sans" FontWeight="SemiBold"><Run Text="Friends"/></TextBlock>
-                                </Grid>
-                            </Grid>
-
-                            <Grid x:Name="MenuItem_History" Height="45" VerticalAlignment="Top" HorizontalAlignment="Stretch" Background="Transparent" MouseLeftButtonUp="MenuItem_History_MouseLeftButtonUp" Opacity=".6">
-                                <Rectangle x:Name="MenuItem_History_Selected" VerticalAlignment="Stretch" HorizontalAlignment="Left" Width="3" Fill="#4F74B3" />
-                                <Grid Margin="45, 0, 0, 0" HorizontalAlignment="Left" VerticalAlignment="Center">
-                                    <TextBlock x:Name="MenuItem_History_Text" Margin="0, 0, 0, 0" HorizontalAlignment="Left" VerticalAlignment="Center" Foreground="White" FontSize="20" FontFamily="Berlin Sans" FontWeight="SemiBold"><Run Text="History"/></TextBlock>
-                                </Grid>
-                            </Grid>
-
-                            <Grid x:Name="MenuItem_Settings" Height="45" VerticalAlignment="Top" HorizontalAlignment="Stretch" Background="Transparent" MouseLeftButtonUp="MenuItem_Settings_MouseLeftButtonUp">
-                                <Rectangle x:Name="MenuItem_Settings_Selected" VerticalAlignment="Stretch" HorizontalAlignment="Left" Width="3" Fill="#4F74B3" />
-                                <Grid Margin="45, 0, 0, 0" HorizontalAlignment="Left" VerticalAlignment="Center">
-                                    <TextBlock x:Name="MenuItem_Settings_Text" Margin="0, 0, 0, 0" HorizontalAlignment="Left" VerticalAlignment="Center" Foreground="White" FontSize="20" FontFamily="Berlin Sans" FontWeight="SemiBold"><Run Text="Settings"/></TextBlock>
-                                </Grid>
-                            </Grid>
-                        </StackPanel>-->
-
-                        <!--<Grid x:Name="sidePanelSeperator">
-                            <Rectangle Height="1" VerticalAlignment="Top" Margin="0, 240, 0, 0" Fill="#3a4351"></Rectangle>
-                            <Rectangle Height="1" VerticalAlignment="Top" Margin="0, 241, 0, 0" Fill="#16191e"></Rectangle>
-                        </Grid>-->
-
                         <Grid x:Name="FilterGrid" VerticalAlignment="top" Margin="0, 0, 0, 0" Background="Transparent">
                             <TextBlock x:Name="FiltersTB" Margin="25, 20, 0, 0" HorizontalAlignment="Left" VerticalAlignment="Top" Foreground="White" FontSize="20" FontFamily="Berlin Sans" FontWeight="SemiBold"><Run Text="Filters"/></TextBlock>
 
@@ -159,29 +118,7 @@
         </Grid>
         
         <Grid x:Name="ContentGrid" Margin="200, 80, 0, 0" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Background="#364050">
-            <Grid x:Name="Content_Servers" Visibility="Hidden" VirtualizingPanel.IsVirtualizing="True">
-
-                <!--<ListBox x:Name="MainServerList" Margin="0, 30, 0, 25" Background="Transparent" ItemsSource="{Binding DataSource}" Grid.IsSharedSizeScope="True" BorderBrush="{x:Null}">
-                    <ListBox.ItemTemplate>
-                        <DataTemplate>
-                            <Grid>
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="Auto" SharedSizeGroup="Column1"/>
-                                    <ColumnDefinition Width="Auto" SharedSizeGroup="Column2"/>
-                                    <ColumnDefinition Width="Auto" SharedSizeGroup="Column3"/>
-                                </Grid.ColumnDefinitions>
-                                -->
-                <!-- Assumes MVVM and you wish to bind to properties and commands -->
-                <!--
-                                <TextBlock Grid.Column="0" Text="{Binding ColumnOneText}"/>
-                                <TextBlock Grid.Column="1" Text="{Binding ColumnTwoText}"/>
-                                <TextBlock Grid.Column="2" Text="{Binding ColumnThreeText}"/>
-                                <Button Content="ClickMe" Command="{Binding ButtonExecutionCommand}"/>
-                            </Grid>
-                        </DataTemplate>
-                    </ListBox.ItemTemplate>
-                </ListBox>-->
-
+            <Grid x:Name="Content_Servers" Visibility="Visible" VirtualizingPanel.IsVirtualizing="True">
                 <Grid Height="30" VerticalAlignment="Top" HorizontalAlignment="Stretch" MaxWidth="{Binding ElementName=Content_Servers, Path=ActualWidth}">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="500" MinWidth="400"></ColumnDefinition>
@@ -216,13 +153,6 @@
                         <Polygon x:Name="Column_Ping_Arrow" Points="0,0 5,8 10,0" Width="10" Height="8" Fill="#FFFFFFFF" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="55, 0, 0, 0" Visibility="Hidden"/>
                     </Grid>
                 </Grid>
-                <!--<ScrollViewer HorizontalAlignment="Stretch" Margin="0,30,0,25">
-                    <Grid>
-                        <StackPanel x:Name="ServerStackPanel" Orientation="Vertical"/>
-                        <StackPanel x:Name="FavouriteStackPanel" Orientation="Vertical" Visibility="Hidden"/>
-                        <StackPanel x:Name="HistoryStackPanel" Orientation="Vertical" Visibility="Hidden"/>
-                    </Grid>
-                </ScrollViewer>-->
 
                 <ListBox x:Name="MainServerListBox" Margin="0, 30, 0, 25" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" ItemContainerStyle="{DynamicResource MetroListBoxItemStyle}" Background="#364050" Foreground="White" BorderThickness="0" MouseDoubleClick="MainServerListBox_MouseDoubleClick">
                     <ListBox.ItemTemplate>
@@ -247,7 +177,7 @@
                 </Grid>
             </Grid>
 
-            <Grid x:Name="Content_Settings" Margin="0, 0, 0, 25" Visibility="Visible">
+            <Grid x:Name="Content_Settings" Margin="0, 0, 0, 25" Visibility="Hidden">
                 <Grid VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Background="#364050">
 
                     <StackPanel Orientation="Horizontal">
