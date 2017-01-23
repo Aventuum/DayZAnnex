@@ -273,7 +273,17 @@ namespace DayZAnnex
         {
             Content_Servers.IsEnabled = true;
             Content_Servers.Opacity = 1;
-            Grid_ServerInfo.Visibility = Visibility.Hidden;
+            //ServerInfoPanelContainer.Visibility = Visibility.Hidden;
+
+            if (ServerInfoPanelContainer.Visibility == Visibility.Visible)
+            {
+                QuarticEase easing = new QuarticEase();
+                easing.EasingMode = EasingMode.EaseInOut;
+                ThicknessAnimation panel_slide = new ThicknessAnimation() { From = new Thickness(0, 0, ServerInfoPanelContainer.Margin.Right, 0), To = new Thickness(0, 0, -(ServerInfoPanelContainer.ActualWidth), 0), Duration = new Duration(TimeSpan.FromSeconds(.3)), EasingFunction = easing };
+                panel_slide.Completed += (q, a) => { ServerInfoPanelContainer.Visibility = Visibility.Hidden; };
+
+                ServerInfoPanelContainer.BeginAnimation(Grid.MarginProperty, panel_slide);
+            }
         }
 
         private void Image_MouseLeftButtonUp_1(object sender, MouseButtonEventArgs e)
@@ -281,10 +291,9 @@ namespace DayZAnnex
             Environment.Exit(0);
         }
 
-
-        private void Grid_ServerInfo_IsVisibleChanged(object sender, DependencyPropertyChangedEventArgs e)
+        private void ServerInfoPanelContainer_IsVisibleChanged(object sender, DependencyPropertyChangedEventArgs e)
         {
-            if (Grid_ServerInfo.Visibility == Visibility.Visible)
+            if (ServerInfoPanelContainer.Visibility == Visibility.Visible)
             {
                 Thread thread = new Thread(PingThread);
                 thread.SetApartmentState(ApartmentState.STA);
@@ -299,7 +308,7 @@ namespace DayZAnnex
             {
                 ip = ServerInfo_IP.Text;
             }));
-            while(Grid_ServerInfo.Visibility == Visibility.Visible)
+            while (ServerInfoPanelContainer.Visibility == Visibility.Visible)
             {
                 Ping pingSender = new Ping();
                 string data = "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa";
@@ -310,62 +319,16 @@ namespace DayZAnnex
                 string strReply = reply.RoundtripTime.ToString();
                 this.Dispatcher.Invoke((Action)(() =>
                 {
-                    if(reply.Status == IPStatus.Success)
+                    if (reply.Status == IPStatus.Success)
                     {
                         ServerInfo_Ping.Text = strReply + "ms";
                     }
                     else
                     {
-                        ServerInfo_Ping.Text = "//Couldn't reach host";
+                        ServerInfo_Ping.Text = "999ms";
                     }
                 }));
                 Thread.Sleep(1000);
-            }
-        }
-
-        private void MainServerListBox_MouseDoubleClick(object sender, MouseButtonEventArgs e)
-        {
-            List<ServerListInfo> selectedList = server.getServerList();
-            if(MainServerListBox.SelectedIndex != -1 && selectedList[MainServerListBox.SelectedIndex].Ping != 9999)
-            {
-                ServerListInfo item = selectedList[MainServerListBox.SelectedIndex];
-                ServerInfo_Name.Text = item.Name;
-                ServerInfo_IP.Text = item.Host;
-                ServerInfo_Map.Text = item.Map;
-                ServerInfo_GameVersion.Text = item.GameVer;
-                ServerInfo_Passworded.Text = item.Passworded.ToString().Replace("True", "Yes").Replace("False", "No");
-                ServerInfo_BattleEye.Text = "unknown"; // TODO Find BattleEye state
-                ServerInfo_LastJoined.Text = "unknown"; // TODO History
-                ServerInfo_Players.Text = string.Format("Players - {0}", item.Players);
-                ServerInfo_PlayerList.Items.Clear();
-                ServerInfo_ModList.Items.Clear();
-                foreach (string moditem in item.ModInfo.Split(';'))
-                {
-                    ServerInfo_ModList.Items.Add(moditem);
-                }
-
-                foreach (PlayerInfo player in item.PlayerList)
-                {
-                    ServerInfo_PlayerList.Items.Add(player.Name);
-                }
-
-                Grid_ServerInfo.Visibility = Visibility.Visible;
-            }
-            else if(MainServerListBox.SelectedIndex != -1 && selectedList[MainServerListBox.SelectedIndex].Ping == 9999)
-            {
-                ServerListInfo item = selectedList[MainServerListBox.SelectedIndex];
-                ServerInfo_Name.Text = item.Host;
-                ServerInfo_IP.Text = item.Host;
-                ServerInfo_Map.Text = "unknown";
-                ServerInfo_GameVersion.Text = "unknown";
-                ServerInfo_Passworded.Text = "unknown";
-                ServerInfo_BattleEye.Text = "unknown"; // TODO Find BattleEye state
-                ServerInfo_LastJoined.Text = "unknown"; // TODO History
-                ServerInfo_Players.Text = "Players - unknown";
-                ServerInfo_PlayerList.Items.Clear();
-                ServerInfo_ModList.Items.Clear();
-
-                Grid_ServerInfo.Visibility = Visibility.Visible;
             }
         }
 
@@ -386,6 +349,78 @@ namespace DayZAnnex
         private void FilterCheckBoxChanged(object sender, RoutedEventArgs e)
         {
             server.ApplyFilters();
+        }
+
+        private void MainServerListBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            List<ServerListInfo> selectedList = server.getServerList();
+
+            List<string> modBlackList = new List<string>()
+            {
+                "Arma 2",
+                "Arma 2: Operation Arrowhead",
+                "Arma 2: British Armed Forces",
+                "Arma 2: British Armed Forces (Lite)",
+                "Arma 2: Private Military Company",
+                "Arma 2: Private Military Company (Lite)",
+            };
+
+            bool hideServerMods = true;
+
+            if (MainServerListBox.SelectedIndex != -1 && selectedList[MainServerListBox.SelectedIndex].Ping != 9999)
+            {
+                ServerListInfo item = selectedList[MainServerListBox.SelectedIndex];
+                ServerInfo_Name.Text = item.Name;
+                ServerInfo_IP.Text = item.Host.Split(':')[0];
+                ServerInfo_Port.Text = item.Host.Split(':')[1];
+                ServerInfo_Map.Text = item.Map;
+                ServerInfo_Version.Text = item.GameVer;
+                ServerInfo_Passworded.Text = item.Passworded.ToString();
+                ServerInfo_BattlEye.Text = "null"; // TODO Find BattleEye state
+                ServerInfo_LastJoined.Text = "never"; // TODO History
+                ServerInfo_Players.Text = item.Players;
+
+                ServerInfo_PlayerList.Items.Clear();
+                ServerInfo_ModList.Items.Clear();
+
+                foreach (string moditem in item.ModInfo.Split(';'))
+                {
+                    if (!modBlackList.Any(moditem.Contains) && (!moditem.Contains("Server") && hideServerMods) && !string.IsNullOrWhiteSpace(moditem))
+                        ServerInfo_ModList.Items.Add(moditem);
+                }
+
+                foreach (PlayerInfo player in item.PlayerList)
+                {
+                    ServerInfo_PlayerList.Items.Add(player.Name);
+                }
+
+                if (ServerInfoPanelContainer.Visibility == Visibility.Hidden)
+                {
+                    ServerInfoPanelContainer.Margin = new Thickness(0, 0, -(ServerInfoPanelContainer.ActualWidth), 0);
+                    ServerInfoPanelContainer.Visibility = Visibility.Visible;
+
+                    QuarticEase easing = new QuarticEase();
+                    easing.EasingMode = EasingMode.EaseInOut;
+                    ThicknessAnimation panel_slide = new ThicknessAnimation() { From = new Thickness(0, 0, -(ServerInfoPanelContainer.ActualWidth), 0), To = new Thickness(0, 0, 0, 0), Duration = new Duration(TimeSpan.FromSeconds(.3)), EasingFunction = easing };
+
+                    ServerInfoPanelContainer.BeginAnimation(Grid.MarginProperty, panel_slide);
+                }
+            }
+        }
+
+        private void ServerInfo_Name_MouseEnter(object sender, MouseEventArgs e)
+        {
+            if(ServerInfo_Name.ActualWidth > ServerInfoPanel.ActualWidth)
+            {
+                ThicknessAnimation name_slide = new ThicknessAnimation() { From = new Thickness(0, 0, 0, 0), To = new Thickness(-(ServerInfo_Name.ActualWidth - ServerInfoPanel.ActualWidth), 0, 0, 0), Duration = new Duration(TimeSpan.FromSeconds(1.5)) };
+                ServerInfo_Name.BeginAnimation(TextBlock.MarginProperty, name_slide);
+            }
+        }
+
+        private void ServerInfo_Name_MouseLeave(object sender, MouseEventArgs e)
+        {
+            ServerInfo_Name.BeginAnimation(TextBlock.MarginProperty, null);
+            ServerInfo_Name.Margin = new Thickness(0, 0, 0, 0);
         }
     }
 }
