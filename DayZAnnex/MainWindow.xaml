@@ -190,7 +190,7 @@
                                     <Image Height="16" Width="16" HorizontalAlignment="Right" Margin="0, 0, 0, 0" Source="images/X_white.png" MouseLeftButtonUp="Image_MouseLeftButtonUp"></Image>
                                 </Grid>
                                 <TextBlock x:Name="ServerInfo_Name" HorizontalAlignment="Left" VerticalAlignment="Top" Foreground="White" FontSize="15" FontFamily="Berlin Sans" FontWeight="Regular" MouseEnter="ServerInfo_Name_MouseEnter" MouseLeave="ServerInfo_Name_MouseLeave"><Run Text="Server Name"/></TextBlock>
-                                <Button x:Name="ServerInfo_Join" Width="100" Height="20" HorizontalAlignment="Left" Margin="0, 5, 0, 5" Content="Join Server"></Button>
+                                <Button x:Name="ServerInfo_Join" Width="100" Height="20" HorizontalAlignment="Left" Margin="0, 5, 0, 5" Content="Join Server" Click="ServerInfo_Join_Click"></Button>
                                 <Rectangle Height="1" HorizontalAlignment="Stretch" Fill="#364050" Margin="0, 5, 0, 5"/>
                                 <Grid>
                                     <TextBlock HorizontalAlignment="Left" VerticalAlignment="Top" Foreground="White" FontSize="15" FontFamily="Berlin Sans" FontWeight="Regular"><Run Text="IP"/></TextBlock>

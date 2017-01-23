@@ -307,8 +307,8 @@ namespace DayZAnnex
         private void AddServerItem(ServerInfo ServerDetails, QueryMasterCollection<Rule> ServerRules, QueryMasterCollection<PlayerInfo> PlayerList)
         {
             ServerListInfo ServerItem = new ServerListInfo();
-            ServerItem.Host = ServerDetails.Address;
-            ServerItem.Port = int.Parse(ServerDetails.Address.Split(':')[1]);
+            ServerItem.Host = ServerDetails.Address.Split(':')[0];
+            ServerItem.Port = int.Parse(ServerDetails.Address.Split(':')[1]) - 1;
             ServerItem.Name = ServerDetails.Name;
             ServerItem.Map = ServerDetails.Map;
             ServerItem.Players = ServerDetails.Players + "/" + ServerDetails.MaxPlayers;

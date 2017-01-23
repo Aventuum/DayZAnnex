@@ -25,6 +25,7 @@ using System.ComponentModel;
 using System.Xml;
 using System.IO;
 using System.Collections.ObjectModel;
+using System.Text.RegularExpressions;
 
 namespace DayZAnnex
 {
@@ -371,8 +372,8 @@ namespace DayZAnnex
             {
                 ServerListInfo item = selectedList[MainServerListBox.SelectedIndex];
                 ServerInfo_Name.Text = item.Name;
-                ServerInfo_IP.Text = item.Host.Split(':')[0];
-                ServerInfo_Port.Text = item.Host.Split(':')[1];
+                ServerInfo_IP.Text = item.Host;
+                ServerInfo_Port.Text = item.Port.ToString();
                 ServerInfo_Map.Text = item.Map;
                 ServerInfo_Version.Text = item.GameVer;
                 ServerInfo_Passworded.Text = item.Passworded.ToString();
@@ -421,6 +422,60 @@ namespace DayZAnnex
         {
             ServerInfo_Name.BeginAnimation(TextBlock.MarginProperty, null);
             ServerInfo_Name.Margin = new Thickness(0, 0, 0, 0);
+        }
+
+        private void ServerInfo_Join_Click(object sender, RoutedEventArgs e)
+        {
+            string parameters = "";
+            string path = settings.oaPath + "ArmA2OA.exe";
+
+            if (settings.launchOptions.noLogs)
+                parameters += "-noLogs ";
+
+            if (settings.launchOptions.noPause)
+                parameters += "-noPause ";
+
+            if (settings.launchOptions.noSplash)
+                parameters += "-nosplash ";
+
+            if (settings.launchOptions.windowMode)
+                parameters += "-window ";
+
+            parameters += string.Format("-connect={0} -port={1} ", ServerInfo_IP.Text, ServerInfo_Port.Text);
+
+            string modParam = "-mod=";
+            modParam += settings.armaPath.TrimEnd('\\') + ";Expansion;";
+
+            foreach (string mod in ServerInfo_ModList.Items)
+            {
+                string[] modFolders = Directory.GetDirectories(settings.modPath);
+
+                if (modFolders.Select(x => x = System.IO.Path.GetFileName(x)).Any(mod.Contains))
+                {
+                    modParam += string.Format("{0}{1};", settings.modPath, mod);
+                }
+                else
+                {
+                    foreach (string dir in Directory.GetDirectories(settings.modPath).Where(x => File.Exists(x + "\\mod.cpp")))
+                    {
+                        if (Regex.Match(File.ReadAllLines(dir + "\\mod.cpp").Where(x => x.StartsWith("name")).FirstOrDefault(), "\"([^)]*)\"").Groups[1].Value == mod)
+                        {
+                            modParam += dir + ";";
+                        }
+                    }
+                }
+            }
+            
+            modParam = modParam.TrimEnd(';');
+            LaunchGame(path, parameters + "\"" + modParam + "\"");
+        }
+
+        private void LaunchGame(string exePath, string cParams)
+        {
+            if (!File.Exists(exePath))
+                return;
+            MessageBox.Show(cParams);
+            var proc = System.Diagnostics.Process.Start(exePath, cParams).StartInfo.WorkingDirectory = settings.oaPath;
         }
     }
 }
