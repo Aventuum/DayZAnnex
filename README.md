@@ -10,6 +10,6 @@ DayZAnnex is an open-source C#/WPF server browser and mod manager for the ArmA 2
 
 <p align="center">
   <img src="http://i.imgur.com/nMnGeWp.png"/>
-  \n
+  
   <img src="http://i.imgur.com/u7izFXb.png"/>    
 </p>
