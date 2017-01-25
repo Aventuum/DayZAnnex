@@ -27,6 +27,7 @@ using System.IO;
 using System.Collections.ObjectModel;
 using System.Text.RegularExpressions;
 using Microsoft.WindowsAPICodePack.Dialogs;
+using System.Reflection;
 
 namespace DayZAnnex
 {
@@ -37,16 +38,17 @@ namespace DayZAnnex
 
     public partial class MainWindow : Window
     {
-        
+        public ObservableCollection<ServerListInfo> displayedList = new ObservableCollection<ServerListInfo>();
+
         public MainWindow()
         {
             InitializeComponent();
             server.LoadServers(this);
-            MainServerListBox.ItemsSource = server.getServerList();
             ChangeToTab(0);
+            MainServerGrid.Items.IsLiveSorting = true;
             settings.LoadSettings();
         }
-        
+
         Server server = new Server();
         public Settings settings = new Settings();
 
@@ -67,15 +69,15 @@ namespace DayZAnnex
             }
         }
 
-        private void ChangeToTab(int tabIndex) // 0 = Servers, 1 = Favourites, 2 = Friends, 3 = History, 4 = Settings
+        private void ChangeToTab(int tabIndex) // 0 = Servers, 1 = Favourites, 2 = History, 3 = Mods, 4 = Settings
         {
             //Make all the tabs look unselected
             MenuItem_Servers_Selected.Visibility = Visibility.Hidden;
             MenuItem_Servers_Text.Foreground = (SolidColorBrush)(new BrushConverter().ConvertFromString("#6c7481"));
             MenuItem_Favourites_Selected.Visibility = Visibility.Hidden;
             MenuItem_Favourites_Text.Foreground = (SolidColorBrush)(new BrushConverter().ConvertFromString("#6c7481"));
-            MenuItem_Friends_Selected.Visibility = Visibility.Hidden;
-            MenuItem_Friends_Text.Foreground = (SolidColorBrush)(new BrushConverter().ConvertFromString("#6c7481"));
+            MenuItem_Mods_Selected.Visibility = Visibility.Hidden;
+            MenuItem_Mods_Text.Foreground = (SolidColorBrush)(new BrushConverter().ConvertFromString("#6c7481"));
             MenuItem_History_Selected.Visibility = Visibility.Hidden;
             MenuItem_History_Text.Foreground = (SolidColorBrush)(new BrushConverter().ConvertFromString("#6c7481"));
             MenuItem_Settings_Selected.Visibility = Visibility.Hidden;
@@ -83,10 +85,6 @@ namespace DayZAnnex
 
             Content_Servers.Visibility = Visibility.Hidden;
             Content_Settings.Visibility = Visibility.Hidden;
-            //Unused stackpanels
-            //ServerStackPanel.Visibility = Visibility.Hidden;
-            //FavouriteStackPanel.Visibility = Visibility.Hidden;
-            //HistoryStackPanel.Visibility = Visibility.Hidden;
 
             //Define the animation
             DoubleAnimation SlideIn = new DoubleAnimation() { From = 0, To = 4, Duration = new Duration(TimeSpan.FromSeconds(.15)) };
@@ -108,15 +106,15 @@ namespace DayZAnnex
                     MenuItem_Favourites_Text.Foreground = (SolidColorBrush)(new BrushConverter().ConvertFromString("#FFFFFF"));
                     break;
                 case 2:
-                    MenuItem_Friends_Selected.Visibility = Visibility.Visible;
-                    MenuItem_Friends_Selected.BeginAnimation(Rectangle.HeightProperty, SlideIn);
-                    MenuItem_Friends_Text.Foreground = (SolidColorBrush)(new BrushConverter().ConvertFromString("#FFFFFF"));
-                    break;
-                case 3:
-                    Content_Servers.Visibility = Visibility.Visible;
                     MenuItem_History_Selected.Visibility = Visibility.Visible;
                     MenuItem_History_Selected.BeginAnimation(Rectangle.HeightProperty, SlideIn);
                     MenuItem_History_Text.Foreground = (SolidColorBrush)(new BrushConverter().ConvertFromString("#FFFFFF"));
+                    break;
+                case 3:
+                    Content_Mods.Visibility = Visibility.Visible;
+                    MenuItem_Mods_Selected.Visibility = Visibility.Visible;
+                    MenuItem_Mods_Selected.BeginAnimation(Rectangle.HeightProperty, SlideIn);
+                    MenuItem_Mods_Text.Foreground = (SolidColorBrush)(new BrushConverter().ConvertFromString("#FFFFFF"));
                     break;
                 case 4:
                     Content_Settings.Visibility = Visibility.Visible;
@@ -128,7 +126,7 @@ namespace DayZAnnex
             }
 
         }
-        
+
         private void ReloadSettingsUI()
         {
             settings_Arma2Path.Text = settings.armaPath;
@@ -165,24 +163,19 @@ namespace DayZAnnex
             //ChangeToTab(1);
         }
 
-        private void MenuItem_Friends_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
+        private void MenuItem_History_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
         {
             //ChangeToTab(2);
         }
 
-        private void MenuItem_History_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
+        private void MenuItem_Friends_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
         {
-            //ChangeToTab(3);
+            ChangeToTab(3);
         }
 
         private void MenuItem_Settings_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
         {
             ChangeToTab(4);
-        }
-        
-        private void Settings_Save_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
-        {
-            MessageBox.Show("");
         }
 
         private void sideinfo_MouseEnter(object sender, MouseEventArgs e)
@@ -214,7 +207,7 @@ namespace DayZAnnex
 
             CubicEase easing = new CubicEase();
             easing.EasingMode = EasingMode.EaseInOut;
-            ThicknessAnimation icon_slide = new ThicknessAnimation() { From = new Thickness(0, 0, 0, 0), To = new Thickness(0, 25, 0, 0), Duration = new Duration(TimeSpan.FromSeconds(.3)), EasingFunction = easing};
+            ThicknessAnimation icon_slide = new ThicknessAnimation() { From = new Thickness(0, 0, 0, 0), To = new Thickness(0, 25, 0, 0), Duration = new Duration(TimeSpan.FromSeconds(.3)), EasingFunction = easing };
             DoubleAnimation icon_fade = new DoubleAnimation() { From = 1, To = .1, Duration = new Duration(TimeSpan.FromSeconds(.3)), EasingFunction = easing };
             ThicknessAnimation text_slide = new ThicknessAnimation() { From = new Thickness(0, 40, 0, 0), To = new Thickness(0, 30, 0, 0), Duration = new Duration(TimeSpan.FromSeconds(.3)), EasingFunction = easing };
             DoubleAnimation text_fade = new DoubleAnimation() { From = 1, To = 0, Duration = new Duration(TimeSpan.FromSeconds(.3)), EasingFunction = easing };
@@ -225,68 +218,10 @@ namespace DayZAnnex
             info_text.BeginAnimation(TextBlock.OpacityProperty, text_fade);
         }
 
-
-        private void Column_Name_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
-        {
-            server.sortBy = "Name";
-            if(Column_Name_Arrow.Points[0].X == 0)
-            {
-                server.sortAsc = false;
-            }
-            else
-            {
-                server.sortAsc = true;
-            }
-            MainServerListBox.ItemsSource = server.getServerList();
-        }
-
-        private void Column_Map_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
-        {
-            server.sortBy = "Map";
-            if (Column_Map_Arrow.Points[0].X == 0)
-            {
-                server.sortAsc = false;
-            }
-            else
-            {
-                server.sortAsc = true;
-            }
-            MainServerListBox.ItemsSource = server.getServerList();
-        }
-
-        private void Column_Players_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
-        {
-            server.sortBy = "Players";
-            if (Column_Players_Arrow.Points[0].X == 0)
-            {
-                server.sortAsc = false;
-            }
-            else
-            {
-                server.sortAsc = true;
-            }
-            MainServerListBox.ItemsSource = server.getServerList();
-        }
-
-        private void Column_Ping_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
-        {
-            server.sortBy = "Ping";
-            if (Column_Ping_Arrow.Points[0].X == 0)
-            {
-                server.sortAsc = false;
-            }
-            else
-            {
-                server.sortAsc = true;
-            }
-            MainServerListBox.ItemsSource = server.getServerList();
-        }
-
         private void Image_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
         {
             Content_Servers.IsEnabled = true;
             Content_Servers.Opacity = 1;
-            //ServerInfoPanelContainer.Visibility = Visibility.Hidden;
 
             if (ServerInfoPanelContainer.Visibility == Visibility.Visible)
             {
@@ -345,7 +280,7 @@ namespace DayZAnnex
             }
         }
 
-        
+
         private void PreviewCharFilter(object sender, TextCompositionEventArgs e)
         {
             if (!char.IsDigit(e.Text, e.Text.Length - 1))
@@ -356,74 +291,17 @@ namespace DayZAnnex
 
         private void FilterTextChanged(object sender, TextChangedEventArgs e)
         {
-            server.ApplyFilters();
+            server.ReloadDisplay();
         }
 
         private void FilterCheckBoxChanged(object sender, RoutedEventArgs e)
         {
-            server.ApplyFilters();
-        }
-
-        private void MainServerListBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            List<ServerListInfo> selectedList = server.getServerList();
-
-            List<string> modBlackList = new List<string>()
-            {
-                "Arma 2",
-                "Arma 2: Operation Arrowhead",
-                "Arma 2: British Armed Forces",
-                "Arma 2: British Armed Forces (Lite)",
-                "Arma 2: Private Military Company",
-                "Arma 2: Private Military Company (Lite)",
-            };
-
-            bool hideServerMods = true;
-
-            if (MainServerListBox.SelectedIndex != -1 && selectedList[MainServerListBox.SelectedIndex].Ping != 9999)
-            {
-                ServerListInfo item = selectedList[MainServerListBox.SelectedIndex];
-                ServerInfo_Name.Text = item.Name;
-                ServerInfo_IP.Text = item.Host;
-                ServerInfo_Port.Text = item.Port.ToString();
-                ServerInfo_Map.Text = item.Map;
-                ServerInfo_Version.Text = item.GameVer;
-                ServerInfo_Passworded.Text = item.Passworded.ToString();
-                ServerInfo_BattlEye.Text = "null"; // TODO Find BattleEye state
-                ServerInfo_LastJoined.Text = "never"; // TODO History
-                ServerInfo_Players.Text = item.Players;
-
-                ServerInfo_PlayerList.Items.Clear();
-                ServerInfo_ModList.Items.Clear();
-
-                foreach (string moditem in item.ModInfo.Split(';'))
-                {
-                    if (!modBlackList.Any(moditem.Contains) && (!moditem.Contains("Server") && hideServerMods) && !string.IsNullOrWhiteSpace(moditem))
-                        ServerInfo_ModList.Items.Add(moditem);
-                }
-
-                foreach (PlayerInfo player in item.PlayerList)
-                {
-                    ServerInfo_PlayerList.Items.Add(player.Name);
-                }
-
-                if (ServerInfoPanelContainer.Visibility == Visibility.Hidden)
-                {
-                    ServerInfoPanelContainer.Margin = new Thickness(0, 0, -(ServerInfoPanelContainer.ActualWidth), 0);
-                    ServerInfoPanelContainer.Visibility = Visibility.Visible;
-
-                    QuarticEase easing = new QuarticEase();
-                    easing.EasingMode = EasingMode.EaseInOut;
-                    ThicknessAnimation panel_slide = new ThicknessAnimation() { From = new Thickness(0, 0, -(ServerInfoPanelContainer.ActualWidth), 0), To = new Thickness(0, 0, 0, 0), Duration = new Duration(TimeSpan.FromSeconds(.3)), EasingFunction = easing };
-
-                    ServerInfoPanelContainer.BeginAnimation(Grid.MarginProperty, panel_slide);
-                }
-            }
+            server.ReloadDisplay();
         }
 
         private void ServerInfo_Name_MouseEnter(object sender, MouseEventArgs e)
         {
-            if(ServerInfo_Name.ActualWidth > ServerInfoPanel.ActualWidth)
+            if (ServerInfo_Name.ActualWidth > ServerInfoPanel.ActualWidth)
             {
                 ThicknessAnimation name_slide = new ThicknessAnimation() { From = new Thickness(0, 0, 0, 0), To = new Thickness(-(ServerInfo_Name.ActualWidth - ServerInfoPanel.ActualWidth), 0, 0, 0), Duration = new Duration(TimeSpan.FromSeconds(1.5)) };
                 ServerInfo_Name.BeginAnimation(TextBlock.MarginProperty, name_slide);
@@ -483,7 +361,7 @@ namespace DayZAnnex
                     }
                 }
             }
-            
+
             modParam = modParam.TrimEnd(';');
             LaunchGame(path, parameters + "\"" + modParam + "\"");
         }
@@ -503,7 +381,7 @@ namespace DayZAnnex
             dialog.IsFolderPicker = true;
             if (dialog.ShowDialog() == CommonFileDialogResult.Ok)
             {
-                if(!File.Exists(dialog.FileName + "\\arma2.exe"))
+                if (!File.Exists(dialog.FileName + "\\arma2.exe"))
                 {
                     MessageBox.Show("arma2.exe was not found in this directory.");
                 }
@@ -539,7 +417,7 @@ namespace DayZAnnex
         private void settings_BrowseMods_Click(object sender, RoutedEventArgs e)
         {
             CommonOpenFileDialog dialog = new CommonOpenFileDialog();
-            if(Directory.Exists(settings_ModsPath.Text)) { dialog.InitialDirectory = settings_ModsPath.Text; } else { dialog.InitialDirectory = "C:\\Users"; }            
+            if (Directory.Exists(settings_ModsPath.Text)) { dialog.InitialDirectory = settings_ModsPath.Text; } else { dialog.InitialDirectory = "C:\\Users"; }
             dialog.IsFolderPicker = true;
             if (dialog.ShowDialog() == CommonFileDialogResult.Ok)
             {
@@ -576,6 +454,85 @@ namespace DayZAnnex
             settings.launchOptions.scriptErrors = settings_LaunchParam_ScriptErrors.IsChecked.Value;
             settings.SaveSettings();
             ReloadSettingsUI();
+        }
+
+        private void MainServerGrid_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (MainServerGrid.SelectedIndex == -1)
+            {
+                CloseServerInfo.RaiseEvent(new MouseButtonEventArgs(Mouse.PrimaryDevice, Environment.TickCount, MouseButton.Left) { RoutedEvent = Image.MouseLeftButtonUpEvent });
+                return;
+            }
+
+            ServerListInfo item = displayedList[MainServerGrid.SelectedIndex];
+
+            List<string> modBlackList = new List<string>()
+            {
+                "Arma 2",
+                "Arma 2: Operation Arrowhead",
+                "Arma 2: British Armed Forces",
+                "Arma 2: British Armed Forces (Lite)",
+                "Arma 2: Private Military Company",
+                "Arma 2: Private Military Company (Lite)",
+            };
+
+            bool hideServerMods = true;
+
+            ServerInfo_Name.Text = item.Name;
+            ServerInfo_IP.Text = item.Host;
+            ServerInfo_Port.Text = item.Port.ToString();
+            ServerInfo_Map.Text = item.Map;
+            ServerInfo_Version.Text = item.GameVer;
+            ServerInfo_Passworded.Text = item.Passworded.ToString();
+            ServerInfo_BattlEye.Text = "null"; // TODO Find BattleEye state
+            ServerInfo_LastJoined.Text = "never"; // TODO History
+            ServerInfo_Players.Text = item.Players;
+
+            ServerInfo_PlayerList.Items.Clear();
+            ServerInfo_ModList.Items.Clear();
+
+            if (item.Ping != 9999)
+            {
+                foreach (string moditem in item.ModInfo.Split(';'))
+                {
+                    if (!modBlackList.Any(moditem.Contains) && (!moditem.Contains("Server") && hideServerMods) && !string.IsNullOrWhiteSpace(moditem))
+                        ServerInfo_ModList.Items.Add(moditem);
+                }
+
+                foreach (PlayerInfo player in item.PlayerList)
+                {
+                    ServerInfo_PlayerList.Items.Add(player.Name);
+                }
+            }
+
+            if (ServerInfoPanelContainer.Visibility == Visibility.Hidden)
+            {
+                ServerInfoPanelContainer.Margin = new Thickness(0, 0, -(ServerInfoPanelContainer.ActualWidth), 0);
+                ServerInfoPanelContainer.Visibility = Visibility.Visible;
+
+                QuarticEase easing = new QuarticEase();
+                easing.EasingMode = EasingMode.EaseInOut;
+                ThicknessAnimation panel_slide = new ThicknessAnimation() { From = new Thickness(0, 0, -(ServerInfoPanelContainer.ActualWidth), 0), To = new Thickness(0, 0, 0, 0), Duration = new Duration(TimeSpan.FromSeconds(.3)), EasingFunction = easing };
+
+                ServerInfoPanelContainer.BeginAnimation(Grid.MarginProperty, panel_slide);
+            }
+        }
+
+        public ListSortDirection sortDirection = ListSortDirection.Ascending;
+        public string sortPath = "Name";
+
+        private void MainServerGrid_Sorting(object sender, DataGridSortingEventArgs e)
+        {
+            sortDirection = (e.Column.SortDirection != ListSortDirection.Ascending) ? ListSortDirection.Ascending : ListSortDirection.Descending;
+            sortPath = e.Column.SortMemberPath;
+            if (sortDirection == ListSortDirection.Ascending)
+            {
+                displayedList = new ObservableCollection<ServerListInfo>(displayedList.OrderBy(a => a.GetType().GetProperty(sortPath).GetValue(a)));
+            }
+            else
+            {
+                displayedList = new ObservableCollection<ServerListInfo>(displayedList.OrderByDescending(a => a.GetType().GetProperty(sortPath).GetValue(a)));
+            }
         }
     }
 }

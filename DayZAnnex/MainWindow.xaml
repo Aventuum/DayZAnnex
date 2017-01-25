@@ -100,14 +100,14 @@
                     <TextBlock x:Name="MenuItem_Favourites_Text" HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="White" FontSize="20" FontFamily="Berlin Sans" FontWeight="SemiBold"><Run Text="Favourites"/></TextBlock>
                 </Grid>
 
-                <Grid x:Name="MenuItem_Friends" MinWidth="180" Width="{Binding ElementName=MenuItemGrid, Path=ActualWidth, Converter={ikriv:MathConverter}, ConverterParameter=x/5}" Height="45" VerticalAlignment="Top" HorizontalAlignment="Stretch" Background="Transparent" MouseLeftButtonUp="MenuItem_Friends_MouseLeftButtonUp" Opacity=".6">
-                    <Rectangle x:Name="MenuItem_Friends_Selected" VerticalAlignment="Top" HorizontalAlignment="Stretch" Height="3" Fill="#4F74B3" />
-                    <TextBlock x:Name="MenuItem_Friends_Text" HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="White" FontSize="20" FontFamily="Berlin Sans" FontWeight="SemiBold"><Run Text="Friends"/></TextBlock>
-                </Grid>
-
                 <Grid x:Name="MenuItem_History" MinWidth="180" Width="{Binding ElementName=MenuItemGrid, Path=ActualWidth, Converter={ikriv:MathConverter}, ConverterParameter=x/5}" Height="45" VerticalAlignment="Top" HorizontalAlignment="Stretch" Background="Transparent" MouseLeftButtonUp="MenuItem_History_MouseLeftButtonUp" Opacity=".6">
                     <Rectangle x:Name="MenuItem_History_Selected" VerticalAlignment="Top" HorizontalAlignment="Stretch" Height="3" Fill="#4F74B3" />
                     <TextBlock x:Name="MenuItem_History_Text" HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="White" FontSize="20" FontFamily="Berlin Sans" FontWeight="SemiBold"><Run Text="History"/></TextBlock>
+                </Grid>
+
+                <Grid x:Name="MenuItem_Mods" MinWidth="180" Width="{Binding ElementName=MenuItemGrid, Path=ActualWidth, Converter={ikriv:MathConverter}, ConverterParameter=x/5}" Height="45" VerticalAlignment="Top" HorizontalAlignment="Stretch" Background="Transparent" MouseLeftButtonUp="MenuItem_Friends_MouseLeftButtonUp">
+                    <Rectangle x:Name="MenuItem_Mods_Selected" VerticalAlignment="Top" HorizontalAlignment="Stretch" Height="3" Fill="#4F74B3" />
+                    <TextBlock x:Name="MenuItem_Mods_Text" HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="White" FontSize="20" FontFamily="Berlin Sans" FontWeight="SemiBold"><Run Text="Mods"/></TextBlock>
                 </Grid>
 
                 <Grid x:Name="MenuItem_Settings" MinWidth="180" Width="{Binding ElementName=MenuItemGrid, Path=ActualWidth, Converter={ikriv:MathConverter}, ConverterParameter=x/5}" Height="45" VerticalAlignment="Top" HorizontalAlignment="Stretch" Background="Transparent" MouseLeftButtonUp="MenuItem_Settings_MouseLeftButtonUp">
@@ -118,63 +118,25 @@
         </Grid>
         
         <Grid x:Name="ContentGrid" Margin="200, 80, 0, 0" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Background="#364050">
-            <Grid x:Name="Content_Servers" Visibility="Hidden" VirtualizingPanel.IsVirtualizing="True">
-                <Grid Height="30" VerticalAlignment="Top" HorizontalAlignment="Stretch" MaxWidth="{Binding ElementName=Content_Servers, Path=ActualWidth}">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="500" MinWidth="400"></ColumnDefinition>
-                        <!-- Server Name -->
-                        <ColumnDefinition Width="2"></ColumnDefinition>
-                        <ColumnDefinition Width="200" MinWidth="150"></ColumnDefinition>
-                        <!-- Map -->
-                        <ColumnDefinition Width="2"></ColumnDefinition>
-                        <ColumnDefinition Width="100" MinWidth="80"></ColumnDefinition>
-                        <!-- Players -->
-                        <ColumnDefinition Width="2"></ColumnDefinition>
-                        <ColumnDefinition Width="70" MinWidth="70"></ColumnDefinition>
-                        <!-- Ping -->
-                    </Grid.ColumnDefinitions>
-                    <Grid Grid.Column="0" x:Name="Column_Name" MouseLeftButtonUp="Column_Name_MouseLeftButtonUp" Background="Transparent">
-                        <TextBlock HorizontalAlignment="Left" VerticalAlignment="Center" Foreground="White" FontSize="17" Margin="15, 0, 0, 0"><Run Text="Name"></Run></TextBlock>
-                        <Polygon x:Name="Column_Name_Arrow" Points="0,0 5,8 10,0" Width="10" Height="8" Fill="#FFFFFFFF" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="70, 0, 0, 0"/>
-                    </Grid>
-                    <GridSplitter Grid.Column="1" ResizeDirection="Columns" ResizeBehavior="PreviousAndNext" VerticalAlignment="Stretch" Width="2" Background="White" Opacity=".4"/>
-                    <Grid Grid.Column="2" x:Name="Column_Map" MouseLeftButtonUp="Column_Map_MouseLeftButtonUp" Background="Transparent">
-                        <TextBlock HorizontalAlignment="Left" VerticalAlignment="Center" Foreground="White" FontSize="17" Margin="15, 0, 0, 0"><Run Text="Map"></Run></TextBlock>
-                        <Polygon x:Name="Column_Map_Arrow" Points="0,0 5,8 10,0" Width="10" Height="8" Fill="#FFFFFFFF" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="60, 0, 0, 0" Visibility="Hidden"/>
-                    </Grid>
-                    <GridSplitter Grid.Column="3" ResizeDirection="Columns" ResizeBehavior="PreviousAndNext" VerticalAlignment="Stretch" Width="2" Background="White" Opacity=".4"/>
-                    <Grid Grid.Column="4" x:Name="Column_Players" MouseLeftButtonUp="Column_Players_MouseLeftButtonUp" Background="Transparent">
-                        <TextBlock HorizontalAlignment="Left" VerticalAlignment="Center" Foreground="White" FontSize="17" Margin="15, 0, 0, 0"><Run Text="Players"></Run></TextBlock>
-                        <Polygon x:Name="Column_Players_Arrow" Points="0,0 5,8 10,0" Width="10" Height="8" Fill="#FFFFFFFF" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="75, 0, 0, 0" Visibility="Hidden"/>
-                    </Grid>
-                    <GridSplitter Grid.Column="5" ResizeDirection="Columns" ResizeBehavior="PreviousAndNext" VerticalAlignment="Stretch" Width="2" Background="White" Opacity=".4"/>
-                    <Grid Grid.Column="6" x:Name="Column_Ping" MouseLeftButtonUp="Column_Ping_MouseLeftButtonUp" Background="Transparent">
-                        <TextBlock HorizontalAlignment="Left" VerticalAlignment="Center" Foreground="White" FontSize="17" Margin="15, 0, 0, 0"><Run Text="Ping"></Run></TextBlock>
-                        <Polygon x:Name="Column_Ping_Arrow" Points="0,0 5,8 10,0" Width="10" Height="8" Fill="#FFFFFFFF" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="55, 0, 0, 0" Visibility="Hidden"/>
-                    </Grid>
-                </Grid>
-
-                <ListBox x:Name="MainServerListBox" Margin="0, 30, 0, 25" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" ItemContainerStyle="{DynamicResource MetroListBoxItemStyle}" Background="#364050" Foreground="White" BorderThickness="0" SelectionChanged="MainServerListBox_SelectionChanged">
-                    <ListBox.ItemTemplate>
-                        <DataTemplate>
-                            <StackPanel Orientation="Horizontal" Margin="0">
-                                <Grid Width="{Binding ElementName=Column_Name, Path=ActualWidth}" Margin="15, 0, -15, 0" VerticalAlignment="Center">
-                                    <TextBlock Text="{Binding Name}" Width="{Binding ElementName=Column_Name, Path=ActualWidth}" HorizontalAlignment="Left" VerticalAlignment="Top" FontSize="18" Foreground="White" Margin="0, 0, 0, 14" TextTrimming="CharacterEllipsis"/>
-                                    <TextBlock Text="{Binding Host}" Width="{Binding ElementName=Column_Name, Path=ActualWidth}" HorizontalAlignment="Left" VerticalAlignment="Bottom" FontSize="10" Foreground="White" Margin="0, 0, 0, 5" TextTrimming="CharacterEllipsis"/>
-                                </Grid>
-                                <TextBlock Text="{Binding Map}" Width="{Binding ElementName=Column_Map, Path=ActualWidth}" HorizontalAlignment="Left" VerticalAlignment="Center" FontSize="18" Foreground="White" Margin="15, 0, -15, 0" TextTrimming="CharacterEllipsis"/>
-                                <TextBlock Text="{Binding Players}" Width="{Binding ElementName=Column_Players, Path=ActualWidth}" HorizontalAlignment="Left" VerticalAlignment="Center" FontSize="18" Foreground="White" Margin="15, 0, -15, 0" TextTrimming="CharacterEllipsis"/>
-                                <TextBlock Text="{Binding Ping}" Width="{Binding ElementName=Column_Ping, Path=ActualWidth}" HorizontalAlignment="Left" VerticalAlignment="Center" FontSize="18" Foreground="White" Margin="15, 0, -15, 0" TextTrimming="CharacterEllipsis"/>
-                            </StackPanel>
-                        </DataTemplate>
-                    </ListBox.ItemTemplate>
-                </ListBox>
-                <Grid x:Name="StatusGrid" Background="#252E3D" VerticalAlignment="Bottom" HorizontalAlignment="Stretch" Height="25">
-                    <Rectangle x:Name="ProgressRect" Fill="#2db322" Width="1" HorizontalAlignment="Left"></Rectangle>
-                    <Grid x:Name="LoadingGrid">
-                        <TextBlock x:Name="LoadingText" Margin="0, 0, 0, 0" HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="White" FontSize="15" FontFamily="Berlin Sans"><Run Text="Loading Servers 0/1000"/></TextBlock>
-                    </Grid>
-                </Grid>
+            <Grid x:Name="Content_Servers" Margin="0, 0, 0, 25" Visibility="Visible">
+                <DataGrid x:Name="MainServerGrid" Style="{DynamicResource MetroDataGrid}" ColumnWidth="Auto" CanUserSortColumns="True" SelectionChanged="MainServerGrid_SelectionChanged" IsReadOnly="True" Sorting="MainServerGrid_Sorting">
+                    <DataGrid.Columns>
+                        <DataGridTemplateColumn Header="Name" SortMemberPath="Name" Width="*">
+                            <DataGridTemplateColumn.CellTemplate>
+                                <DataTemplate>
+                                    <StackPanel>
+                                        <TextBlock Text="{Binding Path=Name}" TextTrimming="CharacterEllipsis"/>
+                                        <TextBlock Text="{Binding Path=Host}" FontSize="11"/>
+                                    </StackPanel>
+                                </DataTemplate>
+                            </DataGridTemplateColumn.CellTemplate>
+                        </DataGridTemplateColumn>
+                        <DataGridTextColumn Header="Map" Binding="{Binding Path=Map}"/>
+                        <DataGridTextColumn Header="Players" Binding="{Binding Path=Players}" SortMemberPath="CurrentPlayers"/>
+                        <DataGridTextColumn Header="Ping" Binding="{Binding Path=Ping}"/>
+                        <DataGridTextColumn Width="*"/>
+                    </DataGrid.Columns>
+                </DataGrid>
 
                 <Grid x:Name="ServerInfoPanelContainer" VerticalAlignment="Stretch" HorizontalAlignment="Right" Width="400" Margin="0, 0, 0, 0" Background="#FF252E3D" Visibility="Hidden" IsVisibleChanged="ServerInfoPanelContainer_IsVisibleChanged">
                     <Border BorderThickness="0" ClipToBounds="True">
@@ -187,7 +149,7 @@
 
                                 <Grid>
                                     <TextBlock HorizontalAlignment="Left" VerticalAlignment="Top" Foreground="White" FontSize="18" FontFamily="Berlin Sans" FontWeight="SemiBold"><Run Text="Server Info"/></TextBlock>
-                                    <Image Height="16" Width="16" HorizontalAlignment="Right" Margin="0, 0, 0, 0" Source="images/X_white.png" MouseLeftButtonUp="Image_MouseLeftButtonUp"></Image>
+                                    <Image x:Name="CloseServerInfo" Height="16" Width="16" HorizontalAlignment="Right" Margin="0, 0, 0, 0" Source="images/X_white.png" MouseLeftButtonUp="Image_MouseLeftButtonUp"></Image>
                                 </Grid>
                                 <TextBlock x:Name="ServerInfo_Name" HorizontalAlignment="Left" VerticalAlignment="Top" Foreground="White" FontSize="15" FontFamily="Berlin Sans" FontWeight="Regular" MouseEnter="ServerInfo_Name_MouseEnter" MouseLeave="ServerInfo_Name_MouseLeave"><Run Text="Server Name"/></TextBlock>
                                 <Button x:Name="ServerInfo_Join" Width="100" Height="20" HorizontalAlignment="Left" Margin="0, 5, 0, 5" Content="Join Server" Click="ServerInfo_Join_Click"></Button>
@@ -241,7 +203,7 @@
                 </Grid>
             </Grid>
 
-            <Grid x:Name="Content_Settings" Margin="0, 0, 0, 25" Visibility="Visible">
+            <Grid x:Name="Content_Settings" Margin="0, 0, 0, 25" Visibility="Hidden">
                 <Grid VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Background="#364050">
 
                     <StackPanel Orientation="Horizontal">
@@ -294,6 +256,17 @@
                         </StackPanel>
                     </StackPanel>
                 </Grid>
+            </Grid>
+
+            <Grid x:Name="StatusGrid" Background="#252E3D" VerticalAlignment="Bottom" HorizontalAlignment="Stretch" Height="25">
+                <Rectangle x:Name="ProgressRect" Fill="#2db322" Width="1" HorizontalAlignment="Left"></Rectangle>
+                <Grid x:Name="LoadingGrid">
+                    <TextBlock x:Name="LoadingText" Margin="0, 0, 0, 0" HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="White" FontSize="15" FontFamily="Berlin Sans"><Run Text="Loading Servers 0/1000"/></TextBlock>
+                </Grid>
+            </Grid>
+
+            <Grid x:Name="Content_Mods" Margin="0, 0, 0, 25" Visibility="Hidden">
+                
             </Grid>
         </Grid>
     </Grid>

@@ -22,6 +22,8 @@ namespace DayZAnnex
         public string Map { get; set; }
         public string Name { get; set; }
         public string Players { get; set; }
+        public int CurrentPlayers { get; set; }
+        public int MaxPlayers { get; set; }
         public int Port { get; set; }
         public long Ping { get; set; }
         public string GameVer { get; set; }
@@ -42,20 +44,7 @@ namespace DayZAnnex
 
         static List<IPEndPoint> ServerEndP = new List<IPEndPoint>();
         static List<ServerInfo> ServerInfoList = new List<ServerInfo>();
-
-        public List<ServerListInfo> getServerList(bool filtered = true)
-        {
-            if (filtered)
-            {
-                ApplyFilters();
-                SortList();
-                return FilteredList.ToList();
-            }
-            else
-            {
-                return MainServerList.ToList();
-            }
-        }
+        
         MainWindow mainWin;
 
         public void LoadServers(MainWindow mw)
@@ -109,11 +98,6 @@ namespace DayZAnnex
             {
                 //Lets the last few threads finish loading before continuing
             }
-
-            mainWin.Dispatcher.Invoke((Action)(() =>
-            {
-                SortList();
-            }));
             SetStatus(string.Format("{0} servers loaded, {1} timed out", (count - nullservers).ToString(), nullservers.ToString()));
 
             mainWin.Dispatcher.Invoke((Action)(() =>
@@ -144,87 +128,6 @@ namespace DayZAnnex
                 resetEventObj.Set();
 
             }
-        }
-
-        //Sorting options
-        public string sortBy = "Name";
-        public bool sortAsc = true;
-
-        private void SortList()
-        {
-            mainWin.Column_Name_Arrow.Visibility = Visibility.Hidden;
-            mainWin.Column_Map_Arrow.Visibility = Visibility.Hidden;
-            mainWin.Column_Players_Arrow.Visibility = Visibility.Hidden;
-            mainWin.Column_Ping_Arrow.Visibility = Visibility.Hidden;
-
-            PointCollection ascending = new PointCollection() { new Point(x: 0, y: 0), new Point(x: 5, y: 8), new Point(x: 10, y: 0) };
-            PointCollection descending = new PointCollection() { new Point(x: 5, y: 0), new Point(x: 0, y: 8), new Point(x: 10, y: 8) };
-
-            switch (sortBy)
-            {
-                case "Name":
-                    if (sortAsc)
-                    {
-                        FilteredList = new ObservableCollection<ServerListInfo>(FilteredList.OrderBy(i => i.Name));
-                        mainWin.Column_Name_Arrow.Points = ascending;
-                        mainWin.Column_Name_Arrow.Visibility = Visibility.Visible;
-                    }
-                    else
-                    {
-                        FilteredList = new ObservableCollection<ServerListInfo>(FilteredList.OrderByDescending(i => i.Name));
-                        mainWin.Column_Name_Arrow.Points = descending;
-                        mainWin.Column_Name_Arrow.Visibility = Visibility.Visible;
-                    }
-                    break;
-                case "Map":
-                    if (sortAsc)
-                    {
-                        FilteredList = new ObservableCollection<ServerListInfo>(FilteredList.OrderBy(i => i.Map));
-                        mainWin.Column_Map_Arrow.Points = ascending;
-                        mainWin.Column_Map_Arrow.Visibility = Visibility.Visible;
-                    }
-                    else
-                    {
-                        FilteredList = new ObservableCollection<ServerListInfo>(FilteredList.OrderByDescending(i => i.Map));
-                        mainWin.Column_Map_Arrow.Points = descending;
-                        mainWin.Column_Map_Arrow.Visibility = Visibility.Visible;
-                    }
-                    break;
-                case "Players":
-                    if (sortAsc)
-                    {
-                        FilteredList = new ObservableCollection<ServerListInfo>(FilteredList.OrderBy(i => int.Parse(i.Players.Split('/')[0])));
-                        mainWin.Column_Players_Arrow.Points = ascending;
-                        mainWin.Column_Players_Arrow.Visibility = Visibility.Visible;
-                    }
-                    else
-                    {
-                        FilteredList = new ObservableCollection<ServerListInfo>(FilteredList.OrderByDescending(i => int.Parse(i.Players.Split('/')[0])));
-                        mainWin.Column_Players_Arrow.Points = descending;
-                        mainWin.Column_Players_Arrow.Visibility = Visibility.Visible;
-                    }
-                    break;
-                case "Ping":
-                    if (sortAsc)
-                    {
-                        FilteredList = new ObservableCollection<ServerListInfo>(FilteredList.OrderBy(i => i.Ping));
-                        mainWin.Column_Ping_Arrow.Points = ascending;
-                        mainWin.Column_Ping_Arrow.Visibility = Visibility.Visible;
-                    }
-                    else
-                    {
-                        FilteredList = new ObservableCollection<ServerListInfo>(FilteredList.OrderByDescending(i => i.Ping));
-                        mainWin.Column_Ping_Arrow.Points = descending;
-                        mainWin.Column_Ping_Arrow.Visibility = Visibility.Visible;
-                    }
-                    break;
-                default:
-                    FilteredList = new ObservableCollection<ServerListInfo>(FilteredList.OrderBy(i => i.Name));
-                    mainWin.Column_Ping_Arrow.Points = ascending;
-                    mainWin.Column_Ping_Arrow.Visibility = Visibility.Visible;
-                    break;
-            }
-            mainWin.MainServerListBox.ItemsSource = FilteredList;
         }
 
         private Thread GetInfoThread(IPEndPoint host)
@@ -289,10 +192,12 @@ namespace DayZAnnex
         {
             ServerListInfo ServerItem = new ServerListInfo();
             ServerItem.Host = ServerDetails.Address.Split(':')[0];
-            ServerItem.Port = int.Parse(ServerDetails.Address.Split(':')[1]) - 1;
+            ServerItem.Port = ServerDetails.ExtraInfo.Port;
             ServerItem.Name = ServerDetails.Name;
             ServerItem.Map = ServerDetails.Map;
             ServerItem.Players = ServerDetails.Players + "/" + ServerDetails.MaxPlayers;
+            ServerItem.CurrentPlayers = ServerDetails.Players;
+            ServerItem.MaxPlayers = ServerDetails.MaxPlayers;
             ServerItem.Passworded = ServerDetails.IsPrivate;
             ServerItem.Ping = ServerDetails.Ping;
             ServerItem.BattleEye = true;
@@ -311,7 +216,11 @@ namespace DayZAnnex
             ServerItem.ModInfo = modString;
 
             MainServerList.Add(ServerItem);
-            ApplyFilters();
+
+            if (IsFiltered(ServerItem))
+            {
+                AddItem(ServerItem);
+            }
         }
 
         private void AddNullServerItem(IPEndPoint host)
@@ -322,12 +231,17 @@ namespace DayZAnnex
             ServerItem.Name = host.ToString();
             ServerItem.Map = "";
             ServerItem.Players = "0/0";
+            ServerItem.CurrentPlayers = 0;
+            ServerItem.MaxPlayers = 0;
             ServerItem.Passworded = false;
             ServerItem.Ping = 9999;
             ServerItem.BattleEye = false;
 
             MainServerList.Add(ServerItem);
-            ApplyFilters();
+            if (IsFiltered(ServerItem))
+            {
+                AddItem(ServerItem);
+            }
         }
 
         private string PingIP(string IPAddress)
@@ -345,55 +259,54 @@ namespace DayZAnnex
             return "999";
         }
 
-        public void ApplyFilters()
+        public void ReloadDisplay()
         {
-            FilteredList = new ObservableCollection<ServerListInfo>(MainServerList);
-            try
+            mainWin.MainServerGrid.Items.Clear();
+            mainWin.displayedList.Clear();
+            foreach (ServerListInfo serverInfo in MainServerList)
             {
-                string Name = mainWin.Filter_Name.Text.ToLower();
-                long MinPing = long.Parse(string.IsNullOrEmpty(mainWin.Filter_PingMin.Text) ? "0" : mainWin.Filter_PingMin.Text);
-                long MaxPing = long.Parse(string.IsNullOrEmpty(mainWin.Filter_PingMax.Text) ? "0" : mainWin.Filter_PingMax.Text);
-                bool HideUnresponsive = mainWin.Filter_HideUnresponsive.IsChecked.Value;
-                long MinPlayers = long.Parse(string.IsNullOrEmpty(mainWin.Filter_PlayersMin.Text) ? "0" : mainWin.Filter_PlayersMin.Text);
-                long MaxPlayers = long.Parse(string.IsNullOrEmpty(mainWin.Filter_PlayersMax.Text) ? "0" : mainWin.Filter_PlayersMax.Text);
-                bool HideEmpty = mainWin.Filter_HidePlayersEmpty.IsChecked.Value;
-                bool HideFull = mainWin.Filter_HidePlayersFull.IsChecked.Value;
-                string Mod = mainWin.Filter_Mod.Text;
-                string Map = mainWin.Filter_Map.Text;
-                bool HidePassworded = mainWin.Filter_HidePassword.IsChecked.Value;
-                //bool HideLocked = mainWin.Filter_HideLocked.IsChecked.Value;
-
-                if (!string.IsNullOrEmpty(Name)) { FilteredList = new ObservableCollection<ServerListInfo>(FilteredList.Where(x => x.Name.ToLower().Contains(Name))); }
-                if (MinPing > 0) { FilteredList = new ObservableCollection<ServerListInfo>(FilteredList.Where(x => x.Ping >= MinPing)); }
-                if (MaxPing > 0) { FilteredList = new ObservableCollection<ServerListInfo>(FilteredList.Where(x => x.Ping <= MaxPing)); }
-                if (HideUnresponsive) { FilteredList = new ObservableCollection<ServerListInfo>(FilteredList.Where(x => x.Ping != 9999)); }
-                if (MinPlayers > 0) { FilteredList = new ObservableCollection<ServerListInfo>(FilteredList.Where(x => long.Parse(x.Players.Split('/')[0]) >= MinPlayers)); }
-                if (MaxPlayers > 0) { FilteredList = new ObservableCollection<ServerListInfo>(FilteredList.Where(x => long.Parse(x.Players.Split('/')[0]) <= MaxPlayers)); }
-                if (HideEmpty) { FilteredList = new ObservableCollection<ServerListInfo>(FilteredList.Where(x => long.Parse(x.Players.Split('/')[0]) != 0)); }
-                if (HideFull) { FilteredList = new ObservableCollection<ServerListInfo>(FilteredList.Where(x => long.Parse(x.Players.Split('/')[0]) != long.Parse(x.Players.Split('/')[1]))); }
-                if (!(Mod == "All" || Mod == "")) { FilteredList = new ObservableCollection<ServerListInfo>(FilteredList.Where(x => x.ModInfo.Split(';').Contains(Mod))); }
-                if (!(Map == "All" || Mod == "")) { FilteredList = new ObservableCollection<ServerListInfo>(FilteredList.Where(x => x.Map == Map)); }
-                if (HidePassworded) { FilteredList = new ObservableCollection<ServerListInfo>(FilteredList.Where(x => x.Passworded != true)); }
-
-                SortList();
-                mainWin.MainServerListBox.ItemsSource = FilteredList;
-            }
-            catch (Exception e)
-            {
-                mainWin.Filter_Name.Text = "";
-                mainWin.Filter_PingMin.Text = "";
-                mainWin.Filter_PingMax.Text = "";
-                mainWin.Filter_PlayersMin.Text = "";
-                mainWin.Filter_PlayersMax.Text = "";
-                mainWin.Filter_Mod.Text = "";
-                mainWin.Filter_Map.Text = "";
-                mainWin.Filter_HidePassword.IsChecked = false;
-                mainWin.Filter_HidePlayersEmpty.IsChecked = false;
-                mainWin.Filter_HidePlayersFull.IsChecked = false;
-                MessageBox.Show("An exception occured trying to filter the server list. Resettings filters.\n\n" + e.StackTrace);
+                if (IsFiltered(serverInfo))
+                {
+                    AddItem(serverInfo);
+                }
             }
         }
 
+        public void AddItem(ServerListInfo serverInfo)
+        {
+            mainWin.MainServerGrid.Items.Add(serverInfo);
+            mainWin.displayedList.Add(serverInfo);
+        }
 
+        public bool IsFiltered(ServerListInfo serverInfo)
+        {
+            bool filtered = true;
+
+            string Name = mainWin.Filter_Name.Text.ToLower();
+            long MinPing = long.Parse(string.IsNullOrEmpty(mainWin.Filter_PingMin.Text) ? "0" : mainWin.Filter_PingMin.Text);
+            long MaxPing = long.Parse(string.IsNullOrEmpty(mainWin.Filter_PingMax.Text) ? "0" : mainWin.Filter_PingMax.Text);
+            bool HideUnresponsive = mainWin.Filter_HideUnresponsive.IsChecked.Value;
+            long MinPlayers = long.Parse(string.IsNullOrEmpty(mainWin.Filter_PlayersMin.Text) ? "0" : mainWin.Filter_PlayersMin.Text);
+            long MaxPlayers = long.Parse(string.IsNullOrEmpty(mainWin.Filter_PlayersMax.Text) ? "0" : mainWin.Filter_PlayersMax.Text);
+            bool HideEmpty = mainWin.Filter_HidePlayersEmpty.IsChecked.Value;
+            bool HideFull = mainWin.Filter_HidePlayersFull.IsChecked.Value;
+            string Mod = mainWin.Filter_Mod.Text;
+            string Map = mainWin.Filter_Map.Text;
+            bool HidePassworded = mainWin.Filter_HidePassword.IsChecked.Value;
+            
+            if (!string.IsNullOrEmpty(Name) && !serverInfo.Name.ToLower().Contains(Name)) { filtered = false; }
+            if (MinPing > 0 && serverInfo.Ping < MinPing) { filtered = false; }
+            if (MaxPing > 0 && serverInfo.Ping > MaxPing) { filtered = false; }
+            if (HideUnresponsive && serverInfo.Ping == 9999) { filtered = false; }
+            if (MinPlayers > 0 && long.Parse(serverInfo.Players.Split('/')[0]) < MinPlayers) { filtered = false; }
+            if (MaxPlayers > 0 && long.Parse(serverInfo.Players.Split('/')[0]) > MaxPlayers) { filtered = false; }
+            if (HideEmpty && long.Parse(serverInfo.Players.Split('/')[0]) == 0) { filtered = false; }
+            if (HideFull && serverInfo.Players.Split('/')[0] == serverInfo.Players.Split('/')[1]) { filtered = false; }
+            //if (!(Mod == "All" || Mod == "")) { FilteredList = new ObservableCollection<ServerListInfo>(FilteredList.Where(x => x.ModInfo.Split(';').Contains(Mod))); }
+            //if (!(Map == "All" || Mod == "")) { FilteredList = new ObservableCollection<ServerListInfo>(FilteredList.Where(x => x.Map == Map)); }
+            if (HidePassworded && serverInfo.Passworded) { filtered = false; }
+
+            return filtered;
+        }
     }
 }
