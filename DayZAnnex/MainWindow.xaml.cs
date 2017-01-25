@@ -26,6 +26,7 @@ using System.Xml;
 using System.IO;
 using System.Collections.ObjectModel;
 using System.Text.RegularExpressions;
+using Microsoft.WindowsAPICodePack.Dialogs;
 
 namespace DayZAnnex
 {
@@ -136,11 +137,22 @@ namespace DayZAnnex
             settings_LaunchParam_NoLogs.IsChecked = settings.launchOptions.noLogs;
             settings_LaunchParam_NoPause.IsChecked = settings.launchOptions.noPause;
             settings_LaunchParam_NoSplash.IsChecked = settings.launchOptions.noSplash;
+            settings_LaunchParam_ScriptErrors.IsChecked = settings.launchOptions.scriptErrors;
             settings_LaunchParam_WindowMode.IsChecked = settings.launchOptions.windowMode;
-            settings_Profile.Text = settings.profile;
+            settings_Profile.Text = settings.launchOptions.profile;
             settings_AutoLoadServers.IsChecked = settings.autoLoadServers;
             settings_AutoRefreshServers.IsChecked = settings.autoRefreshServers;
             settings_MaxThreads.Text = settings.maxThreads.ToString();
+            List<string> profiles = settings.GetProfiles();
+            settings_Profile.ItemsSource = profiles;
+            if (settings.launchOptions.profile == "")
+            {
+                settings_Profile.SelectedIndex = 0;
+            }
+            else
+            {
+                settings_Profile.SelectedItem = settings.launchOptions.profile;
+            }
         }
 
         private void MenuItem_Servers_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
@@ -427,7 +439,7 @@ namespace DayZAnnex
         private void ServerInfo_Join_Click(object sender, RoutedEventArgs e)
         {
             string parameters = "";
-            string path = settings.oaPath + "ArmA2OA.exe";
+            string path = settings.oaPath.TrimEnd('\\') + "\\ArmA2OA.exe";
 
             if (settings.launchOptions.noLogs)
                 parameters += "-noLogs ";
@@ -438,8 +450,14 @@ namespace DayZAnnex
             if (settings.launchOptions.noSplash)
                 parameters += "-nosplash ";
 
+            if (settings.launchOptions.scriptErrors)
+                parameters += "-showScriptErrors ";
+
             if (settings.launchOptions.windowMode)
                 parameters += "-window ";
+
+            if (settings.launchOptions.profile != "")
+                parameters += string.Format("-name={0} ", settings.launchOptions.profile);
 
             parameters += string.Format("-connect={0} -port={1} ", ServerInfo_IP.Text, ServerInfo_Port.Text);
 
@@ -474,8 +492,90 @@ namespace DayZAnnex
         {
             if (!File.Exists(exePath))
                 return;
-            MessageBox.Show(cParams);
-            var proc = System.Diagnostics.Process.Start(exePath, cParams).StartInfo.WorkingDirectory = settings.oaPath;
+
+            var proc = System.Diagnostics.Process.Start(exePath, cParams);
+        }
+
+        private void settings_BrowseArma2_Click(object sender, RoutedEventArgs e)
+        {
+            CommonOpenFileDialog dialog = new CommonOpenFileDialog();
+            if (Directory.Exists(settings_Arma2Path.Text)) { dialog.InitialDirectory = settings_Arma2Path.Text; } else { dialog.InitialDirectory = "C:\\Users"; }
+            dialog.IsFolderPicker = true;
+            if (dialog.ShowDialog() == CommonFileDialogResult.Ok)
+            {
+                if(!File.Exists(dialog.FileName + "\\arma2.exe"))
+                {
+                    MessageBox.Show("arma2.exe was not found in this directory.");
+                }
+                else
+                {
+                    settings.armaPath = dialog.FileName;
+                    settings.SaveSettings();
+                    ReloadSettingsUI();
+                }
+            }
+        }
+
+        private void settings_BrowseArma2OA_Click(object sender, RoutedEventArgs e)
+        {
+            CommonOpenFileDialog dialog = new CommonOpenFileDialog();
+            if (Directory.Exists(settings_OAPath.Text)) { dialog.InitialDirectory = settings_OAPath.Text; } else { dialog.InitialDirectory = "C:\\Users"; }
+            dialog.IsFolderPicker = true;
+            if (dialog.ShowDialog() == CommonFileDialogResult.Ok)
+            {
+                if (!File.Exists(dialog.FileName + "\\ArmA2OA.exe"))
+                {
+                    MessageBox.Show("ArmA2OA.exe was not found in this directory.");
+                }
+                else
+                {
+                    settings.oaPath = dialog.FileName;
+                    settings.SaveSettings();
+                    ReloadSettingsUI();
+                }
+            }
+        }
+
+        private void settings_BrowseMods_Click(object sender, RoutedEventArgs e)
+        {
+            CommonOpenFileDialog dialog = new CommonOpenFileDialog();
+            if(Directory.Exists(settings_ModsPath.Text)) { dialog.InitialDirectory = settings_ModsPath.Text; } else { dialog.InitialDirectory = "C:\\Users"; }            
+            dialog.IsFolderPicker = true;
+            if (dialog.ShowDialog() == CommonFileDialogResult.Ok)
+            {
+                settings.modPath = dialog.FileName;
+                settings.SaveSettings();
+                ReloadSettingsUI();
+            }
+        }
+
+        private void settings_Profile_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (settings_Profile.SelectedValue == null)
+                return;
+
+            if (settings_Profile.SelectedIndex == 0)
+            {
+                settings.launchOptions.profile = "";
+            }
+            else
+            {
+                settings.launchOptions.profile = settings_Profile.SelectedItem.ToString();
+            }
+
+            settings.SaveSettings();
+            ReloadSettingsUI();
+        }
+
+        private void settings_checkbox_Click(object sender, RoutedEventArgs e)
+        {
+            settings.launchOptions.noLogs = settings_LaunchParam_NoLogs.IsChecked.Value;
+            settings.launchOptions.noPause = settings_LaunchParam_NoPause.IsChecked.Value;
+            settings.launchOptions.noSplash = settings_LaunchParam_NoSplash.IsChecked.Value;
+            settings.launchOptions.windowMode = settings_LaunchParam_WindowMode.IsChecked.Value;
+            settings.launchOptions.scriptErrors = settings_LaunchParam_ScriptErrors.IsChecked.Value;
+            settings.SaveSettings();
+            ReloadSettingsUI();
         }
     }
 }

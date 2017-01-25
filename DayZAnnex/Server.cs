@@ -34,30 +34,14 @@ namespace DayZAnnex
 
     class Server
     {
-        //Contains all servers
-        public ObservableCollection<ServerListInfo> MainServerList = new ObservableCollection<ServerListInfo>();
-
-        //Contains only servers matching the current filter
+        public ObservableCollection<ServerListInfo> MainServerList = new ObservableCollection<ServerListInfo>();        
         ObservableCollection<ServerListInfo> FilteredList = new ObservableCollection<ServerListInfo>();
 
         static QueryMaster.MasterServer.Server masterServer;
         static AutoResetEvent resetEventObj = new AutoResetEvent(false);
 
-        //List containing IP's of favourited and joined servers. Functionality removed but will be re-added.
-        //static List<string> HistoryEndP = new List<string>();   // Format: ip,lastjoined
-        //static List<string> FavouriteEndP = new List<string>(); // Example: 192.168.1.1:5656,19/08/2016 02-49
-        // lastjoined format must be DD/MM/YYYY HH-MM
-
-        static List<IPEndPoint> ServerEndP = new List<IPEndPoint>();    // The Master Server query appends IPs here, so that
-                                                                        // we can iterate through and use Server Query on each IP.
-
-        // Server Lists
+        static List<IPEndPoint> ServerEndP = new List<IPEndPoint>();
         static List<ServerInfo> ServerInfoList = new List<ServerInfo>();
-        //Unused lists
-        //static List<ServerInfo> ServerHistoryList = new List<ServerInfo>();
-        //static List<ServerInfo> ServerFavouritesList = new List<ServerInfo>();
-        
-        //MainWindow mainWin = Application.Current.Windows.OfType<MainWindow>().FirstOrDefault();
 
         public List<ServerListInfo> getServerList(bool filtered = true)
         {
@@ -77,13 +61,11 @@ namespace DayZAnnex
         public void LoadServers(MainWindow mw)
         {
             mainWin = mw;
-            //Load servers on another thread, so that it doesnt freaze the UI.
             Thread thread = new Thread(LoadServersThread);
             thread.SetApartmentState(ApartmentState.STA);
             thread.Start();
         }
-
-        //Track running threads, used for debug purposes usually
+        
         int runningThreads = 0;
 
         private void LoadServersThread()
@@ -133,6 +115,12 @@ namespace DayZAnnex
                 SortList();
             }));
             SetStatus(string.Format("{0} servers loaded, {1} timed out", (count - nullservers).ToString(), nullservers.ToString()));
+
+            mainWin.Dispatcher.Invoke((Action)(() =>
+            {
+                mainWin.ProgressRect.Width = double.NaN;
+                mainWin.ProgressRect.HorizontalAlignment = HorizontalAlignment.Stretch;
+            }));
         }
 
 
@@ -268,12 +256,6 @@ namespace DayZAnnex
 
                 if (serverInfo != null && serverRule != null && serverPlayers != null)
                 {
-                    //return (new object[] { serverInfo, serverRule, serverPlayers });
-
-                    //ServerInfo serverInfo = (ServerInfo)thisServer[0];
-                    //QueryMasterCollection<Rule> ServerRuleCollection = (QueryMasterCollection<Rule>)thisServer[1];
-                    //QueryMasterCollection<PlayerInfo> PlayerInfoCollection = (QueryMasterCollection<PlayerInfo>)thisServer[2];
-
                     mainWin.Dispatcher.Invoke((Action)(() =>
                     {
                         AddServerItem(serverInfo, serverRule, serverPlayers);
@@ -283,7 +265,6 @@ namespace DayZAnnex
                 {
                     mainWin.Dispatcher.Invoke((Action)(() =>
                     {
-                        // TODO: Add null item to list, maybe create AddNullServerItem() method to do this
                         AddNullServerItem(host);
                     }));
                     nullservers++;

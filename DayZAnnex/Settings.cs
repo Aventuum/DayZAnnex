@@ -14,6 +14,8 @@ namespace DayZAnnex
         public bool noLogs { get; set; }
         public bool noPause { get; set; }
         public bool windowMode { get; set; }
+        public bool scriptErrors { get; set; }
+        public string profile { get; set; }
     }
     public class Settings
     {
@@ -24,7 +26,6 @@ namespace DayZAnnex
         public string armaPath { get; set; }
         public string oaPath { get; set; }
         public LaunchParams launchOptions { get; set; }
-        public string profile { get; set; }
         public int maxThreads { get; set; }
 
         string annexAppFolder = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData) + "\\DayZAnnex";
@@ -53,8 +54,9 @@ namespace DayZAnnex
                 lparams.noLogs = bool.Parse(xdoc.Element("settings").Element("launchoptions").Element("nologs").Value);
                 lparams.noPause = bool.Parse(xdoc.Element("settings").Element("launchoptions").Element("nopause").Value);
                 lparams.windowMode = bool.Parse(xdoc.Element("settings").Element("launchoptions").Element("windowmode").Value);
+                lparams.scriptErrors = bool.Parse(xdoc.Element("settings").Element("launchoptions").Element("scripterrors").Value);
+                lparams.profile = xdoc.Element("settings").Element("launchoptions").Element("profile").Value;
                 launchOptions = lparams;
-                profile = xdoc.Element("settings").Element("profile").Value;
                 maxThreads = int.Parse(xdoc.Element("settings").Element("maxthreads").Value);
             }
             catch (NullReferenceException e)
@@ -80,8 +82,9 @@ namespace DayZAnnex
             lparams.noPause = false;
             lparams.noSplash = false;
             lparams.windowMode = false;
+            lparams.scriptErrors = false;
+            lparams.profile = "";
             launchOptions = lparams;
-            profile = "";
             maxThreads = 10;
 
             if (saveDefaults)
@@ -103,9 +106,10 @@ namespace DayZAnnex
                             new XElement("nologs", launchOptions.noLogs),
                             new XElement("nopause", launchOptions.noPause),
                             new XElement("nosplash", launchOptions.noSplash),
-                            new XElement("windowmode", launchOptions.windowMode)
+                            new XElement("windowmode", launchOptions.windowMode),
+                            new XElement("scripterrors", launchOptions.scriptErrors),
+                            new XElement("profile", launchOptions.profile)
                             ),
-                        new XElement("profile", profile),
                         new XElement("maxthreads", maxThreads)
                         )
                     );
@@ -117,10 +121,10 @@ namespace DayZAnnex
         {
             List<string> locations = new List<string>
             {
-                "{drive}Games\\{game}\\",
-                "{drive}SteamApps\\common\\{game}\\",
-                "{drive}Steam\\SteamApps\\common\\{game}\\",
-                "{drive}Program Files (x86)\\Steam\\SteamApps\\common\\{game}\\"
+                "{drive}Games\\{game}",
+                "{drive}SteamApps\\common\\{game}",
+                "{drive}Steam\\SteamApps\\common\\{game}",
+                "{drive}Program Files (x86)\\Steam\\SteamApps\\common\\{game}"
             };
 
             List<string> games = new List<string>
@@ -129,7 +133,6 @@ namespace DayZAnnex
                 "Arma 2 Operation Arrowhead"
             };
 
-            modPath = "";
             armaPath = "";
             oaPath = "";
 
@@ -166,6 +169,29 @@ namespace DayZAnnex
 
             if (string.IsNullOrEmpty(oaPath))
                 System.Windows.MessageBox.Show("Arma 2 Operation Arrowhead path not automatically detected, please browse for it under the Settings tab");
+        }
+
+        public List<string> GetProfiles()
+        {
+            string profileDir = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + "\\ArmA 2";
+            if (Directory.Exists(profileDir))
+            {
+                List<string> profiles = Directory.GetFiles(profileDir).Where(x => x.EndsWith("ArmA2OAProfile")).Select(x => x.Split('.')[0]).Select(x => Path.GetFileName(x)).Distinct().ToList();
+                profiles.Insert(0, "Default");
+                return profiles;
+            }
+
+            return null;
+        }
+
+        public void SaveServerInfo()
+        {
+
+        }
+
+        public void LoadServerInfo()
+        {
+
         }
     }
 }
