@@ -38,14 +38,19 @@ namespace DayZAnnex
 
     public partial class MainWindow : Window
     {
-        public ObservableCollection<ServerListInfo> displayedList = new ObservableCollection<ServerListInfo>();
+        public ObservableCollection<ServerListInfo> serverCollection; 
+        public ListCollectionView serverCollectionView { get; private set; }
 
         public MainWindow()
         {
             InitializeComponent();
+
+            serverCollection = new ObservableCollection<ServerListInfo>();
+            serverCollectionView = new ListCollectionView(serverCollection);
+            MainServerGrid.ItemsSource = serverCollectionView;
+
             server.LoadServers(this);
             ChangeToTab(0);
-            MainServerGrid.Items.IsLiveSorting = true;
             settings.LoadSettings();
         }
 
@@ -222,6 +227,7 @@ namespace DayZAnnex
         {
             Content_Servers.IsEnabled = true;
             Content_Servers.Opacity = 1;
+            MainServerGrid.SelectedIndex = -1;
 
             if (ServerInfoPanelContainer.Visibility == Visibility.Visible)
             {
@@ -276,7 +282,7 @@ namespace DayZAnnex
                         ServerInfo_Ping.Text = "999ms";
                     }
                 }));
-                Thread.Sleep(1000);
+                Thread.Sleep(2000);
             }
         }
 
@@ -317,7 +323,7 @@ namespace DayZAnnex
         private void ServerInfo_Join_Click(object sender, RoutedEventArgs e)
         {
             string parameters = "";
-            string path = settings.oaPath.TrimEnd('\\') + "\\ArmA2OA.exe";
+            string path = settings.oaPath.TrimEnd('\\') + "\\ArmA2OA_BE.exe";
 
             if (settings.launchOptions.noLogs)
                 parameters += "-noLogs ";
@@ -348,7 +354,7 @@ namespace DayZAnnex
 
                 if (modFolders.Select(x => x = System.IO.Path.GetFileName(x)).Any(mod.Contains))
                 {
-                    modParam += string.Format("{0}{1};", settings.modPath, mod);
+                    modParam += string.Format("{0}\\{1};", settings.modPath.TrimEnd('\\'), mod);
                 }
                 else
                 {
@@ -456,16 +462,8 @@ namespace DayZAnnex
             ReloadSettingsUI();
         }
 
-        private void MainServerGrid_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        public void ShowDisplayPanel(ServerListInfo serverInfo)
         {
-            if (MainServerGrid.SelectedIndex == -1)
-            {
-                CloseServerInfo.RaiseEvent(new MouseButtonEventArgs(Mouse.PrimaryDevice, Environment.TickCount, MouseButton.Left) { RoutedEvent = Image.MouseLeftButtonUpEvent });
-                return;
-            }
-
-            ServerListInfo item = displayedList[MainServerGrid.SelectedIndex];
-
             List<string> modBlackList = new List<string>()
             {
                 "Arma 2",
@@ -478,28 +476,28 @@ namespace DayZAnnex
 
             bool hideServerMods = true;
 
-            ServerInfo_Name.Text = item.Name;
-            ServerInfo_IP.Text = item.Host;
-            ServerInfo_Port.Text = item.Port.ToString();
-            ServerInfo_Map.Text = item.Map;
-            ServerInfo_Version.Text = item.GameVer;
-            ServerInfo_Passworded.Text = item.Passworded.ToString();
+            ServerInfo_Name.Text = serverInfo.Name;
+            ServerInfo_IP.Text = serverInfo.Host;
+            ServerInfo_Port.Text = serverInfo.GamePort.ToString();
+            ServerInfo_Map.Text = serverInfo.Map;
+            ServerInfo_Version.Text = serverInfo.GameVer;
+            ServerInfo_Passworded.Text = serverInfo.Passworded.ToString();
             ServerInfo_BattlEye.Text = "null"; // TODO Find BattleEye state
             ServerInfo_LastJoined.Text = "never"; // TODO History
-            ServerInfo_Players.Text = item.Players;
+            ServerInfo_Players.Text = serverInfo.Players;
 
             ServerInfo_PlayerList.Items.Clear();
             ServerInfo_ModList.Items.Clear();
 
-            if (item.Ping != 9999)
+            if (serverInfo.Ping != 9999)
             {
-                foreach (string moditem in item.ModInfo.Split(';'))
+                foreach (string moditem in serverInfo.ModInfo.Split(';'))
                 {
                     if (!modBlackList.Any(moditem.Contains) && (!moditem.Contains("Server") && hideServerMods) && !string.IsNullOrWhiteSpace(moditem))
                         ServerInfo_ModList.Items.Add(moditem);
                 }
 
-                foreach (PlayerInfo player in item.PlayerList)
+                foreach (PlayerInfo player in serverInfo.PlayerList)
                 {
                     ServerInfo_PlayerList.Items.Add(player.Name);
                 }
@@ -518,20 +516,14 @@ namespace DayZAnnex
             }
         }
 
-        public ListSortDirection sortDirection = ListSortDirection.Ascending;
-        public string sortPath = "Name";
-
-        private void MainServerGrid_Sorting(object sender, DataGridSortingEventArgs e)
+        private void MainServerGrid_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            sortDirection = (e.Column.SortDirection != ListSortDirection.Ascending) ? ListSortDirection.Ascending : ListSortDirection.Descending;
-            sortPath = e.Column.SortMemberPath;
-            if (sortDirection == ListSortDirection.Ascending)
+            if(MainServerGrid.SelectedIndex != -1)
             {
-                displayedList = new ObservableCollection<ServerListInfo>(displayedList.OrderBy(a => a.GetType().GetProperty(sortPath).GetValue(a)));
-            }
-            else
-            {
-                displayedList = new ObservableCollection<ServerListInfo>(displayedList.OrderByDescending(a => a.GetType().GetProperty(sortPath).GetValue(a)));
+                ServerListInfo serverInfo = MainServerGrid.SelectedItem as ServerListInfo;
+                int index = serverCollection.IndexOf(serverInfo);
+                ShowDisplayPanel(serverCollection[index]);
+                server.UpdateItem(serverCollection[index], index);
             }
         }
     }

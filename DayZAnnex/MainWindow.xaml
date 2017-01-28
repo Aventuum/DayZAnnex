@@ -119,14 +119,21 @@
         
         <Grid x:Name="ContentGrid" Margin="200, 80, 0, 0" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Background="#364050">
             <Grid x:Name="Content_Servers" Margin="0, 0, 0, 25" Visibility="Visible">
-                <DataGrid x:Name="MainServerGrid" Style="{DynamicResource MetroDataGrid}" ColumnWidth="Auto" CanUserSortColumns="True" SelectionChanged="MainServerGrid_SelectionChanged" IsReadOnly="True" Sorting="MainServerGrid_Sorting">
+                <DataGrid x:Name="MainServerGrid" Style="{DynamicResource MetroDataGrid}" SelectionMode="Single" ColumnWidth="Auto" CanUserSortColumns="True" IsReadOnly="True" SelectionChanged="MainServerGrid_SelectionChanged">
                     <DataGrid.Columns>
                         <DataGridTemplateColumn Header="Name" SortMemberPath="Name" Width="*">
                             <DataGridTemplateColumn.CellTemplate>
                                 <DataTemplate>
                                     <StackPanel>
                                         <TextBlock Text="{Binding Path=Name}" TextTrimming="CharacterEllipsis"/>
-                                        <TextBlock Text="{Binding Path=Host}" FontSize="11"/>
+                                        <TextBlock FontSize="11">
+                                            <TextBlock.Text>
+                                                <MultiBinding StringFormat="{}{0}:{1}">
+                                                    <Binding Path="Host"/>
+                                                    <Binding Path="Port"/>
+                                                </MultiBinding>
+                                            </TextBlock.Text>
+                                        </TextBlock>
                                     </StackPanel>
                                 </DataTemplate>
                             </DataGridTemplateColumn.CellTemplate>
@@ -134,7 +141,7 @@
                         <DataGridTextColumn Header="Map" Binding="{Binding Path=Map}"/>
                         <DataGridTextColumn Header="Players" Binding="{Binding Path=Players}" SortMemberPath="CurrentPlayers"/>
                         <DataGridTextColumn Header="Ping" Binding="{Binding Path=Ping}"/>
-                        <DataGridTextColumn Width="*"/>
+                        <DataGridTextColumn Width="*" CanUserSort="False"/>
                     </DataGrid.Columns>
                 </DataGrid>
 

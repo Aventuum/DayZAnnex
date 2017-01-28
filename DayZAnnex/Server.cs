@@ -25,6 +25,7 @@ namespace DayZAnnex
         public int CurrentPlayers { get; set; }
         public int MaxPlayers { get; set; }
         public int Port { get; set; }
+        public int GamePort { get; set; }
         public long Ping { get; set; }
         public string GameVer { get; set; }
         public string ModInfo { get; set; }
@@ -86,14 +87,17 @@ namespace DayZAnnex
                 //{
                 //    continue;
                 //}
+
+                SetStatus(string.Format("Getting info for servers ({0}/{1}) ({2} Threads running, {3} max)", count.ToString(), ServerEndP.Count().ToString(), runningThreads.ToString(), mainWin.settings.maxThreads.ToString()));
+
                 int maxThreads = mainWin.settings.maxThreads;
                 while (runningThreads >= maxThreads && !(maxThreads <= 0))
                 {
                     
                 }
-                runningThreads++;
-                GetInfoThread(endp);
+                (new Thread(() => { GetInfoThread(endp); })).Start();
             }
+
             while (runningThreads != 0)
             {
                 //Lets the last few threads finish loading before continuing
@@ -106,8 +110,7 @@ namespace DayZAnnex
                 mainWin.ProgressRect.HorizontalAlignment = HorizontalAlignment.Stretch;
             }));
         }
-
-
+        
         static void recv(BatchInfo info)
         {
             bool exit = false;
@@ -126,13 +129,27 @@ namespace DayZAnnex
             if (exit)
             {
                 resetEventObj.Set();
-
             }
         }
 
         private Thread GetInfoThread(IPEndPoint host)
         {
-            var t = new Thread(() => GetServerInfo(host));
+            runningThreads++;
+            var t = new Thread(() => 
+            {
+                ServerListInfo server = GetServerInfo(new ServerListInfo() { Host = host.Address.ToString(), Port = host.Port });
+
+                mainWin.Dispatcher.Invoke((Action)(() =>
+                {
+                    MainServerList.Add(server);
+
+                    if (IsFiltered(server))
+                    {
+                        AddItem(server);
+                    }
+                    runningThreads--;
+                }));
+            });
             t.Start();
             return t;
         }
@@ -140,44 +157,65 @@ namespace DayZAnnex
         int count = 0;
         int nullservers = 0;
 
-        private object Dispatcher { get; set; }
-
-        private void GetServerInfo(IPEndPoint host)
+        public ServerListInfo GetServerInfo(ServerListInfo serverListInfo)
         {
             uint appId = 33930; // A2
-            string address = host.Address.ToString();
-            ushort port = ushort.Parse(host.Port.ToString());
+            string address = serverListInfo.Host;
+            ushort port = ushort.Parse(serverListInfo.Port.ToString());
             int retries = 1;
             count++;
-            SetStatus(string.Format("Getting info for servers ({0}/{1}) ({2} Threads running, {3} max)", count.ToString(), ServerEndP.Count().ToString(), runningThreads.ToString(), mainWin.settings.maxThreads.ToString()));
+            ServerListInfo ServerItem = serverListInfo;
             using (var server = ServerQuery.GetServerInstance((Game)appId, address, port, throwExceptions: false, retries: retries, sendTimeout: 1000, receiveTimeout: 1000))
             {
-                //Get Server Information
                 var serverInfo = server.GetInfo(x => Console.WriteLine("Fetching Server Information, Attempt " + x));
                 var serverRule = server.GetRules(x => Console.WriteLine("Fetching Server Information, Attempt " + x));
                 var serverPlayers = server.GetPlayers(x => Console.WriteLine("Fetching Server Information, Attempt " + x));
 
                 if (serverInfo != null && serverRule != null && serverPlayers != null)
                 {
-                    mainWin.Dispatcher.Invoke((Action)(() =>
+                    ServerItem.Host = serverInfo.Address.Split(':')[0];
+                    ServerItem.Port = int.Parse(serverInfo.Address.Split(':')[1]);
+                    ServerItem.GamePort = serverInfo.ExtraInfo.Port;
+                    ServerItem.Name = serverInfo.Name;
+                    ServerItem.Map = serverInfo.Map;
+                    ServerItem.Players = serverInfo.Players + "/" + serverInfo.MaxPlayers;
+                    ServerItem.CurrentPlayers = serverInfo.Players;
+                    ServerItem.MaxPlayers = serverInfo.MaxPlayers;
+                    ServerItem.Passworded = serverInfo.IsPrivate;
+                    ServerItem.Ping = serverInfo.Ping;
+                    ServerItem.BattleEye = true;
+                    ServerItem.PlayerList = serverPlayers;
+                    ServerItem.ServerRules = serverRule;
+
+                    string modString = "";
+                    foreach (Rule serverrule in serverRule)
                     {
-                        AddServerItem(serverInfo, serverRule, serverPlayers);
-                    }));
+                        if (serverrule.Name.StartsWith("modNames"))
+                        {
+                            modString += serverrule.Value;
+                        }
+                    }
+                    if (modString.EndsWith(";")) { modString.Take(modString.Length - 1); }
+                    ServerItem.ModInfo = modString;
                 }
                 else
                 {
-                    mainWin.Dispatcher.Invoke((Action)(() =>
-                    {
-                        AddNullServerItem(host);
-                    }));
+                    ServerItem.Host = address;
+                    ServerItem.Port = int.Parse(port.ToString());
+                    ServerItem.GamePort = int.Parse(port.ToString());
+                    ServerItem.Name = address;
+                    ServerItem.Map = "";
+                    ServerItem.Players = "0/0";
+                    ServerItem.CurrentPlayers = 0;
+                    ServerItem.MaxPlayers = 0;
+                    ServerItem.Passworded = false;
+                    ServerItem.Ping = 9999;
+                    ServerItem.BattleEye = false;
                     nullservers++;
                 }
-                mainWin.Dispatcher.Invoke((Action)(() =>
-                {
-                    mainWin.ProgressRect.Width = (mainWin.StatusGrid.ActualWidth / ServerEndP.Count()) * count;
-                }));
             }
-            runningThreads--;
+
+            return ServerItem;
         }
 
         private void SetStatus(string Text)
@@ -188,81 +226,9 @@ namespace DayZAnnex
             }));
         }
 
-        private void AddServerItem(ServerInfo ServerDetails, QueryMasterCollection<Rule> ServerRules, QueryMasterCollection<PlayerInfo> PlayerList)
-        {
-            ServerListInfo ServerItem = new ServerListInfo();
-            ServerItem.Host = ServerDetails.Address.Split(':')[0];
-            ServerItem.Port = ServerDetails.ExtraInfo.Port;
-            ServerItem.Name = ServerDetails.Name;
-            ServerItem.Map = ServerDetails.Map;
-            ServerItem.Players = ServerDetails.Players + "/" + ServerDetails.MaxPlayers;
-            ServerItem.CurrentPlayers = ServerDetails.Players;
-            ServerItem.MaxPlayers = ServerDetails.MaxPlayers;
-            ServerItem.Passworded = ServerDetails.IsPrivate;
-            ServerItem.Ping = ServerDetails.Ping;
-            ServerItem.BattleEye = true;
-            ServerItem.PlayerList = PlayerList;
-            ServerItem.ServerRules = ServerRules;
-
-            string modString = "";
-            foreach (Rule serverrule in ServerRules)
-            {
-                if (serverrule.Name.StartsWith("modNames"))
-                {
-                    modString += serverrule.Value;
-                }
-            }
-            if (modString.EndsWith(";")) { modString.Take(modString.Length - 1); }
-            ServerItem.ModInfo = modString;
-
-            MainServerList.Add(ServerItem);
-
-            if (IsFiltered(ServerItem))
-            {
-                AddItem(ServerItem);
-            }
-        }
-
-        private void AddNullServerItem(IPEndPoint host)
-        {
-            ServerListInfo ServerItem = new ServerListInfo();
-            ServerItem.Host = host.ToString();
-            ServerItem.Port = int.Parse(host.ToString().Split(':')[1]);
-            ServerItem.Name = host.ToString();
-            ServerItem.Map = "";
-            ServerItem.Players = "0/0";
-            ServerItem.CurrentPlayers = 0;
-            ServerItem.MaxPlayers = 0;
-            ServerItem.Passworded = false;
-            ServerItem.Ping = 9999;
-            ServerItem.BattleEye = false;
-
-            MainServerList.Add(ServerItem);
-            if (IsFiltered(ServerItem))
-            {
-                AddItem(ServerItem);
-            }
-        }
-
-        private string PingIP(string IPAddress)
-        {
-            Ping pingSender = new Ping();
-            string data = "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa";
-            byte[] buffer = Encoding.ASCII.GetBytes(data);
-            int timeout = 1000;
-            PingOptions options = new PingOptions(64, true);
-            PingReply reply = pingSender.Send(IPAddress, timeout, buffer, options);
-            if (reply.Status == IPStatus.Success)
-            {
-                return reply.RoundtripTime.ToString();
-            }
-            return "999";
-        }
-
         public void ReloadDisplay()
         {
-            mainWin.MainServerGrid.Items.Clear();
-            mainWin.displayedList.Clear();
+            mainWin.serverCollection.Clear();
             foreach (ServerListInfo serverInfo in MainServerList)
             {
                 if (IsFiltered(serverInfo))
@@ -274,8 +240,46 @@ namespace DayZAnnex
 
         public void AddItem(ServerListInfo serverInfo)
         {
-            mainWin.MainServerGrid.Items.Add(serverInfo);
-            mainWin.displayedList.Add(serverInfo);
+            mainWin.serverCollection.Add(serverInfo);
+        }
+
+        public void UpdateItem(ServerListInfo serverInfo, int index)
+        {
+            IPEndPoint endp = new IPEndPoint(IPAddress.Parse(serverInfo.Host), serverInfo.Port);
+
+            var t = new Thread(() =>
+            {
+                SetStatus("Updating server info: " + serverInfo.Name);
+                ServerListInfo server = GetServerInfo(serverInfo);
+
+                mainWin.Dispatcher.Invoke((Action)(() =>
+                {
+                    mainWin.serverCollection[index].BattleEye = server.BattleEye;
+                    mainWin.serverCollection[index].CurrentPlayers = server.CurrentPlayers;
+                    mainWin.serverCollection[index].GamePort = server.GamePort;
+                    mainWin.serverCollection[index].GameVer = server.GameVer;
+                    mainWin.serverCollection[index].Host = server.Host;
+                    mainWin.serverCollection[index].Map = server.Map;
+                    mainWin.serverCollection[index].MaxPlayers = server.MaxPlayers;
+                    mainWin.serverCollection[index].ModInfo = server.ModInfo;
+                    mainWin.serverCollection[index].Name = server.Name;
+                    mainWin.serverCollection[index].Passworded = server.Passworded;
+                    mainWin.serverCollection[index].Ping = server.Ping;
+                    mainWin.serverCollection[index].PlayerList = server.PlayerList;
+                    mainWin.serverCollection[index].Players = server.Players;
+                    mainWin.serverCollection[index].Port = server.Port;
+                    mainWin.serverCollection[index].ServerRules = server.ServerRules;
+                    mainWin.serverCollectionView.Refresh();
+
+                    ServerListInfo selectedItem = mainWin.MainServerGrid.SelectedItem as ServerListInfo;
+                    int selectedIndex = mainWin.serverCollection.IndexOf(serverInfo);
+
+                    if (mainWin.serverCollection[index] == server)
+                        mainWin.ShowDisplayPanel(server);
+                    SetStatus("");
+                }));
+            });
+            t.Start();
         }
 
         public bool IsFiltered(ServerListInfo serverInfo)
