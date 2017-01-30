@@ -305,6 +305,11 @@ namespace DayZAnnex
             server.ReloadDisplay();
         }
 
+        private void Filter_Map_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            server.ReloadDisplay();
+        }
+
         private void ServerInfo_Name_MouseEnter(object sender, MouseEventArgs e)
         {
             if (ServerInfo_Name.ActualWidth > ServerInfoPanel.ActualWidth)
@@ -462,9 +467,7 @@ namespace DayZAnnex
             ReloadSettingsUI();
         }
 
-        public void ShowDisplayPanel(ServerListInfo serverInfo)
-        {
-            List<string> modBlackList = new List<string>()
+        List<string> modBlackList = new List<string>()
             {
                 "Arma 2",
                 "Arma 2: Operation Arrowhead",
@@ -473,8 +476,13 @@ namespace DayZAnnex
                 "Arma 2: Private Military Company",
                 "Arma 2: Private Military Company (Lite)",
             };
+        bool hideServerMods = true;
 
-            bool hideServerMods = true;
+        public void UpdateDisplayPanel()
+        {
+            ServerListInfo selectedItem = MainServerGrid.SelectedItem as ServerListInfo;
+            int index = serverCollection.IndexOf(selectedItem);
+            ServerListInfo serverInfo = serverCollection[index];
 
             ServerInfo_Name.Text = serverInfo.Name;
             ServerInfo_IP.Text = serverInfo.Host;
@@ -502,6 +510,11 @@ namespace DayZAnnex
                     ServerInfo_PlayerList.Items.Add(player.Name);
                 }
             }
+        }
+
+        public void ShowDisplayPanel(ServerListInfo serverInfo)
+        {
+            UpdateDisplayPanel();
 
             if (ServerInfoPanelContainer.Visibility == Visibility.Hidden)
             {

@@ -65,11 +65,11 @@
                                 </Grid>
                                 <Grid Margin="0, 8, 0, 0">
                                     <TextBlock HorizontalAlignment="Left" VerticalAlignment="Top" Foreground="White" FontSize="15" Margin="0, 2, 0, 0" FontFamily="Berlin Sans" FontWeight="SemiBold"><Run Text="Mod"/></TextBlock>
-                                    <ComboBox HorizontalAlignment="Stretch" VerticalAlignment="Top" x:Name="Filter_Mod" Margin="0, 25, 0, 0" Height="22"></ComboBox>
+                                    <ComboBox x:Name="Filter_Mod" HorizontalAlignment="Stretch" VerticalAlignment="Top" Margin="0, 25, 0, 0" Height="22"></ComboBox>
                                 </Grid>
                                 <Grid Margin="0, 8, 0, 0">
                                     <TextBlock HorizontalAlignment="Left" VerticalAlignment="Top" Foreground="White" FontSize="15" Margin="0, 2, 0, 0" FontFamily="Berlin Sans" FontWeight="SemiBold"><Run Text="Map"/></TextBlock>
-                                    <ComboBox HorizontalAlignment="Stretch" VerticalAlignment="Top" x:Name="Filter_Map" Margin="0, 25, 0, 0" Height="22"></ComboBox>
+                                    <ComboBox x:Name="Filter_Map" HorizontalAlignment="Stretch" VerticalAlignment="Top" Margin="0, 25, 0, 0" Height="22" SelectionChanged="Filter_Map_SelectionChanged"></ComboBox>
                                 </Grid>
                                 <Grid Margin="0, 8, 0, 0">
                                     <TextBlock HorizontalAlignment="Left" VerticalAlignment="Top" Foreground="White" FontSize="15" Margin="0, 2, 0, 0" FontFamily="Berlin Sans" FontWeight="SemiBold"><Run Text="Hide"/></TextBlock>
