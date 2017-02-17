@@ -20,7 +20,7 @@ namespace DayZAnnex
     public class Settings
     {
         
-        public bool autoLoadServers { get; set; }
+        public bool refreshInBackground { get; set; }
         public bool autoRefreshServers { get; set; }
         public string modPath { get; set; }
         public string armaPath { get; set; }
@@ -28,7 +28,7 @@ namespace DayZAnnex
         public LaunchParams launchOptions { get; set; }
         public int maxThreads { get; set; }
 
-        string annexAppFolder = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData) + "\\DayZAnnex";
+        public string annexAppFolder = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData) + "\\DayZAnnex";
 
         public void LoadSettings()
         {
@@ -44,7 +44,7 @@ namespace DayZAnnex
 
             try
             {
-                autoLoadServers = bool.Parse(xdoc.Element("settings").Element("autoloadservers").Value);
+                refreshInBackground = bool.Parse(xdoc.Element("settings").Element("refreshinbackground").Value);
                 autoRefreshServers = bool.Parse(xdoc.Element("settings").Element("autorefreshservers").Value);
                 modPath = xdoc.Element("settings").Element("modpath").Value;
                 armaPath = xdoc.Element("settings").Element("armapath").Value;
@@ -74,7 +74,7 @@ namespace DayZAnnex
 
         public void LoadDefaults(bool saveDefaults = false)
         {
-            autoLoadServers = true;
+            refreshInBackground = true;
             autoRefreshServers = true;
             LocatePaths();
             LaunchParams lparams = new LaunchParams();
@@ -97,7 +97,7 @@ namespace DayZAnnex
             XDocument xdoc =
                 new XDocument(
                     new XElement("settings",
-                        new XElement("autoloadservers", autoLoadServers.ToString()),
+                        new XElement("refreshinbackground", refreshInBackground.ToString()),
                         new XElement("autorefreshservers", autoRefreshServers.ToString()),
                         new XElement("modpath", modPath),
                         new XElement("armapath", armaPath),
@@ -182,16 +182,6 @@ namespace DayZAnnex
             }
 
             return null;
-        }
-
-        public void SaveServerInfo()
-        {
-
-        }
-
-        public void LoadServerInfo()
-        {
-
         }
     }
 }

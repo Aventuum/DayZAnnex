@@ -251,7 +251,7 @@
                             <StackPanel Margin="20, 20, 0, 0" HorizontalAlignment="Stretch" Orientation="Vertical">
                                 <TextBlock Margin="0, 0, 0, 0" HorizontalAlignment="Left" VerticalAlignment="Top" Foreground="White" FontSize="20" FontFamily="Berlin Sans" FontWeight="SemiBold"><Run Text="DayZAnnex Settings"/></TextBlock>
                                 <Grid Margin="0, 10, 0, 0">
-                                    <CheckBox x:Name="settings_AutoLoadServers" Margin="0, 5, 0, 0" HorizontalAlignment="Left" VerticalAlignment="Top" Content="Auto Load Servers" FontFamily="Berlin Sans" FontWeight="SemiBold" Foreground="White"></CheckBox>
+                                    <CheckBox x:Name="settings_RefreshInBackground" Margin="0, 5, 0, 0" HorizontalAlignment="Left" VerticalAlignment="Top" Content="Refresh In Background" FontFamily="Berlin Sans" FontWeight="SemiBold" Foreground="White"></CheckBox>
                                     <CheckBox x:Name="settings_AutoRefreshServers" Margin="0, 25, 0, 0" HorizontalAlignment="Left" VerticalAlignment="Top" Content="Auto Refresh Servers" FontFamily="Berlin Sans" FontWeight="SemiBold" Foreground="White"></CheckBox>
                                 </Grid>
 

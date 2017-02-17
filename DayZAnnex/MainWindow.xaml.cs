@@ -143,7 +143,7 @@ namespace DayZAnnex
             settings_LaunchParam_ScriptErrors.IsChecked = settings.launchOptions.scriptErrors;
             settings_LaunchParam_WindowMode.IsChecked = settings.launchOptions.windowMode;
             settings_Profile.Text = settings.launchOptions.profile;
-            settings_AutoLoadServers.IsChecked = settings.autoLoadServers;
+            settings_RefreshInBackground.IsChecked = settings.refreshInBackground;
             settings_AutoRefreshServers.IsChecked = settings.autoRefreshServers;
             settings_MaxThreads.Text = settings.maxThreads.ToString();
             List<string> profiles = settings.GetProfiles();
@@ -497,7 +497,7 @@ namespace DayZAnnex
             ServerInfo_PlayerList.Items.Clear();
             ServerInfo_ModList.Items.Clear();
 
-            if (serverInfo.Ping != 9999)
+            if (serverInfo.Ping != 9999 && serverInfo.PlayerList != null)
             {
                 foreach (string moditem in serverInfo.ModInfo.Split(';'))
                 {
