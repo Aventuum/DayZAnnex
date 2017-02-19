@@ -121,7 +121,7 @@
             <Grid x:Name="Content_Servers" Margin="0, 0, 0, 25" Visibility="Visible">
                 <DataGrid x:Name="MainServerGrid" Style="{DynamicResource MetroDataGrid}" SelectionMode="Single" ColumnWidth="Auto" CanUserSortColumns="True" IsReadOnly="True" SelectionChanged="MainServerGrid_SelectionChanged">
                     <DataGrid.Columns>
-                        <DataGridTemplateColumn Header="Name" SortMemberPath="Name" Width="*">
+                        <DataGridTemplateColumn Header="Name" SortMemberPath="Name" Width="500">
                             <DataGridTemplateColumn.CellTemplate>
                                 <DataTemplate>
                                     <StackPanel>
@@ -138,10 +138,10 @@
                                 </DataTemplate>
                             </DataGridTemplateColumn.CellTemplate>
                         </DataGridTemplateColumn>
-                        <DataGridTextColumn Header="Map" Binding="{Binding Path=Map}"/>
-                        <DataGridTextColumn Header="Players" Binding="{Binding Path=Players}" SortMemberPath="CurrentPlayers"/>
+                        <DataGridTextColumn Header="Map" Binding="{Binding Path=Map}" Width="200"/>
+                        <DataGridTextColumn Header="Players" Binding="{Binding Path=Players}" SortMemberPath="CurrentPlayers" Width="100"/>
                         <DataGridTextColumn Header="Ping" Binding="{Binding Path=Ping}"/>
-                        <DataGridTextColumn Width="*" CanUserSort="False"/>
+                        <DataGridTextColumn Width="Auto" CanUserSort="False" CanUserResize="False"/>
                     </DataGrid.Columns>
                 </DataGrid>
 

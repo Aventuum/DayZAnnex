@@ -370,6 +370,7 @@ namespace DayZAnnex
             {
                 XElement serverElement = new XElement("server",
                         new XElement("host", serverInfo.Host),
+                        new XElement("map", serverInfo.Map),
                         new XElement("port", serverInfo.Port),
                         new XElement("gameport", serverInfo.GamePort.ToString()),
                         new XElement("name", serverInfo.Name),
@@ -418,7 +419,6 @@ namespace DayZAnnex
         {
             if (!System.IO.File.Exists(mainWin.settings.annexAppFolder + "\\servers.xml"))
                 return;
-
             
             ObservableCollection<ServerListInfo> newServerCollection = new ObservableCollection<ServerListInfo>();
             XDocument xdoc = XDocument.Parse(System.IO.File.ReadAllText(mainWin.settings.annexAppFolder + "\\servers.xml"));
@@ -427,54 +427,61 @@ namespace DayZAnnex
 
             foreach (XElement element in xdoc.Element("servers").Descendants("server"))
             {
-                ServerListInfo server = new ServerListInfo();
-                server.Host = element.Element("host").Value;
-                server.Port = int.Parse(element.Element("port").Value);
-                server.GamePort = int.Parse(element.Element("gameport").Value);
-                server.Name = element.Element("name").Value;
-                server.Players = element.Element("players").Value;
-                server.CurrentPlayers = int.Parse(element.Element("currentplayers").Value);
-                server.MaxPlayers = int.Parse(element.Element("maxplayers").Value);
-                server.Ping = int.Parse(element.Element("ping").Value);
-                server.GameVer = element.Element("gamever").Value;
-                server.ModInfo = element.Element("modinfo").Value;
-                server.BattleEye = bool.Parse(element.Element("battleye").Value);
-                server.Passworded = bool.Parse(element.Element("passworded").Value);
-
-                if (element.Elements("playerlist").Any())
+                try
                 {
-                    List<PlayerInfo> players = new List<PlayerInfo>();
-                    foreach (XElement playerElement in element.Element("playerlist").Descendants("player"))
+                    ServerListInfo server = new ServerListInfo();
+                    server.Host = element.Element("host").Value;
+                    server.Map = element.Element("map").Value;
+                    server.Port = int.Parse(element.Element("port").Value);
+                    server.GamePort = int.Parse(element.Element("gameport").Value);
+                    server.Name = element.Element("name").Value;
+                    server.Players = element.Element("players").Value;
+                    server.CurrentPlayers = int.Parse(element.Element("currentplayers").Value);
+                    server.MaxPlayers = int.Parse(element.Element("maxplayers").Value);
+                    server.Ping = int.Parse(element.Element("ping").Value);
+                    server.GameVer = element.Element("gamever").Value;
+                    server.ModInfo = element.Element("modinfo").Value;
+                    server.BattleEye = bool.Parse(element.Element("battleye").Value);
+                    server.Passworded = bool.Parse(element.Element("passworded").Value);
+
+                    if (element.Elements("playerlist").Any())
                     {
-                        players.Add(new PlayerInfo
+                        List<PlayerInfo> players = new List<PlayerInfo>();
+                        foreach (XElement playerElement in element.Element("playerlist").Descendants("player"))
                         {
-                            Name = playerElement.Element("name").Value,
-                            Score = long.Parse(playerElement.Element("score").Value),
-                            Time = TimeSpan.Parse(playerElement.Element("time").Value)
-                        });
+                            players.Add(new PlayerInfo
+                            {
+                                Name = playerElement.Element("name").Value,
+                                Score = long.Parse(playerElement.Element("score").Value),
+                                Time = TimeSpan.Parse(playerElement.Element("time").Value)
+                            });
+                        }
+
+                        if (!(players.Count == 0))
+                            server.PlayerList = new QueryMasterCollection<PlayerInfo>(players);
                     }
 
-                    if (!(players.Count == 0))
-                        server.PlayerList = new QueryMasterCollection<PlayerInfo>(players);
-                }
-
-                if (element.Elements("rules").Any())
-                {
-                    List<Rule> rules = new List<Rule>();
-                    foreach (XElement ruleElement in element.Element("rules").Descendants("rule"))
+                    if (element.Elements("rules").Any())
                     {
-                        rules.Add(new Rule
+                        List<Rule> rules = new List<Rule>();
+                        foreach (XElement ruleElement in element.Element("rules").Descendants("rule"))
                         {
-                            Name = ruleElement.Element("name").Value,
-                            Value = ruleElement.Element("value").Value
-                        });
-                    }
+                            rules.Add(new Rule
+                            {
+                                Name = ruleElement.Element("name").Value,
+                                Value = ruleElement.Element("value").Value
+                            });
+                        }
 
-                    if (!(rules.Count == 0))
-                        server.ServerRules = new QueryMasterCollection<Rule>(rules);
+                        if (!(rules.Count == 0))
+                            server.ServerRules = new QueryMasterCollection<Rule>(rules);
+                    }
+                    mainWin.serverCollection.Add(server);
+                    MainServerList.Add(server);
                 }
-                mainWin.serverCollection.Add(server);
-                MainServerList.Add(server);
+                catch (NullReferenceException)
+                {
+                }
             }
         }
     }
