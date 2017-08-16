@@ -539,5 +539,43 @@ namespace DayZAnnex
                 server.UpdateItem(serverCollection[index], index);
             }
         }
+
+        private void modToggle_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
+        {
+            CubicEase easing = new CubicEase();
+            easing.EasingMode = EasingMode.EaseInOut;
+
+            if (Filter_ModsContainer.Height == 0)
+            {
+                DoubleAnimation anim = new DoubleAnimation() { From = 0, To = Filter_ModsContainer.ActualHeight, Duration = new Duration(TimeSpan.FromSeconds(.3)), EasingFunction = easing };
+                Filter_ModsContainer.BeginAnimation(HeightProperty, anim);
+                modToggle.Text = "Hide Mods";
+            }
+            else
+            {
+                DoubleAnimation anim = new DoubleAnimation() { From = Filter_ModsContainer.ActualHeight, To = 0, Duration = new Duration(TimeSpan.FromSeconds(.3)), EasingFunction = easing };
+                Filter_ModsContainer.BeginAnimation(HeightProperty, anim);
+                modToggle.Text = "Show Mods";
+            }
+        }
+
+        private void mapToggle_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
+        {
+            CubicEase easing = new CubicEase();
+            easing.EasingMode = EasingMode.EaseInOut;
+
+            if (Filter_MapsContainer.Height == 0)
+            {
+                DoubleAnimation anim = new DoubleAnimation() { From = 0, To = Filter_MapsContainer.ActualHeight, Duration = new Duration(TimeSpan.FromSeconds(.3)), EasingFunction = easing };
+                Filter_MapsContainer.BeginAnimation(HeightProperty, anim);
+                mapToggle.Text = "Hide Maps";
+            }
+            else
+            {
+                DoubleAnimation anim = new DoubleAnimation() { From = Filter_MapsContainer.ActualHeight, To = 0, Duration = new Duration(TimeSpan.FromSeconds(.3)), EasingFunction = easing };
+                Filter_MapsContainer.BeginAnimation(HeightProperty, anim);
+                mapToggle.Text = "Show Maps";
+            }
+        }
     }
 }

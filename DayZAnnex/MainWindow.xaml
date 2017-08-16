@@ -22,12 +22,7 @@
     <Grid Background="White" Margin="0">
 
         <Grid x:Name="TopBar" HorizontalAlignment="Stretch" VerticalAlignment="Top" Height="35" Background="White" MouseLeftButtonDown="TopBar_MouseLeftButtonDown">
-            <TextBlock VerticalAlignment="Center" HorizontalAlignment="Left" FontSize="20" Margin="15, 0, 0, 0" FontFamily="Raleway" FontWeight="SemiBold"><Run Text="DayZAnnex"/></TextBlock>
-            <StackPanel x:Name="NotificationStack" HorizontalAlignment="Right" Margin="0, 0, 50, 0" Orientation="Horizontal">
-                <!--<Grid Height="35" Background="#FF1E242E">
-                    <TextBlock Margin="15, 0" HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="Red" TextAlignment="Center" TextWrapping="Wrap" FontSize="13" FontFamily="Berlin Sans" FontWeight="Regular"><Run Text="This is a notification"/></TextBlock>
-                </Grid>-->
-            </StackPanel>
+            <TextBlock VerticalAlignment="Top" HorizontalAlignment="Left" FontSize="20" Margin="15, 2, 0, 0" FontWeight="SemiBold" ><Run Text="DayZAnnex"/></TextBlock>
         </Grid>
         <Image Height="16" Width="16" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="0, 9, 15, 0" Source="images/X.png" MouseLeftButtonUp="Image_MouseLeftButtonUp_1"/>
 
@@ -40,48 +35,87 @@
                     </Border.Effect>
                     
                     <Grid x:Name="MenuPanel">
-                        <Grid x:Name="FilterGrid" VerticalAlignment="top" Margin="0, 0, 0, 0" Background="Transparent">
-                            <TextBlock x:Name="FiltersTB" Margin="25, 20, 0, 0" HorizontalAlignment="Left" VerticalAlignment="Top" Foreground="White" FontSize="20" FontFamily="Berlin Sans" FontWeight="SemiBold"><Run Text="Filters"/></TextBlock>
+                        <Grid x:Name="FilterGrid" Margin="0, 0, 0, 80" Background="Transparent">
+                            <TextBlock x:Name="FiltersTB" Margin="25, 20, 0, 0" HorizontalAlignment="Left" VerticalAlignment="Top" Foreground="White" FontSize="20" FontWeight="SemiBold"><Run Text="Filters"/></TextBlock>
+                            
+                            <ScrollViewer Margin="25, 50, 10, 25" Padding="0, 0, 15, 0" VerticalScrollBarVisibility="Auto">
+                                <StackPanel>
+                                    <Grid>
+                                        <TextBlock HorizontalAlignment="Left" VerticalAlignment="Top" Foreground="White" FontSize="15" FontWeight="SemiBold"><Run Text="Name"/></TextBlock>
+                                        <TextBox x:Name="Filter_Name" Margin="0, 20, 0, 0" Height="22" TextChanged="FilterTextChanged"></TextBox>
+                                    </Grid>
+                                    <Grid Margin="0, 8, 0, 0">
+                                        <TextBlock HorizontalAlignment="Left" VerticalAlignment="Top" Foreground="White" FontSize="15" Margin="0, 2, 0, 0" FontWeight="SemiBold"><Run Text="Ping"/></TextBlock>
+                                        <TextBox HorizontalAlignment="Left" VerticalAlignment="Top" x:Name="Filter_PingMin" Margin="0, 25, 0, 0" Height="22" Width="55" TextAlignment="Center" TextChanged="FilterTextChanged" PreviewTextInput="PreviewCharFilter"></TextBox>
+                                        <TextBlock HorizontalAlignment="Center" VerticalAlignment="Top" Foreground="White" FontSize="15" Margin="0, 27, 0, 0" FontWeight="SemiBold"><Run Text="To"/></TextBlock>
+                                        <TextBox HorizontalAlignment="Right" VerticalAlignment="Top" x:Name="Filter_PingMax" Margin="0, 25, 0, 0" Height="22" Width="55" TextAlignment="Center" TextChanged="FilterTextChanged" PreviewTextInput="PreviewCharFilter"></TextBox>
+                                        <CheckBox x:Name="Filter_HideUnresponsive" Margin="0, 55, 0, 0" Content="Hide Unresponsive" FontWeight="SemiBold" Foreground="White" Unchecked="FilterCheckBoxChanged" Checked="FilterCheckBoxChanged"></CheckBox>
+                                    </Grid>
+                                    <Grid Margin="0, 8, 0, 0">
+                                        <TextBlock HorizontalAlignment="Left" VerticalAlignment="Top" Foreground="White" FontSize="15" Margin="0, 2, 0, 0" FontWeight="SemiBold"><Run Text="Players"/></TextBlock>
+                                        <TextBox HorizontalAlignment="Left" VerticalAlignment="Top" x:Name="Filter_PlayersMin" Margin="0, 25, 0, 0" Height="22" Width="55" TextAlignment="Center" TextChanged="FilterTextChanged" PreviewTextInput="PreviewCharFilter"></TextBox>
+                                        <TextBlock HorizontalAlignment="Center" VerticalAlignment="Top" Foreground="White" FontSize="15" Margin="0, 27, 0, 0" FontWeight="SemiBold"><Run Text="To"/></TextBlock>
+                                        <TextBox HorizontalAlignment="Right" VerticalAlignment="Top" x:Name="Filter_PlayersMax" Margin="0, 25, 0, 0" Height="22" Width="55" TextAlignment="Center" TextChanged="FilterTextChanged" PreviewTextInput="PreviewCharFilter"></TextBox>
+                                        <CheckBox x:Name="Filter_HidePlayersFull" Margin="0, 55, 0, 0" Content="Hide Full" FontWeight="SemiBold" Foreground="White" Unchecked="FilterCheckBoxChanged" Checked="FilterCheckBoxChanged"></CheckBox>
+                                        <CheckBox x:Name="Filter_HidePlayersEmpty" Margin="0, 75, 0, 0" Content="Hide Empty" FontWeight="SemiBold" Foreground="White" Unchecked="FilterCheckBoxChanged" Checked="FilterCheckBoxChanged"></CheckBox>
+                                    </Grid>
+                                    <Grid Margin="0, 8, 0, 0">
+                                        <TextBlock HorizontalAlignment="Left" VerticalAlignment="Top" Foreground="White" FontSize="15" Margin="0, 2, 0, 0" FontWeight="SemiBold"><Run Text="Mods"/></TextBlock>
+                                        <TextBlock x:Name="modToggle" HorizontalAlignment="Left" VerticalAlignment="Top" Foreground="Gray" FontSize="11" Margin="45, 5, 0, 0" FontWeight="SemiBold" TextDecorations="underline" MouseLeftButtonUp="modToggle_MouseLeftButtonUp" Cursor="Hand"><Run Text="Show Mods"/></TextBlock>
+                                        
+                                        <StackPanel x:Name="Filter_ModsContainer" Margin="0, 25, 0, 0" Height="0">
+                                            <Grid>
+                                                <CheckBox x:Name="Filter_ModCustom" IsChecked="False" VerticalAlignment="Center" HorizontalAlignment="Left"/>
+                                                <TextBox x:Name="Filter_ModCustomText" Height="20" Margin="22, 0, 0, 0"/>
+                                            </Grid>
+                                            <CheckBox Content="Epoch" Margin="0, 5" Foreground="White"/>
+                                            <CheckBox Content="Jade Groove" Margin="0, 5" Foreground="White"/>
+                                            <CheckBox Content="Lingor" Margin="0, 5" Foreground="White"/>
+                                            <CheckBox Content="Origins" Margin="0, 5" Foreground="White"/>
+                                            <CheckBox Content="Overwatch" Margin="0, 5" Foreground="White"/>
+                                            <CheckBox Content="Sahrani" Margin="0, 5" Foreground="White"/>
+                                            <CheckBox Content="Takistan" Margin="0, 5" Foreground="White"/>
+                                            <CheckBox Content="Tavi" Margin="0, 5" Foreground="White"/>
+                                            <CheckBox Content="Taviana" Margin="0, 5" Foreground="White"/>
+                                            <CheckBox Content="Utes" Margin="0, 5" Foreground="White"/>
+                                            <CheckBox Content="Zargabad" Margin="0, 5" Foreground="White"/>
+                                        </StackPanel>
+                                    </Grid>
+                                    <Grid Margin="0, 8, 0, 0">
+                                        <TextBlock HorizontalAlignment="Left" VerticalAlignment="Top" Foreground="White" FontSize="15" Margin="0, 2, 0, 0" FontWeight="SemiBold"><Run Text="Maps"/></TextBlock>
+                                        <TextBlock x:Name="mapToggle" HorizontalAlignment="Left" VerticalAlignment="Top" Foreground="Gray" FontSize="11" Margin="45, 5, 0, 0" FontWeight="SemiBold" TextDecorations="underline" Cursor="Hand" MouseLeftButtonUp="mapToggle_MouseLeftButtonUp"><Run Text="Show Maps"/></TextBlock>
 
-                            <StackPanel Margin="25, 50, 25, 25">
-                                <Grid>
-                                    <TextBlock HorizontalAlignment="Left" VerticalAlignment="Top" Foreground="White" FontSize="15" FontFamily="Berlin Sans" FontWeight="SemiBold"><Run Text="Name"/></TextBlock>
-                                    <TextBox x:Name="Filter_Name" Margin="0, 20, 0, 0" Height="22" TextChanged="FilterTextChanged"></TextBox>
-                                </Grid>
-                                <Grid Margin="0, 8, 0, 0">
-                                    <TextBlock HorizontalAlignment="Left" VerticalAlignment="Top" Foreground="White" FontSize="15" Margin="0, 2, 0, 0" FontFamily="Berlin Sans" FontWeight="SemiBold"><Run Text="Ping"/></TextBlock>
-                                    <TextBox HorizontalAlignment="Left" VerticalAlignment="Top" x:Name="Filter_PingMin" Margin="0, 25, 0, 0" Height="22" Width="55" TextAlignment="Center" TextChanged="FilterTextChanged" PreviewTextInput="PreviewCharFilter"></TextBox>
-                                    <TextBlock HorizontalAlignment="Center" VerticalAlignment="Top" Foreground="White" FontSize="15" Margin="0, 27, 0, 0" FontFamily="Berlin Sans" FontWeight="SemiBold"><Run Text="To"/></TextBlock>
-                                    <TextBox HorizontalAlignment="Right" VerticalAlignment="Top" x:Name="Filter_PingMax" Margin="0, 25, 0, 0" Height="22" Width="55" TextAlignment="Center" TextChanged="FilterTextChanged" PreviewTextInput="PreviewCharFilter"></TextBox>
-                                    <CheckBox x:Name="Filter_HideUnresponsive" Margin="0, 55, 0, 0" Content="Hide Unresponsive" FontFamily="Berlin Sans" FontWeight="SemiBold" Foreground="White" Unchecked="FilterCheckBoxChanged" Checked="FilterCheckBoxChanged"></CheckBox>
-                                </Grid>
-                                <Grid Margin="0, 8, 0, 0">
-                                    <TextBlock HorizontalAlignment="Left" VerticalAlignment="Top" Foreground="White" FontSize="15" Margin="0, 2, 0, 0" FontFamily="Berlin Sans" FontWeight="SemiBold"><Run Text="Players"/></TextBlock>
-                                    <TextBox HorizontalAlignment="Left" VerticalAlignment="Top" x:Name="Filter_PlayersMin" Margin="0, 25, 0, 0" Height="22" Width="55" TextAlignment="Center" TextChanged="FilterTextChanged" PreviewTextInput="PreviewCharFilter"></TextBox>
-                                    <TextBlock HorizontalAlignment="Center" VerticalAlignment="Top" Foreground="White" FontSize="15" Margin="0, 27, 0, 0" FontFamily="Berlin Sans" FontWeight="SemiBold"><Run Text="To"/></TextBlock>
-                                    <TextBox HorizontalAlignment="Right" VerticalAlignment="Top" x:Name="Filter_PlayersMax" Margin="0, 25, 0, 0" Height="22" Width="55" TextAlignment="Center" TextChanged="FilterTextChanged" PreviewTextInput="PreviewCharFilter"></TextBox>
-                                    <CheckBox x:Name="Filter_HidePlayersFull" Margin="0, 55, 0, 0" Content="Hide Full" FontFamily="Berlin Sans" FontWeight="SemiBold" Foreground="White" Unchecked="FilterCheckBoxChanged" Checked="FilterCheckBoxChanged"></CheckBox>
-                                    <CheckBox x:Name="Filter_HidePlayersEmpty" Margin="0, 75, 0, 0" Content="Hide Empty" FontFamily="Berlin Sans" FontWeight="SemiBold" Foreground="White" Unchecked="FilterCheckBoxChanged" Checked="FilterCheckBoxChanged"></CheckBox>
-                                </Grid>
-                                <Grid Margin="0, 8, 0, 0">
-                                    <TextBlock HorizontalAlignment="Left" VerticalAlignment="Top" Foreground="White" FontSize="15" Margin="0, 2, 0, 0" FontFamily="Berlin Sans" FontWeight="SemiBold"><Run Text="Mod"/></TextBlock>
-                                    <ComboBox x:Name="Filter_Mod" HorizontalAlignment="Stretch" VerticalAlignment="Top" Margin="0, 25, 0, 0" Height="22"></ComboBox>
-                                </Grid>
-                                <Grid Margin="0, 8, 0, 0">
-                                    <TextBlock HorizontalAlignment="Left" VerticalAlignment="Top" Foreground="White" FontSize="15" Margin="0, 2, 0, 0" FontFamily="Berlin Sans" FontWeight="SemiBold"><Run Text="Map"/></TextBlock>
-                                    <ComboBox x:Name="Filter_Map" HorizontalAlignment="Stretch" VerticalAlignment="Top" Margin="0, 25, 0, 0" Height="22" SelectionChanged="Filter_Map_SelectionChanged"></ComboBox>
-                                </Grid>
-                                <Grid Margin="0, 8, 0, 0">
-                                    <TextBlock HorizontalAlignment="Left" VerticalAlignment="Top" Foreground="White" FontSize="15" Margin="0, 2, 0, 0" FontFamily="Berlin Sans" FontWeight="SemiBold"><Run Text="Hide"/></TextBlock>
-                                    <CheckBox x:Name="Filter_HidePassword" Margin="0, 25, 0, 0" Content="Password" FontFamily="Berlin Sans" FontWeight="SemiBold" Foreground="White" Unchecked="FilterCheckBoxChanged" Checked="FilterCheckBoxChanged"></CheckBox>
-                                    <CheckBox IsEnabled="False" x:Name="Filter_HideLocked" Margin="0, 45, 0, 0" Content="Locked" FontFamily="Berlin Sans" FontWeight="SemiBold" Foreground="White"></CheckBox>
-                                </Grid>
-                            </StackPanel>
+                                        <StackPanel x:Name="Filter_MapsContainer" Margin="0, 25, 0, 0" Height="0">
+                                            <Grid>
+                                                <CheckBox x:Name="Filter_MapCustom" IsChecked="False" VerticalAlignment="Center" HorizontalAlignment="Left"/>
+                                                <TextBox x:Name="Filter_MapCustomText" Height="20" Margin="22, 0, 0, 0"/>
+                                            </Grid>
+                                            <CheckBox Content="Chernarus" Margin="0, 5" Foreground="White"/>
+                                            <CheckBox Content="Fallujah" Margin="0, 5" Foreground="White"/>
+                                            <CheckBox Content="Lingor" Margin="0, 5" Foreground="White"/>
+                                            <CheckBox Content="Namalsk" Margin="0, 5" Foreground="White"/>
+                                            <CheckBox Content="Napf" Margin="0, 5" Foreground="White"/>
+                                            <CheckBox Content="Panthera2" Margin="0, 5" Foreground="White"/>
+                                            <CheckBox Content="Sauerland" Margin="0, 5" Foreground="White"/>
+                                            <CheckBox Content="Tavi" Margin="0, 5" Foreground="White"/>
+                                            <CheckBox Content="Taviana" Margin="0, 5" Foreground="White"/>
+                                            <CheckBox Content="Utes" Margin="0, 5" Foreground="White"/>
+                                            <CheckBox Content="Zargabad" Margin="0, 5" Foreground="White"/>
+                                        </StackPanel>
+                                    </Grid>
+                                    <Grid Margin="0, 8, 0, 0">
+                                        <TextBlock HorizontalAlignment="Left" VerticalAlignment="Top" Foreground="White" FontSize="15" Margin="0, 2, 0, 0" FontWeight="SemiBold"><Run Text="Hide"/></TextBlock>
+                                        <CheckBox x:Name="Filter_HidePassword" Margin="0, 25, 0, 0" Content="Password" FontWeight="SemiBold" Foreground="White" Unchecked="FilterCheckBoxChanged" Checked="FilterCheckBoxChanged"></CheckBox>
+                                        <CheckBox IsEnabled="False" x:Name="Filter_HideLocked" Margin="0, 45, 0, 0" Content="Locked" FontWeight="SemiBold" Foreground="White"></CheckBox>
+                                    </Grid>
+                                </StackPanel>
+                            </ScrollViewer>
+                            
                         </Grid>
 
                         <Grid x:Name="sideinfo" Height="80" VerticalAlignment="Bottom" MouseEnter="sideinfo_MouseEnter" MouseLeave="sideinfo_MouseLeave" Background="Transparent">
                             <Image x:Name="info_icon" Height="30" Width="30" Margin="0, 25, 0, 0" HorizontalAlignment="Center" VerticalAlignment="Top" Source="images/icon_white.png" Opacity=".1"></Image>
-                            <TextBlock x:Name="info_text" Margin="0, 30, 0, 0" Opacity="0" HorizontalAlignment="Center" VerticalAlignment="Top" Foreground="White" FontSize="15" FontFamily="Berlin Sans" FontWeight="SemiBold"><Run Text="Created by Aventuum"/></TextBlock>
+                            <TextBlock x:Name="info_text" Margin="0, 30, 0, 0" Opacity="0" HorizontalAlignment="Center" VerticalAlignment="Top" Foreground="White" FontSize="15" FontWeight="SemiBold"><Run Text="Created by Aventuum"/></TextBlock>
                         </Grid>
                     </Grid>
                 </Border>
@@ -92,27 +126,27 @@
             <StackPanel x:Name="MenuItemStack" VerticalAlignment="Top" Margin="0, 0, 0, 0" Orientation="Horizontal">
                 <Grid x:Name="MenuItem_Servers" MinWidth="180" Width="{Binding ElementName=MenuItemGrid, Path=ActualWidth, Converter={ikriv:MathConverter}, ConverterParameter=x/5}" Height="45" VerticalAlignment="Top" HorizontalAlignment="Stretch" Background="Transparent" MouseLeftButtonUp="MenuItem_Servers_MouseLeftButtonUp">
                     <Rectangle x:Name="MenuItem_Servers_Selected" VerticalAlignment="Top" HorizontalAlignment="Stretch" Height="3" Fill="#4F74B3" />
-                    <TextBlock x:Name="MenuItem_Servers_Text" Margin="0, 0, 0, 0" HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="White" FontSize="20" FontFamily="Berlin Sans" FontWeight="SemiBold"><Run Text="Servers"/></TextBlock>
+                    <TextBlock x:Name="MenuItem_Servers_Text" Margin="0, 0, 0, 0" HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="White" FontSize="20" FontWeight="SemiBold"><Run Text="Servers"/></TextBlock>
                 </Grid>
 
                 <Grid x:Name="MenuItem_Favourites" MinWidth="180" Width="{Binding ElementName=MenuItemGrid, Path=ActualWidth, Converter={ikriv:MathConverter}, ConverterParameter=x/5}" Height="45" VerticalAlignment="Top" HorizontalAlignment="Stretch" Background="Transparent" MouseLeftButtonUp="MenuItem_Favourites_MouseLeftButtonUp" Opacity=".6">
                     <Rectangle x:Name="MenuItem_Favourites_Selected" VerticalAlignment="Top" HorizontalAlignment="Stretch" Height="3" Fill="#4F74B3" />
-                    <TextBlock x:Name="MenuItem_Favourites_Text" HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="White" FontSize="20" FontFamily="Berlin Sans" FontWeight="SemiBold"><Run Text="Favourites"/></TextBlock>
+                    <TextBlock x:Name="MenuItem_Favourites_Text" HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="White" FontSize="20" FontWeight="SemiBold"><Run Text="Favourites"/></TextBlock>
                 </Grid>
 
                 <Grid x:Name="MenuItem_History" MinWidth="180" Width="{Binding ElementName=MenuItemGrid, Path=ActualWidth, Converter={ikriv:MathConverter}, ConverterParameter=x/5}" Height="45" VerticalAlignment="Top" HorizontalAlignment="Stretch" Background="Transparent" MouseLeftButtonUp="MenuItem_History_MouseLeftButtonUp" Opacity=".6">
                     <Rectangle x:Name="MenuItem_History_Selected" VerticalAlignment="Top" HorizontalAlignment="Stretch" Height="3" Fill="#4F74B3" />
-                    <TextBlock x:Name="MenuItem_History_Text" HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="White" FontSize="20" FontFamily="Berlin Sans" FontWeight="SemiBold"><Run Text="History"/></TextBlock>
+                    <TextBlock x:Name="MenuItem_History_Text" HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="White" FontSize="20" FontWeight="SemiBold"><Run Text="History"/></TextBlock>
                 </Grid>
 
                 <Grid x:Name="MenuItem_Mods" MinWidth="180" Width="{Binding ElementName=MenuItemGrid, Path=ActualWidth, Converter={ikriv:MathConverter}, ConverterParameter=x/5}" Height="45" VerticalAlignment="Top" HorizontalAlignment="Stretch" Background="Transparent" MouseLeftButtonUp="MenuItem_Friends_MouseLeftButtonUp">
                     <Rectangle x:Name="MenuItem_Mods_Selected" VerticalAlignment="Top" HorizontalAlignment="Stretch" Height="3" Fill="#4F74B3" />
-                    <TextBlock x:Name="MenuItem_Mods_Text" HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="White" FontSize="20" FontFamily="Berlin Sans" FontWeight="SemiBold"><Run Text="Mods"/></TextBlock>
+                    <TextBlock x:Name="MenuItem_Mods_Text" HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="White" FontSize="20" FontWeight="SemiBold"><Run Text="Mods"/></TextBlock>
                 </Grid>
 
                 <Grid x:Name="MenuItem_Settings" MinWidth="180" Width="{Binding ElementName=MenuItemGrid, Path=ActualWidth, Converter={ikriv:MathConverter}, ConverterParameter=x/5}" Height="45" VerticalAlignment="Top" HorizontalAlignment="Stretch" Background="Transparent" MouseLeftButtonUp="MenuItem_Settings_MouseLeftButtonUp">
                     <Rectangle x:Name="MenuItem_Settings_Selected" VerticalAlignment="Top" HorizontalAlignment="Stretch" Height="3" Fill="#4F74B3" />
-                    <TextBlock x:Name="MenuItem_Settings_Text" HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="White" FontSize="20" FontFamily="Berlin Sans" FontWeight="SemiBold"><Run Text="Settings"/></TextBlock>
+                    <TextBlock x:Name="MenuItem_Settings_Text" HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="White" FontSize="20" FontWeight="SemiBold"><Run Text="Settings"/></TextBlock>
                 </Grid>
             </StackPanel>
         </Grid>
@@ -142,6 +176,11 @@
                         <DataGridTextColumn Header="Players" Binding="{Binding Path=Players}" SortMemberPath="CurrentPlayers" Width="100"/>
                         <DataGridTextColumn Header="Ping" Binding="{Binding Path=Ping}"/>
                         <DataGridTextColumn Width="Auto" CanUserSort="False" CanUserResize="False"/>
+                        <DataGridTextColumn>
+                            <DataGridTextColumn.Header>
+                                <Button Height="20" Width="20"></Button>
+                            </DataGridTextColumn.Header>
+                        </DataGridTextColumn>
                     </DataGrid.Columns>
                 </DataGrid>
 
@@ -155,54 +194,54 @@
                             <StackPanel x:Name="ServerInfoPanel" Margin="15" Orientation="Vertical" ScrollViewer.CanContentScroll="True">
 
                                 <Grid>
-                                    <TextBlock HorizontalAlignment="Left" VerticalAlignment="Top" Foreground="White" FontSize="18" FontFamily="Berlin Sans" FontWeight="SemiBold"><Run Text="Server Info"/></TextBlock>
+                                    <TextBlock HorizontalAlignment="Left" VerticalAlignment="Top" Foreground="White" FontSize="18" FontWeight="SemiBold"><Run Text="Server Info"/></TextBlock>
                                     <Image x:Name="CloseServerInfo" Height="16" Width="16" HorizontalAlignment="Right" Margin="0, 0, 0, 0" Source="images/X_white.png" MouseLeftButtonUp="Image_MouseLeftButtonUp"></Image>
                                 </Grid>
-                                <TextBlock x:Name="ServerInfo_Name" HorizontalAlignment="Left" VerticalAlignment="Top" Foreground="White" FontSize="15" FontFamily="Berlin Sans" FontWeight="Regular" MouseEnter="ServerInfo_Name_MouseEnter" MouseLeave="ServerInfo_Name_MouseLeave"><Run Text="Server Name"/></TextBlock>
+                                <TextBlock x:Name="ServerInfo_Name" HorizontalAlignment="Left" VerticalAlignment="Top" Foreground="White" FontSize="15" FontWeight="Regular" MouseEnter="ServerInfo_Name_MouseEnter" MouseLeave="ServerInfo_Name_MouseLeave"><Run Text="Server Name"/></TextBlock>
                                 <Button x:Name="ServerInfo_Join" Width="100" Height="20" HorizontalAlignment="Left" Margin="0, 5, 0, 5" Content="Join Server" Click="ServerInfo_Join_Click"></Button>
                                 <Rectangle Height="1" HorizontalAlignment="Stretch" Fill="#364050" Margin="0, 5, 0, 5"/>
                                 <Grid>
-                                    <TextBlock HorizontalAlignment="Left" VerticalAlignment="Top" Foreground="White" FontSize="15" FontFamily="Berlin Sans" FontWeight="Regular"><Run Text="IP"/></TextBlock>
-                                    <TextBlock x:Name="ServerInfo_IP" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="130, 0, 0, 0" Foreground="White" FontSize="15" FontFamily="Berlin Sans" FontWeight="Regular"><Run Text="0.0.0.0"/></TextBlock>
+                                    <TextBlock HorizontalAlignment="Left" VerticalAlignment="Top" Foreground="White" FontSize="15" FontWeight="Regular"><Run Text="IP"/></TextBlock>
+                                    <TextBlock x:Name="ServerInfo_IP" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="130, 0, 0, 0" Foreground="White" FontSize="15" FontWeight="Regular"><Run Text="0.0.0.0"/></TextBlock>
                                 </Grid>
                                 <Grid>
-                                    <TextBlock HorizontalAlignment="Left" VerticalAlignment="Top" Foreground="White" FontSize="15" FontFamily="Berlin Sans" FontWeight="Regular"><Run Text="Port"/></TextBlock>
-                                    <TextBlock x:Name="ServerInfo_Port" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="130, 0, 0, 0" Foreground="White" FontSize="15" FontFamily="Berlin Sans" FontWeight="Regular"><Run Text="0000"/></TextBlock>
+                                    <TextBlock HorizontalAlignment="Left" VerticalAlignment="Top" Foreground="White" FontSize="15" FontWeight="Regular"><Run Text="Port"/></TextBlock>
+                                    <TextBlock x:Name="ServerInfo_Port" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="130, 0, 0, 0" Foreground="White" FontSize="15" FontWeight="Regular"><Run Text="0000"/></TextBlock>
                                 </Grid>
                                 <Grid>
-                                    <TextBlock HorizontalAlignment="Left" VerticalAlignment="Top" Foreground="White" FontSize="15" FontFamily="Berlin Sans" FontWeight="Regular"><Run Text="Ping"/></TextBlock>
-                                    <TextBlock x:Name="ServerInfo_Ping" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="130, 0, 0, 0" Foreground="White" FontSize="15" FontFamily="Berlin Sans" FontWeight="Regular"><Run Text="0ms"/></TextBlock>
+                                    <TextBlock HorizontalAlignment="Left" VerticalAlignment="Top" Foreground="White" FontSize="15" FontWeight="Regular"><Run Text="Ping"/></TextBlock>
+                                    <TextBlock x:Name="ServerInfo_Ping" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="130, 0, 0, 0" Foreground="White" FontSize="15" FontWeight="Regular"><Run Text="0ms"/></TextBlock>
                                 </Grid>
                                 <Rectangle Height="1" HorizontalAlignment="Stretch" Fill="#364050" Margin="0, 5, 0, 5"/>
                                 <Grid>
-                                    <TextBlock HorizontalAlignment="Left" VerticalAlignment="Top" Foreground="White" FontSize="15" FontFamily="Berlin Sans" FontWeight="Regular"><Run Text="Map"/></TextBlock>
-                                    <TextBlock x:Name="ServerInfo_Map" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="130, 0, 0, 0" Foreground="White" FontSize="15" FontFamily="Berlin Sans" FontWeight="Regular"><Run Text="null"/></TextBlock>
+                                    <TextBlock HorizontalAlignment="Left" VerticalAlignment="Top" Foreground="White" FontSize="15" FontWeight="Regular"><Run Text="Map"/></TextBlock>
+                                    <TextBlock x:Name="ServerInfo_Map" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="130, 0, 0, 0" Foreground="White" FontSize="15" FontWeight="Regular"><Run Text="null"/></TextBlock>
                                 </Grid>
                                 <Grid>
-                                    <TextBlock HorizontalAlignment="Left" VerticalAlignment="Top" Foreground="White" FontSize="15" FontFamily="Berlin Sans" FontWeight="Regular"><Run Text="Game Version"/></TextBlock>
-                                    <TextBlock x:Name="ServerInfo_Version" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="130, 0, 0, 0" Foreground="White" FontSize="15" FontFamily="Berlin Sans" FontWeight="Regular"><Run Text="null"/></TextBlock>
+                                    <TextBlock HorizontalAlignment="Left" VerticalAlignment="Top" Foreground="White" FontSize="15" FontWeight="Regular"><Run Text="Game Version"/></TextBlock>
+                                    <TextBlock x:Name="ServerInfo_Version" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="130, 0, 0, 0" Foreground="White" FontSize="15" FontWeight="Regular"><Run Text="null"/></TextBlock>
                                 </Grid>
                                 <Grid>
-                                    <TextBlock HorizontalAlignment="Left" VerticalAlignment="Top" Foreground="White" FontSize="15" FontFamily="Berlin Sans" FontWeight="Regular"><Run Text="Passworded"/></TextBlock>
-                                    <TextBlock x:Name="ServerInfo_Passworded" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="130, 0, 0, 0" Foreground="White" FontSize="15" FontFamily="Berlin Sans" FontWeight="Regular"><Run Text="null"/></TextBlock>
+                                    <TextBlock HorizontalAlignment="Left" VerticalAlignment="Top" Foreground="White" FontSize="15" FontWeight="Regular"><Run Text="Passworded"/></TextBlock>
+                                    <TextBlock x:Name="ServerInfo_Passworded" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="130, 0, 0, 0" Foreground="White" FontSize="15" FontWeight="Regular"><Run Text="null"/></TextBlock>
                                 </Grid>
                                 <Grid>
-                                    <TextBlock HorizontalAlignment="Left" VerticalAlignment="Top" Foreground="White" FontSize="15" FontFamily="Berlin Sans" FontWeight="Regular"><Run Text="BattlEye"/></TextBlock>
-                                    <TextBlock x:Name="ServerInfo_BattlEye" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="130, 0, 0, 0" Foreground="White" FontSize="15" FontFamily="Berlin Sans" FontWeight="Regular"><Run Text="null"/></TextBlock>
+                                    <TextBlock HorizontalAlignment="Left" VerticalAlignment="Top" Foreground="White" FontSize="15" FontWeight="Regular"><Run Text="BattlEye"/></TextBlock>
+                                    <TextBlock x:Name="ServerInfo_BattlEye" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="130, 0, 0, 0" Foreground="White" FontSize="15" FontWeight="Regular"><Run Text="null"/></TextBlock>
                                 </Grid>
                                 <Grid>
-                                    <TextBlock HorizontalAlignment="Left" VerticalAlignment="Top" Foreground="White" FontSize="15" FontFamily="Berlin Sans" FontWeight="Regular"><Run Text="Last Joined"/></TextBlock>
-                                    <TextBlock x:Name="ServerInfo_LastJoined" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="130, 0, 0, 0" Foreground="White" FontSize="15" FontFamily="Berlin Sans" FontWeight="Regular"><Run Text="never"/></TextBlock>
+                                    <TextBlock HorizontalAlignment="Left" VerticalAlignment="Top" Foreground="White" FontSize="15" FontWeight="Regular"><Run Text="Last Joined"/></TextBlock>
+                                    <TextBlock x:Name="ServerInfo_LastJoined" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="130, 0, 0, 0" Foreground="White" FontSize="15" FontWeight="Regular"><Run Text="never"/></TextBlock>
 
                                 </Grid>
                                 <Rectangle Height="1" HorizontalAlignment="Stretch" Fill="#364050" Margin="0, 5, 0, 5"/>
                                 <Grid>
-                                    <TextBlock HorizontalAlignment="Left" VerticalAlignment="Top" Foreground="White" FontSize="15" FontFamily="Berlin Sans" FontWeight="Regular"><Run Text="Players"/></TextBlock>
-                                    <TextBlock x:Name="ServerInfo_Players" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="130, 0, 0, 0" Foreground="White" FontSize="15" FontFamily="Berlin Sans" FontWeight="Regular"><Run Text="0/0"/></TextBlock>
+                                    <TextBlock HorizontalAlignment="Left" VerticalAlignment="Top" Foreground="White" FontSize="15" FontWeight="Regular"><Run Text="Players"/></TextBlock>
+                                    <TextBlock x:Name="ServerInfo_Players" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="130, 0, 0, 0" Foreground="White" FontSize="15" FontWeight="Regular"><Run Text="0/0"/></TextBlock>
                                 </Grid>
                                 <ListBox x:Name="ServerInfo_PlayerList" Margin="0, 5, 0, 0" Background="Transparent" MinHeight="20" MaxHeight="200" BorderThickness="0"  ItemContainerStyle="{DynamicResource MetroPlayerListBoxItemStyle}"/>
                                 <Rectangle Height="1" HorizontalAlignment="Stretch" Fill="#364050" Margin="0, 5, 0, 5"/>
-                                <TextBlock HorizontalAlignment="Left" VerticalAlignment="Top" Foreground="White" FontSize="15" FontFamily="Berlin Sans" FontWeight="Regular"><Run Text="Mods"/></TextBlock>
+                                <TextBlock HorizontalAlignment="Left" VerticalAlignment="Top" Foreground="White" FontSize="15" FontWeight="Regular"><Run Text="Mods"/></TextBlock>
                                 <ListBox x:Name="ServerInfo_ModList" Margin="0, 5, 0, 0" Background="Transparent" MinHeight="20" MaxHeight="200" BorderThickness="0"  ItemContainerStyle="{DynamicResource MetroPlayerListBoxItemStyle}"/>
                             </StackPanel>
                         </Border>
@@ -216,47 +255,47 @@
                     <StackPanel Orientation="Horizontal">
                         <StackPanel Orientation="Vertical" Width="350">
                             <StackPanel Margin="20, 20, 0, 0" HorizontalAlignment="Stretch" Orientation="Vertical">
-                                <TextBlock Margin="0, 0, 0, 0" HorizontalAlignment="Left" VerticalAlignment="Top" Foreground="White" FontSize="20" FontFamily="Berlin Sans" FontWeight="SemiBold"><Run Text="ARMA Settings"/></TextBlock>
-                                <TextBlock HorizontalAlignment="Left" VerticalAlignment="Top" Foreground="White" FontSize="15" Margin="0, 10, 0, 0" FontFamily="Berlin Sans" FontWeight="SemiBold"><Run Text="ARMA 2 Location"/></TextBlock>
+                                <TextBlock Margin="0, 0, 0, 0" HorizontalAlignment="Left" VerticalAlignment="Top" Foreground="White" FontSize="20" FontWeight="SemiBold"><Run Text="ARMA Settings"/></TextBlock>
+                                <TextBlock HorizontalAlignment="Left" VerticalAlignment="Top" Foreground="White" FontSize="15" Margin="0, 10, 0, 0" FontWeight="SemiBold"><Run Text="ARMA 2 Location"/></TextBlock>
                                 <Grid>
                                     <TextBox x:Name="settings_Arma2Path" Height="22" Width="200" HorizontalAlignment="Left"></TextBox>
                                     <Button x:Name="settings_BrowseArma2" HorizontalAlignment="Left" Width="100" Margin="210, 0, 0, 0" Content="Browse" Click="settings_BrowseArma2_Click"/>
                                 </Grid>
 
-                                <TextBlock HorizontalAlignment="Left" VerticalAlignment="Top" Foreground="White" FontSize="15" Margin="0, 10, 0, 0" FontFamily="Berlin Sans" FontWeight="SemiBold"><Run Text="ARMA 2 OA Location"/></TextBlock>
+                                <TextBlock HorizontalAlignment="Left" VerticalAlignment="Top" Foreground="White" FontSize="15" Margin="0, 10, 0, 0" FontWeight="SemiBold"><Run Text="ARMA 2 OA Location"/></TextBlock>
                                 <Grid>
                                     <TextBox x:Name="settings_OAPath" Height="22" Width="200" HorizontalAlignment="Left"></TextBox>
                                     <Button x:Name="settings_BrowseArma2OA" HorizontalAlignment="Left" Width="100" Margin="210, 0, 0, 0" Content="Browse" Click="settings_BrowseArma2OA_Click"></Button>
                                 </Grid>
 
-                                <TextBlock HorizontalAlignment="Left" VerticalAlignment="Top" Foreground="White" FontSize="15" Margin="0, 10, 0, 0" FontFamily="Berlin Sans" FontWeight="SemiBold"><Run Text="Mods Location"/></TextBlock>
+                                <TextBlock HorizontalAlignment="Left" VerticalAlignment="Top" Foreground="White" FontSize="15" Margin="0, 10, 0, 0" FontWeight="SemiBold"><Run Text="Mods Location"/></TextBlock>
                                 <Grid>
                                     <TextBox x:Name="settings_ModsPath" Height="22" Width="200" HorizontalAlignment="Left"></TextBox>
                                     <Button x:Name="settings_BrowseMods" HorizontalAlignment="Left" Width="100" Margin="210, 0, 0, 0" Content="Browse" Click="settings_BrowseMods_Click"></Button>
                                 </Grid>
 
                                 <Grid Margin="0, 10, 0, 0">
-                                    <CheckBox x:Name="settings_LaunchParam_NoSplash" Margin="0, 5, 0, 0" HorizontalAlignment="Left" VerticalAlignment="Top" Content="No Splash" FontFamily="Berlin Sans" FontWeight="SemiBold" Foreground="White" Click="settings_checkbox_Click"/>
-                                    <CheckBox x:Name="settings_LaunchParam_NoPause" Margin="0, 25, 0, 0" HorizontalAlignment="Left" VerticalAlignment="Top" Content="No Pause" FontFamily="Berlin Sans" FontWeight="SemiBold" Foreground="White" Click="settings_checkbox_Click"></CheckBox>
-                                    <CheckBox x:Name="settings_LaunchParam_ScriptErrors" Margin="0, 45, 0, 0" HorizontalAlignment="Left" VerticalAlignment="Top" Content="Script Errors" FontFamily="Berlin Sans" FontWeight="SemiBold" Foreground="White" Click="settings_checkbox_Click"></CheckBox>
-                                    <CheckBox x:Name="settings_LaunchParam_WindowMode" Margin="120, 25, 0, 0" HorizontalAlignment="Left" VerticalAlignment="Top" Content="Windowed Mode" FontFamily="Berlin Sans" FontWeight="SemiBold" Foreground="White" Click="settings_checkbox_Click"></CheckBox>
-                                    <CheckBox x:Name="settings_LaunchParam_NoLogs" Margin="120, 5, 0, 0" HorizontalAlignment="Left" VerticalAlignment="Top" Content="No Logs" FontFamily="Berlin Sans" FontWeight="SemiBold" Foreground="White" Click="settings_checkbox_Click"></CheckBox>
+                                    <CheckBox x:Name="settings_LaunchParam_NoSplash" Margin="0, 5, 0, 0" HorizontalAlignment="Left" VerticalAlignment="Top" Content="No Splash" FontWeight="SemiBold" Foreground="White" Click="settings_checkbox_Click"/>
+                                    <CheckBox x:Name="settings_LaunchParam_NoPause" Margin="0, 25, 0, 0" HorizontalAlignment="Left" VerticalAlignment="Top" Content="No Pause" FontWeight="SemiBold" Foreground="White" Click="settings_checkbox_Click"></CheckBox>
+                                    <CheckBox x:Name="settings_LaunchParam_ScriptErrors" Margin="0, 45, 0, 0" HorizontalAlignment="Left" VerticalAlignment="Top" Content="Script Errors" FontWeight="SemiBold" Foreground="White" Click="settings_checkbox_Click"></CheckBox>
+                                    <CheckBox x:Name="settings_LaunchParam_WindowMode" Margin="120, 25, 0, 0" HorizontalAlignment="Left" VerticalAlignment="Top" Content="Windowed Mode" FontWeight="SemiBold" Foreground="White" Click="settings_checkbox_Click"></CheckBox>
+                                    <CheckBox x:Name="settings_LaunchParam_NoLogs" Margin="120, 5, 0, 0" HorizontalAlignment="Left" VerticalAlignment="Top" Content="No Logs" FontWeight="SemiBold" Foreground="White" Click="settings_checkbox_Click"></CheckBox>
                                 </Grid>
 
-                                <TextBlock HorizontalAlignment="Left" VerticalAlignment="Top" Foreground="White" FontSize="15" Margin="0, 10, 0, 0" FontFamily="Berlin Sans" FontWeight="SemiBold"><Run Text="Profile"/></TextBlock>
+                                <TextBlock HorizontalAlignment="Left" VerticalAlignment="Top" Foreground="White" FontSize="15" Margin="0, 10, 0, 0" FontWeight="SemiBold"><Run Text="Profile"/></TextBlock>
                                 <ComboBox x:Name="settings_Profile" Height="22" Width="200" HorizontalAlignment="Left" SelectionChanged="settings_Profile_SelectionChanged"></ComboBox>
                             </StackPanel>
                         </StackPanel>
                         <StackPanel Orientation="Vertical" Width="350">
                             <StackPanel Margin="20, 20, 0, 0" HorizontalAlignment="Stretch" Orientation="Vertical">
-                                <TextBlock Margin="0, 0, 0, 0" HorizontalAlignment="Left" VerticalAlignment="Top" Foreground="White" FontSize="20" FontFamily="Berlin Sans" FontWeight="SemiBold"><Run Text="DayZAnnex Settings"/></TextBlock>
+                                <TextBlock Margin="0, 0, 0, 0" HorizontalAlignment="Left" VerticalAlignment="Top" Foreground="White" FontSize="20" FontWeight="SemiBold"><Run Text="DayZAnnex Settings"/></TextBlock>
                                 <Grid Margin="0, 10, 0, 0">
-                                    <CheckBox x:Name="settings_RefreshInBackground" Margin="0, 5, 0, 0" HorizontalAlignment="Left" VerticalAlignment="Top" Content="Refresh In Background" FontFamily="Berlin Sans" FontWeight="SemiBold" Foreground="White"></CheckBox>
-                                    <CheckBox x:Name="settings_AutoRefreshServers" Margin="0, 25, 0, 0" HorizontalAlignment="Left" VerticalAlignment="Top" Content="Auto Refresh Servers" FontFamily="Berlin Sans" FontWeight="SemiBold" Foreground="White"></CheckBox>
+                                    <CheckBox x:Name="settings_RefreshInBackground" Margin="0, 5, 0, 0" HorizontalAlignment="Left" VerticalAlignment="Top" Content="Refresh In Background" FontWeight="SemiBold" Foreground="White"></CheckBox>
+                                    <CheckBox x:Name="settings_AutoRefreshServers" Margin="0, 25, 0, 0" HorizontalAlignment="Left" VerticalAlignment="Top" Content="Auto Refresh Servers" FontWeight="SemiBold" Foreground="White"></CheckBox>
                                 </Grid>
 
                                 <Grid Margin="0, 5, 0, 0">
-                                    <TextBlock HorizontalAlignment="Left" VerticalAlignment="Top" Foreground="White" FontSize="12" Margin="0, 4, 0, 0" FontFamily="Berlin Sans" FontWeight="SemiBold"><Run Text="Max Threads (Default 10)"/></TextBlock>
+                                    <TextBlock HorizontalAlignment="Left" VerticalAlignment="Top" Foreground="White" FontSize="12" Margin="0, 4, 0, 0" FontWeight="SemiBold"><Run Text="Max Threads (Default 10)"/></TextBlock>
                                     <TextBox x:Name="settings_MaxThreads" Margin="140, 0, 0, 0" Height="22" Width="50" HorizontalAlignment="Left"></TextBox>
                                 </Grid>
                             </StackPanel>
@@ -268,7 +307,7 @@
             <Grid x:Name="StatusGrid" Background="#252E3D" VerticalAlignment="Bottom" HorizontalAlignment="Stretch" Height="25">
                 <Rectangle x:Name="ProgressRect" Fill="#2db322" Width="1" HorizontalAlignment="Left"></Rectangle>
                 <Grid x:Name="LoadingGrid">
-                    <TextBlock x:Name="LoadingText" Margin="0, 0, 0, 0" HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="White" FontSize="15" FontFamily="Berlin Sans"><Run Text="Loading Servers 0/1000"/></TextBlock>
+                    <TextBlock x:Name="LoadingText" Margin="0, 0, 0, 0" HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="White" FontSize="15"><Run Text="Loading Servers 0/1000"/></TextBlock>
                 </Grid>
             </Grid>
 

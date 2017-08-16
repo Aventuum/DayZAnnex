@@ -60,9 +60,9 @@ namespace DayZAnnex
         {
             mainWin = mw;
             LoadServerInfo();
-            Thread thread = new Thread(LoadServersThread);
-            thread.SetApartmentState(ApartmentState.STA);
-            thread.Start();
+            //Thread thread = new Thread(LoadServersThread);
+            //thread.SetApartmentState(ApartmentState.STA);
+            //thread.Start();
         }
         
         int runningThreads = 0;
@@ -229,13 +229,13 @@ namespace DayZAnnex
                     if (modString.EndsWith(";")) { modString.Take(modString.Length - 1); }
                     ServerItem.ModInfo = modString;
 
-                    if (!mainWin.Filter_Map.Items.Contains(serverInfo.Map))
-                    {
-                        mainWin.Dispatcher.Invoke((Action)(() =>
-                        {
-                            mainWin.Filter_Map.Items.Add(serverInfo.Map);
-                        }));
-                    }
+                    //if (!mainWin.Filter_Map.Items.Contains(serverInfo.Map))
+                    //{
+                    //    mainWin.Dispatcher.Invoke((Action)(() =>
+                    //    {
+                    //        mainWin.Filter_Map.Items.Add(serverInfo.Map);
+                    //    }));
+                    //}
                 }
                 else
                 {
@@ -344,8 +344,8 @@ namespace DayZAnnex
             long MaxPlayers = long.Parse(string.IsNullOrEmpty(mainWin.Filter_PlayersMax.Text) ? "0" : mainWin.Filter_PlayersMax.Text);
             bool HideEmpty = mainWin.Filter_HidePlayersEmpty.IsChecked.Value;
             bool HideFull = mainWin.Filter_HidePlayersFull.IsChecked.Value;
-            string Mod = mainWin.Filter_Mod.Text;
-            string Map = mainWin.Filter_Map.Text.ToLower();
+            //string Mod = mainWin.Filter_Mod.Text;
+            //string Map = mainWin.Filter_Map.Text.ToLower();
             bool HidePassworded = mainWin.Filter_HidePassword.IsChecked.Value;
             
             if (!string.IsNullOrEmpty(Name) && !serverInfo.Name.ToLower().Contains(Name)) { filtered = false; }
@@ -356,7 +356,7 @@ namespace DayZAnnex
             if (MaxPlayers > 0 && long.Parse(serverInfo.Players.Split('/')[0]) > MaxPlayers) { filtered = false; }
             if (HideEmpty && long.Parse(serverInfo.Players.Split('/')[0]) == 0) { filtered = false; }
             if (HideFull && serverInfo.Players.Split('/')[0] == serverInfo.Players.Split('/')[1]) { filtered = false; }
-            if (!(Map == "All" || Map == "") && serverInfo.Map.ToLower() != Map) { filtered = false; }
+            //if (!(Map == "All" || Map == "") && serverInfo.Map.ToLower() != Map) { filtered = false; }
             if (HidePassworded && serverInfo.Passworded) { filtered = false; }
 
             return filtered;
