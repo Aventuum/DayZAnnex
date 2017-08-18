@@ -377,6 +377,11 @@ namespace DayZAnnex
             LaunchGame(path, parameters + "\"" + modParam + "\"");
         }
 
+        /// <summary>
+        /// Launches arma 2 oa with the mod parameters
+        /// </summary>
+        /// <param name="exePath">Path of the arma 2 oa executable</param>
+        /// <param name="cParams">The parameters to launch the executable with</param>
         private void LaunchGame(string exePath, string cParams)
         {
             if (!File.Exists(exePath))
@@ -385,6 +390,9 @@ namespace DayZAnnex
             var proc = System.Diagnostics.Process.Start(exePath, cParams);
         }
 
+        /// <summary>
+        /// Shows the folder browser to browse for the arma 2 folder
+        /// </summary>
         private void settings_BrowseArma2_Click(object sender, RoutedEventArgs e)
         {
             CommonOpenFileDialog dialog = new CommonOpenFileDialog();
@@ -405,6 +413,9 @@ namespace DayZAnnex
             }
         }
 
+        /// <summary>
+        /// Shows the folder browser to browse for the arma 2 oa folder
+        /// </summary>
         private void settings_BrowseArma2OA_Click(object sender, RoutedEventArgs e)
         {
             CommonOpenFileDialog dialog = new CommonOpenFileDialog();
@@ -425,6 +436,9 @@ namespace DayZAnnex
             }
         }
 
+        /// <summary>
+        /// Shows the folder browser to browse for the mod folder
+        /// </summary>
         private void settings_BrowseMods_Click(object sender, RoutedEventArgs e)
         {
             CommonOpenFileDialog dialog = new CommonOpenFileDialog();
@@ -438,6 +452,9 @@ namespace DayZAnnex
             }
         }
 
+        /// <summary>
+        /// Changes the selected profile and saves the setting change
+        /// </summary>
         private void settings_Profile_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             if (settings_Profile.SelectedValue == null)
@@ -456,6 +473,9 @@ namespace DayZAnnex
             ReloadSettingsUI();
         }
 
+        /// <summary>
+        /// Update all settings options, save them, and reload the settings display
+        /// </summary>
         private void settings_checkbox_Click(object sender, RoutedEventArgs e)
         {
             settings.launchOptions.noLogs = settings_LaunchParam_NoLogs.IsChecked.Value;
@@ -467,6 +487,9 @@ namespace DayZAnnex
             ReloadSettingsUI();
         }
 
+        /// <summary>
+        /// List of blacklisted mods that should not be showen in the mod lists
+        /// </summary>
         List<string> modBlackList = new List<string>()
             {
                 "Arma 2",
@@ -476,14 +499,23 @@ namespace DayZAnnex
                 "Arma 2: Private Military Company",
                 "Arma 2: Private Military Company (Lite)",
             };
+
+        // Hide mod items containing the string 'server'
         bool hideServerMods = true;
 
+        /// <summary>
+        /// Update the display panel objects
+        /// </summary>
         public void UpdateDisplayPanel()
         {
+            // Get the selected item
             ServerListInfo selectedItem = MainServerGrid.SelectedItem as ServerListInfo;
+            // Get the index of the item
             int index = serverCollection.IndexOf(selectedItem);
+            // Get the item from the list
             ServerListInfo serverInfo = serverCollection[index];
 
+            // Set displayed server information
             ServerInfo_Name.Text = serverInfo.Name;
             ServerInfo_IP.Text = serverInfo.Host;
             ServerInfo_Port.Text = serverInfo.GamePort.ToString();
@@ -494,14 +526,18 @@ namespace DayZAnnex
             ServerInfo_LastJoined.Text = "never"; // TODO History
             ServerInfo_Players.Text = serverInfo.Players;
 
+            // Clear the player and mod lists
             ServerInfo_PlayerList.Items.Clear();
             ServerInfo_ModList.Items.Clear();
 
+            // Check the server will have the lists
             if (serverInfo.Ping != 9999 && serverInfo.PlayerList != null)
             {
+                // Update the player and mod lists
                 foreach (string moditem in serverInfo.ModInfo.Split(';'))
                 {
-                    if (!modBlackList.Any(moditem.Contains) && (!moditem.Contains("Server") && hideServerMods) && !string.IsNullOrWhiteSpace(moditem))
+                    // Check if the moditem contains blacklisted strings
+                    if (!modBlackList.Any(moditem.Contains) && (!moditem.ToLower().Contains("server") && hideServerMods) && !string.IsNullOrWhiteSpace(moditem))
                         ServerInfo_ModList.Items.Add(moditem);
                 }
 
@@ -512,12 +548,17 @@ namespace DayZAnnex
             }
         }
 
-        public void ShowDisplayPanel(ServerListInfo serverInfo)
+        /// <summary>
+        /// Show the display panel
+        /// </summary>
+        public void ShowDisplayPanel()
         {
             UpdateDisplayPanel();
 
+            // Check if the panel is hidden before animating
             if (ServerInfoPanelContainer.Visibility == Visibility.Hidden)
             {
+                // Animate the display panel to slide into view
                 ServerInfoPanelContainer.Margin = new Thickness(0, 0, -(ServerInfoPanelContainer.ActualWidth), 0);
                 ServerInfoPanelContainer.Visibility = Visibility.Visible;
 
@@ -529,17 +570,26 @@ namespace DayZAnnex
             }
         }
 
+        /// <summary>
+        /// Gets the selected item and displays it in the display panel
+        /// </summary>
         private void MainServerGrid_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
+            // Check to make sure the selection is not -1 (null)
             if(MainServerGrid.SelectedIndex != -1)
             {
+                // Get the selected item
                 ServerListInfo serverInfo = MainServerGrid.SelectedItem as ServerListInfo;
+                // Get the index in the server collection
                 int index = serverCollection.IndexOf(serverInfo);
-                ShowDisplayPanel(serverCollection[index]);
+                // Update the selected item
                 server.UpdateItem(serverCollection[index], index);
             }
         }
 
+        /// <summary>
+        /// Toggles the available mod filters
+        /// </summary>
         private void modToggle_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
         {
             CubicEase easing = new CubicEase();
@@ -559,6 +609,9 @@ namespace DayZAnnex
             }
         }
 
+        /// <summary>
+        /// Toggles the available map filters
+        /// </summary>
         private void mapToggle_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
         {
             CubicEase easing = new CubicEase();
@@ -576,6 +629,14 @@ namespace DayZAnnex
                 Filter_MapsContainer.BeginAnimation(HeightProperty, anim);
                 mapToggle.Text = "Show Maps";
             }
+        }
+
+        /// <summary>
+        /// Refreshes the current server view
+        /// </summary>
+        private void imageServerRefresh_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
+        {
+
         }
     }
 }

@@ -175,12 +175,12 @@
                         <DataGridTextColumn Header="Map" Binding="{Binding Path=Map}" Width="200"/>
                         <DataGridTextColumn Header="Players" Binding="{Binding Path=Players}" SortMemberPath="CurrentPlayers" Width="100"/>
                         <DataGridTextColumn Header="Ping" Binding="{Binding Path=Ping}"/>
-                        <DataGridTextColumn Width="Auto" CanUserSort="False" CanUserResize="False"/>
                         <DataGridTextColumn>
                             <DataGridTextColumn.Header>
-                                <Button Height="20" Width="20"></Button>
+                                <Image x:Name="imageServerRefresh" Source="images/reload.png" Height="20" Width="20" MouseLeftButtonUp="imageServerRefresh_MouseLeftButtonUp"></Image>
                             </DataGridTextColumn.Header>
                         </DataGridTextColumn>
+                        <DataGridTextColumn Width="Auto" CanUserSort="False" CanUserResize="False"/>
                     </DataGrid.Columns>
                 </DataGrid>
 
