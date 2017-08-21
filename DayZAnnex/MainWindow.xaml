@@ -24,7 +24,7 @@
         <Grid x:Name="TopBar" HorizontalAlignment="Stretch" VerticalAlignment="Top" Height="35" Background="White" MouseLeftButtonDown="TopBar_MouseLeftButtonDown">
             <TextBlock VerticalAlignment="Top" HorizontalAlignment="Left" FontSize="20" Margin="15, 2, 0, 0" FontWeight="SemiBold" ><Run Text="DayZAnnex"/></TextBlock>
         </Grid>
-        <Image Height="16" Width="16" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="0, 9, 15, 0" Source="images/X.png" MouseLeftButtonUp="Image_MouseLeftButtonUp_1"/>
+        <Image x:Name="exitButton" Height="16" Width="16" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="0, 9, 15, 0" Source="images/X.png" MouseLeftButtonUp="exitButton_MouseLeftButtonUp"/>
 
 
         <Grid x:Name="MenuPanelContainer" VerticalAlignment="Stretch" HorizontalAlignment="Left" Width="200" Margin="0, 35, 0, 0" Background="#FF252E3D">
@@ -113,7 +113,7 @@
                             
                         </Grid>
 
-                        <Grid x:Name="sideinfo" Height="80" VerticalAlignment="Bottom" MouseEnter="sideinfo_MouseEnter" MouseLeave="sideinfo_MouseLeave" Background="Transparent">
+                        <Grid x:Name="sideIcon" Height="80" VerticalAlignment="Bottom" MouseEnter="sideIcon_MouseEnter" MouseLeave="sideIcon_MouseLeave" Background="Transparent">
                             <Image x:Name="info_icon" Height="30" Width="30" Margin="0, 25, 0, 0" HorizontalAlignment="Center" VerticalAlignment="Top" Source="images/icon_white.png" Opacity=".1"></Image>
                             <TextBlock x:Name="info_text" Margin="0, 30, 0, 0" Opacity="0" HorizontalAlignment="Center" VerticalAlignment="Top" Foreground="White" FontSize="15" FontWeight="SemiBold"><Run Text="Created by Aventuum"/></TextBlock>
                         </Grid>
@@ -195,7 +195,7 @@
 
                                 <Grid>
                                     <TextBlock HorizontalAlignment="Left" VerticalAlignment="Top" Foreground="White" FontSize="18" FontWeight="SemiBold"><Run Text="Server Info"/></TextBlock>
-                                    <Image x:Name="CloseServerInfo" Height="16" Width="16" HorizontalAlignment="Right" Margin="0, 0, 0, 0" Source="images/X_white.png" MouseLeftButtonUp="Image_MouseLeftButtonUp"></Image>
+                                    <Image x:Name="CloseServerInfo" Height="16" Width="16" HorizontalAlignment="Right" Margin="0, 0, 0, 0" Source="images/X_white.png" MouseLeftButtonUp="closeServerInfo_MouseLeftButtonUp"></Image>
                                 </Grid>
                                 <TextBlock x:Name="ServerInfo_Name" HorizontalAlignment="Left" VerticalAlignment="Top" Foreground="White" FontSize="15" FontWeight="Regular" MouseEnter="ServerInfo_Name_MouseEnter" MouseLeave="ServerInfo_Name_MouseLeave"><Run Text="Server Name"/></TextBlock>
                                 <Button x:Name="ServerInfo_Join" Width="100" Height="20" HorizontalAlignment="Left" Margin="0, 5, 0, 5" Content="Join Server" Click="ServerInfo_Join_Click"></Button>

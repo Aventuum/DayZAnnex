@@ -38,30 +38,81 @@ namespace DayZAnnex
 
     public partial class MainWindow : Window
     {
-        public ObservableCollection<ServerListInfo> serverCollection; 
+
+        #region "Class scope variables"
+        // =====================================
+        //
+        //        Class Scope Variables
+
+        /// <summary>
+        /// List of blacklisted mods that should not be displayed in the mod lists
+        /// </summary>
+        List<string> modBlackList = new List<string>()
+            {
+                "Arma 2",
+                "Arma 2: Operation Arrowhead",
+                "Arma 2: British Armed Forces",
+                "Arma 2: British Armed Forces (Lite)",
+                "Arma 2: Private Military Company",
+                "Arma 2: Private Military Company (Lite)",
+            };
+
+        // Hide mod items containing the string 'server'
+        bool hideServerMods = true;
+
+        /// <sumary>
+        /// Complete list of servers
+        /// </sumary>
+        public ObservableCollection<ServerListInfo> serverCollection;
+
+        /// <summary>
+        /// Filtered server from complete list
+        /// </summary>
         public ListCollectionView serverCollectionView { get; private set; }
+
+        /// <summary>
+        /// Program server object
+        /// </summary>
+        Server server;
+
+        /// <summary>
+        /// Program settings object
+        /// </summary>
+        public Settings settings;
+        #endregion
+
 
         public MainWindow()
         {
             InitializeComponent();
 
+            // Initiate server list and view list
             serverCollection = new ObservableCollection<ServerListInfo>();
             serverCollectionView = new ListCollectionView(serverCollection);
+            // Set itemsource
             MainServerGrid.ItemsSource = serverCollectionView;
 
-            server.LoadServers(this);
-            ChangeToTab(0);
+            // Initiate current server and settings objects
+            settings = new Settings();
+            server = new Server();
+
+            // Load settings
             settings.LoadSettings();
+
+            // Begin loading servers
+            server.LoadServers(this);
+
+            ChangeToTab(0);
         }
 
-        Server server = new Server();
-        public Settings settings = new Settings();
 
+        // Allow the window to be moved
         private void TopBar_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
             DragMove();
         }
 
+        // Remove border when window is maximized
         private void Window_StateChanged(object sender, EventArgs e)
         {
             if (this.WindowState == WindowState.Maximized)
@@ -74,9 +125,13 @@ namespace DayZAnnex
             }
         }
 
-        private void ChangeToTab(int tabIndex) // 0 = Servers, 1 = Favourites, 2 = History, 3 = Mods, 4 = Settings
+        /// <summary>
+        /// Changes the visible grid
+        /// </summary>
+        /// <param name="tabIndex">Index of the grid (0 = Servers, 1 = Favourites, 2 = History, 3 = Mods, 4 = Settings)</param>
+        private void ChangeToTab(int tabIndex)
         {
-            //Make all the tabs look unselected
+            // Make all the tabs look unselected
             MenuItem_Servers_Selected.Visibility = Visibility.Hidden;
             MenuItem_Servers_Text.Foreground = (SolidColorBrush)(new BrushConverter().ConvertFromString("#6c7481"));
             MenuItem_Favourites_Selected.Visibility = Visibility.Hidden;
@@ -88,14 +143,15 @@ namespace DayZAnnex
             MenuItem_Settings_Selected.Visibility = Visibility.Hidden;
             MenuItem_Settings_Text.Foreground = (SolidColorBrush)(new BrushConverter().ConvertFromString("#6c7481"));
 
+            // Hide all grids
             Content_Servers.Visibility = Visibility.Hidden;
             Content_Settings.Visibility = Visibility.Hidden;
 
-            //Define the animation
+            // Define the animation
             DoubleAnimation SlideIn = new DoubleAnimation() { From = 0, To = 4, Duration = new Duration(TimeSpan.FromSeconds(.15)) };
             DoubleAnimation Fadein = new DoubleAnimation() { From = .5, To = 1, Duration = new Duration(TimeSpan.FromSeconds(.15)) };
 
-            //Make the selected tab look selected by setting the foreground and highlight visibility
+            // Show the selected grid and highlight the tab
             switch (tabIndex)
             {
                 case 0:
@@ -132,8 +188,12 @@ namespace DayZAnnex
 
         }
 
+        /// <summary>
+        /// Reload the settings tab, updating it with information from the current settings object
+        /// </summary>
         private void ReloadSettingsUI()
         {
+            // Set inputs
             settings_Arma2Path.Text = settings.armaPath;
             settings_OAPath.Text = settings.oaPath;
             settings_ModsPath.Text = settings.modPath;
@@ -146,8 +206,11 @@ namespace DayZAnnex
             settings_RefreshInBackground.IsChecked = settings.refreshInBackground;
             settings_AutoRefreshServers.IsChecked = settings.autoRefreshServers;
             settings_MaxThreads.Text = settings.maxThreads.ToString();
+
             List<string> profiles = settings.GetProfiles();
             settings_Profile.ItemsSource = profiles;
+
+            // Set the selected profile
             if (settings.launchOptions.profile == "")
             {
                 settings_Profile.SelectedIndex = 0;
@@ -157,6 +220,13 @@ namespace DayZAnnex
                 settings_Profile.SelectedItem = settings.launchOptions.profile;
             }
         }
+
+        #region "Event Methods"
+        // =====================================
+        //
+        //             Event Methods
+
+        // Tab event methods
 
         private void MenuItem_Servers_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
         {
@@ -183,7 +253,7 @@ namespace DayZAnnex
             ChangeToTab(4);
         }
 
-        private void sideinfo_MouseEnter(object sender, MouseEventArgs e)
+        private void sideIcon_MouseEnter(object sender, MouseEventArgs e)
         {
             info_icon.Opacity = .1;
             info_icon.Margin = new Thickness(0, 25, 0, 0);
@@ -203,7 +273,7 @@ namespace DayZAnnex
             info_text.BeginAnimation(TextBlock.OpacityProperty, text_fade);
         }
 
-        private void sideinfo_MouseLeave(object sender, MouseEventArgs e)
+        private void sideIcon_MouseLeave(object sender, MouseEventArgs e)
         {
             info_icon.Opacity = 1;
             info_icon.Margin = new Thickness(0, 0, 0, 0);
@@ -223,7 +293,10 @@ namespace DayZAnnex
             info_text.BeginAnimation(TextBlock.OpacityProperty, text_fade);
         }
 
-        private void Image_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
+        /// <summary>
+        /// Closes the server info panel
+        /// </summary>
+        private void closeServerInfo_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
         {
             Content_Servers.IsEnabled = true;
             Content_Servers.Opacity = 1;
@@ -240,11 +313,17 @@ namespace DayZAnnex
             }
         }
 
-        private void Image_MouseLeftButtonUp_1(object sender, MouseButtonEventArgs e)
+        /// <summary>
+        /// Exits the program
+        /// </summary>
+        private void exitButton_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
         {
             Environment.Exit(0);
         }
 
+        /// <summary>
+        /// If panel is visible, start the ping thread to update servers ping
+        /// </summary>
         private void ServerInfoPanelContainer_IsVisibleChanged(object sender, DependencyPropertyChangedEventArgs e)
         {
             if (ServerInfoPanelContainer.Visibility == Visibility.Visible)
@@ -255,38 +334,9 @@ namespace DayZAnnex
             }
         }
 
-        public void PingThread()
-        {
-            string ip = "";
-            this.Dispatcher.Invoke((Action)(() =>
-            {
-                ip = ServerInfo_IP.Text;
-            }));
-            while (ServerInfoPanelContainer.Visibility == Visibility.Visible)
-            {
-                Ping pingSender = new Ping();
-                string data = "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa";
-                byte[] buffer = Encoding.ASCII.GetBytes(data);
-                int timeout = 1000;
-                PingOptions options = new PingOptions(64, true);
-                PingReply reply = pingSender.Send(ip.Split(':')[0], timeout, buffer, options);
-                string strReply = reply.RoundtripTime.ToString();
-                this.Dispatcher.Invoke((Action)(() =>
-                {
-                    if (reply.Status == IPStatus.Success)
-                    {
-                        ServerInfo_Ping.Text = strReply + "ms";
-                    }
-                    else
-                    {
-                        ServerInfo_Ping.Text = "999ms";
-                    }
-                }));
-                Thread.Sleep(2000);
-            }
-        }
-
-
+        /// <summary>
+        /// Check if the text is a digit
+        /// </summary>
         private void PreviewCharFilter(object sender, TextCompositionEventArgs e)
         {
             if (!char.IsDigit(e.Text, e.Text.Length - 1))
@@ -295,11 +345,17 @@ namespace DayZAnnex
             }
         }
 
+        /// <summary>
+        /// Update filtered list on text change
+        /// </summary>
         private void FilterTextChanged(object sender, TextChangedEventArgs e)
         {
             server.ReloadDisplay();
         }
 
+        /// <summary>
+        /// Update filtered list on checked state change
+        /// </summary>
         private void FilterCheckBoxChanged(object sender, RoutedEventArgs e)
         {
             server.ReloadDisplay();
@@ -310,6 +366,9 @@ namespace DayZAnnex
             server.ReloadDisplay();
         }
 
+        /// <summary>
+        /// Scroll server name when mouse enters textblock
+        /// </summary>
         private void ServerInfo_Name_MouseEnter(object sender, MouseEventArgs e)
         {
             if (ServerInfo_Name.ActualWidth > ServerInfoPanel.ActualWidth)
@@ -319,12 +378,18 @@ namespace DayZAnnex
             }
         }
 
+        /// <summary>
+        /// Stop the server name scrolling and reset the margin
+        /// </summary>
         private void ServerInfo_Name_MouseLeave(object sender, MouseEventArgs e)
         {
             ServerInfo_Name.BeginAnimation(TextBlock.MarginProperty, null);
             ServerInfo_Name.Margin = new Thickness(0, 0, 0, 0);
         }
 
+        /// <summary>
+        /// Get parameters, mods, and launch the game
+        /// </summary>
         private void ServerInfo_Join_Click(object sender, RoutedEventArgs e)
         {
             string parameters = "";
@@ -378,16 +443,64 @@ namespace DayZAnnex
         }
 
         /// <summary>
-        /// Launches arma 2 oa with the mod parameters
+        /// Gets the selected item and displays it in the display panel
         /// </summary>
-        /// <param name="exePath">Path of the arma 2 oa executable</param>
-        /// <param name="cParams">The parameters to launch the executable with</param>
-        private void LaunchGame(string exePath, string cParams)
+        private void MainServerGrid_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            if (!File.Exists(exePath))
-                return;
+            // Check to make sure the selection is not -1 (null)
+            if (MainServerGrid.SelectedIndex != -1)
+            {
+                // Get the selected item
+                ServerListInfo serverInfo = MainServerGrid.SelectedItem as ServerListInfo;
+                // Get the index in the server collection
+                int index = serverCollection.IndexOf(serverInfo);
+                // Update the selected item
+                server.UpdateItem(serverCollection[index], index);
+            }
+        }
 
-            var proc = System.Diagnostics.Process.Start(exePath, cParams);
+        /// <summary>
+        /// Toggles the available mod filters
+        /// </summary>
+        private void modToggle_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
+        {
+            CubicEase easing = new CubicEase();
+            easing.EasingMode = EasingMode.EaseInOut;
+
+            if (Filter_ModsContainer.Height == 0)
+            {
+                DoubleAnimation anim = new DoubleAnimation() { From = 0, To = Filter_ModsContainer.ActualHeight, Duration = new Duration(TimeSpan.FromSeconds(.3)), EasingFunction = easing };
+                Filter_ModsContainer.BeginAnimation(HeightProperty, anim);
+                modToggle.Text = "Hide Mods";
+            }
+            else
+            {
+                DoubleAnimation anim = new DoubleAnimation() { From = Filter_ModsContainer.ActualHeight, To = 0, Duration = new Duration(TimeSpan.FromSeconds(.3)), EasingFunction = easing };
+                Filter_ModsContainer.BeginAnimation(HeightProperty, anim);
+                modToggle.Text = "Show Mods";
+            }
+        }
+
+        /// <summary>
+        /// Toggles the available map filters
+        /// </summary>
+        private void mapToggle_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
+        {
+            CubicEase easing = new CubicEase();
+            easing.EasingMode = EasingMode.EaseInOut;
+
+            if (Filter_MapsContainer.Height == 0)
+            {
+                DoubleAnimation anim = new DoubleAnimation() { From = 0, To = Filter_MapsContainer.ActualHeight, Duration = new Duration(TimeSpan.FromSeconds(.3)), EasingFunction = easing };
+                Filter_MapsContainer.BeginAnimation(HeightProperty, anim);
+                mapToggle.Text = "Hide Maps";
+            }
+            else
+            {
+                DoubleAnimation anim = new DoubleAnimation() { From = Filter_MapsContainer.ActualHeight, To = 0, Duration = new Duration(TimeSpan.FromSeconds(.3)), EasingFunction = easing };
+                Filter_MapsContainer.BeginAnimation(HeightProperty, anim);
+                mapToggle.Text = "Show Maps";
+            }
         }
 
         /// <summary>
@@ -488,20 +601,36 @@ namespace DayZAnnex
         }
 
         /// <summary>
-        /// List of blacklisted mods that should not be showen in the mod lists
+        /// Refreshes the current server view
         /// </summary>
-        List<string> modBlackList = new List<string>()
-            {
-                "Arma 2",
-                "Arma 2: Operation Arrowhead",
-                "Arma 2: British Armed Forces",
-                "Arma 2: British Armed Forces (Lite)",
-                "Arma 2: Private Military Company",
-                "Arma 2: Private Military Company (Lite)",
-            };
+        private void imageServerRefresh_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
+        {
 
-        // Hide mod items containing the string 'server'
-        bool hideServerMods = true;
+        }
+
+        //
+        // =====================================
+        #endregion
+
+
+        #region "Private Methods"
+
+        // =====================================
+        //
+        //           Private Methods
+
+        /// <summary>
+        /// Launches arma 2 oa with the mod parameters
+        /// </summary>
+        /// <param name="exePath">Path of the arma 2 oa executable</param>
+        /// <param name="cParams">The parameters to launch the executable with</param>
+        private void LaunchGame(string exePath, string cParams)
+        {
+            if (!File.Exists(exePath))
+                return;
+
+            var proc = System.Diagnostics.Process.Start(exePath, cParams);
+        }
 
         /// <summary>
         /// Update the display panel objects
@@ -571,72 +700,41 @@ namespace DayZAnnex
         }
 
         /// <summary>
-        /// Gets the selected item and displays it in the display panel
+        /// Updates the ping to the selected server every 2000ms
         /// </summary>
-        private void MainServerGrid_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        public void PingThread()
         {
-            // Check to make sure the selection is not -1 (null)
-            if(MainServerGrid.SelectedIndex != -1)
+            string ip = "";
+            this.Dispatcher.Invoke((Action)(() =>
             {
-                // Get the selected item
-                ServerListInfo serverInfo = MainServerGrid.SelectedItem as ServerListInfo;
-                // Get the index in the server collection
-                int index = serverCollection.IndexOf(serverInfo);
-                // Update the selected item
-                server.UpdateItem(serverCollection[index], index);
+                ip = ServerInfo_IP.Text;
+            }));
+            while (ServerInfoPanelContainer.Visibility == Visibility.Visible)
+            {
+                Ping pingSender = new Ping();
+                string data = "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa";
+                byte[] buffer = Encoding.ASCII.GetBytes(data);
+                int timeout = 1000;
+                PingOptions options = new PingOptions(64, true);
+                PingReply reply = pingSender.Send(ip.Split(':')[0], timeout, buffer, options);
+                string strReply = reply.RoundtripTime.ToString();
+                this.Dispatcher.Invoke((Action)(() =>
+                {
+                    if (reply.Status == IPStatus.Success)
+                    {
+                        ServerInfo_Ping.Text = strReply + "ms";
+                    }
+                    else
+                    {
+                        ServerInfo_Ping.Text = "999ms";
+                    }
+                }));
+                Thread.Sleep(2000);
             }
         }
 
-        /// <summary>
-        /// Toggles the available mod filters
-        /// </summary>
-        private void modToggle_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
-        {
-            CubicEase easing = new CubicEase();
-            easing.EasingMode = EasingMode.EaseInOut;
-
-            if (Filter_ModsContainer.Height == 0)
-            {
-                DoubleAnimation anim = new DoubleAnimation() { From = 0, To = Filter_ModsContainer.ActualHeight, Duration = new Duration(TimeSpan.FromSeconds(.3)), EasingFunction = easing };
-                Filter_ModsContainer.BeginAnimation(HeightProperty, anim);
-                modToggle.Text = "Hide Mods";
-            }
-            else
-            {
-                DoubleAnimation anim = new DoubleAnimation() { From = Filter_ModsContainer.ActualHeight, To = 0, Duration = new Duration(TimeSpan.FromSeconds(.3)), EasingFunction = easing };
-                Filter_ModsContainer.BeginAnimation(HeightProperty, anim);
-                modToggle.Text = "Show Mods";
-            }
-        }
-
-        /// <summary>
-        /// Toggles the available map filters
-        /// </summary>
-        private void mapToggle_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
-        {
-            CubicEase easing = new CubicEase();
-            easing.EasingMode = EasingMode.EaseInOut;
-
-            if (Filter_MapsContainer.Height == 0)
-            {
-                DoubleAnimation anim = new DoubleAnimation() { From = 0, To = Filter_MapsContainer.ActualHeight, Duration = new Duration(TimeSpan.FromSeconds(.3)), EasingFunction = easing };
-                Filter_MapsContainer.BeginAnimation(HeightProperty, anim);
-                mapToggle.Text = "Hide Maps";
-            }
-            else
-            {
-                DoubleAnimation anim = new DoubleAnimation() { From = Filter_MapsContainer.ActualHeight, To = 0, Duration = new Duration(TimeSpan.FromSeconds(.3)), EasingFunction = easing };
-                Filter_MapsContainer.BeginAnimation(HeightProperty, anim);
-                mapToggle.Text = "Show Maps";
-            }
-        }
-
-        /// <summary>
-        /// Refreshes the current server view
-        /// </summary>
-        private void imageServerRefresh_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
-        {
-
-        }
+        //
+        // =====================================
+        #endregion
     }
 }
